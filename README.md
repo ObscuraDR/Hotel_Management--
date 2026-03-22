@@ -1,16 +1,20 @@
-# React + Vite
+# LuxeHotel Management System
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Hệ thống quản lý khách sạn xây dựng bằng **React + Vite** (frontend) và **PHP + MySQL** (backend).
 
-Currently, two official plugins are available:
+## Production
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- **Website**: https://luxehotel.infinityfreeapp.com
+- **Hosting**: InfinityFree (PHP + MySQL)
+- **Database**: `if0_41434981_luxehotel` trên `sql104.infinityfree.com`
 
-## React Compiler
+## Chạy local
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Xem hướng dẫn chi tiết trong [SETUP.md](./SETUP.md)
 
-## Expanding the ESLint configuration
+## Deploy
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+1. Sửa `.env.production` nếu đổi domain
+2. `npm run build`
+3. Upload thư mục `dist/` và `api/` lên `htdocs/` trên InfinityFree
+4. Import `luxehotel_full.sql` qua phpMyAdmin

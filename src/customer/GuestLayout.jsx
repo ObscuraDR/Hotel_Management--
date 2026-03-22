@@ -8,9 +8,9 @@ import {
 } from "@ant-design/icons";
 
 const navLinks = [
-  { path: "/guest", label: "Trang chủ", icon: <HomeOutlined /> },
-  { path: "/guest/rooms", label: "Phòng & Giá", icon: <HomeOutlined /> },
-  { path: "/guest/bookings", label: "Đặt phòng của tôi", icon: <CalendarOutlined /> },
+  { path: "/guest", label: "Home", icon: <HomeOutlined /> },
+  { path: "/guest/rooms", label: "Rooms & Rates", icon: <HomeOutlined /> },
+  { path: "/guest/bookings", label: "My Bookings", icon: <CalendarOutlined /> },
 ];
 
 export default function GuestLayout() {
@@ -21,12 +21,12 @@ export default function GuestLayout() {
   const [chatOpen, setChatOpen] = useState(false);
   const [chatInput, setChatInput] = useState("");
   const [chatMessages, setChatMessages] = useState([
-    { from: "bot", text: "Xin chào! Tôi là trợ lý LuxeHotel. Tôi có thể giúp gì cho bạn?" },
+    { from: "bot", text: "Hello! I'm the LuxeHotel assistant. How can I help you?" },
   ]);
   const [notifications, setNotifications] = useState([
-    { id: 1, text: "🎉 Ưu đãi cuối tuần: Giảm 15% phòng Deluxe!", time: "2 giờ trước", read: false },
-    { id: 2, text: "📅 Nhắc nhở: Check-in của bạn sắp tới", time: "5 giờ trước", read: false },
-    { id: 3, text: "⭐ Cảm ơn bạn đã đặt phòng tại LuxeHotel!", time: "1 ngày trước", read: true },
+    { id: 1, text: "🎉 Weekend deal: 15% off Deluxe rooms!", time: "2 hours ago", read: false },
+    { id: 2, text: "📅 Reminder: Your check-in is coming up", time: "5 hours ago", read: false },
+    { id: 3, text: "⭐ Thank you for booking at LuxeHotel!", time: "1 day ago", read: true },
   ]);
   const [notifOpen, setNotifOpen] = useState(false);
   const chatEndRef = useRef(null);
@@ -39,10 +39,10 @@ export default function GuestLayout() {
   const markRead = (id) => setNotifications((prev) => prev.map((n) => n.id === id ? { ...n, read: true } : n));
 
   const botReplies = [
-    "Xin lỗi, tôi chưa hiểu câu hỏi. Bạn có thể gọi hotline 028-1234-5678 để được hỗ trợ trực tiếp.",
-    "Chúng tôi sẽ phản hồi trong vòng 5 phút. Cảm ơn bạn đã liên hệ!",
-    "Bạn có thể xem chính sách đặt phòng tại trang Phòng & Giá.",
-    "Giờ check-in là 14:00, check-out là 12:00 hàng ngày.",
+    "Sorry, I didn't understand that. You can call our hotline 028-1234-5678 for direct support.",
+    "We'll respond within 5 minutes. Thank you for contacting us!",
+    "You can view our booking policy on the Rooms & Rates page.",
+    "Check-in time is 14:00, check-out is 12:00 daily.",
   ];
 
   const sendChat = () => {
@@ -57,10 +57,10 @@ export default function GuestLayout() {
 
   const userMenu = {
     items: [
-      { key: "profile", icon: <UserOutlined />, label: "Hồ sơ của tôi" },
-      { key: "bookings", icon: <CalendarOutlined />, label: "Đặt phòng của tôi" },
+      { key: "profile", icon: <UserOutlined />, label: "My Profile" },
+      { key: "bookings", icon: <CalendarOutlined />, label: "My Bookings" },
       { type: "divider" },
-      { key: "logout", icon: <LogoutOutlined />, label: "Đăng xuất", danger: true },
+      { key: "logout", icon: <LogoutOutlined />, label: "Sign Out", danger: true },
     ],
     onClick: ({ key }) => {
       if (key === "logout") logout();
@@ -103,7 +103,7 @@ export default function GuestLayout() {
               onClick={() => navigate("/home")}
               style={{ borderRadius: 8, height: 36, fontWeight: 600, fontSize: 13, color: "#6366f1", borderColor: "#c7d2fe", background: "#eef2ff" }}
             >
-              Trang chủ
+              Home
             </Button>
             {/* Notification bell */}
             <Dropdown
@@ -113,8 +113,8 @@ export default function GuestLayout() {
               dropdownRender={() => (
                 <div style={{ width: 300, background: "#fff", borderRadius: 16, boxShadow: "0 8px 32px rgba(0,0,0,0.12)", overflow: "hidden" }}>
                   <div style={{ padding: "14px 16px", borderBottom: "1px solid #f1f5f9", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                    <span style={{ fontWeight: 700, color: "#1e293b" }}>🔔 Thông báo</span>
-                    <button onClick={markAllRead} style={{ fontSize: 11, color: "#6366f1", background: "none", border: "none", cursor: "pointer", fontWeight: 600 }}>§Đánh dấu tất cả đã đọc</button>
+                    <span style={{ fontWeight: 700, color: "#1e293b" }}>🔔 Notifications</span>
+                    <button onClick={markAllRead} style={{ fontSize: 11, color: "#6366f1", background: "none", border: "none", cursor: "pointer", fontWeight: 600 }}>Mark all read</button>
                   </div>
                   {notifications.map((n) => (
                     <div key={n.id} onClick={() => markRead(n.id)}
@@ -144,8 +144,8 @@ export default function GuestLayout() {
               </Dropdown>
             ) : (
               <div style={{ display: "flex", gap: 8 }}>
-                <Button onClick={() => navigate("/guest/login")} style={{ borderRadius: 8, height: 36 }}>Đăng nhập</Button>
-                <Button type="primary" onClick={() => navigate("/guest/register")} style={{ background: "linear-gradient(135deg,#6366f1,#818cf8)", border: "none", borderRadius: 8, height: 36, fontWeight: 600 }}>Đăng ký</Button>
+                <Button onClick={() => navigate("/guest/login")} style={{ borderRadius: 8, height: 36 }}>Sign In</Button>
+                <Button type="primary" onClick={() => navigate("/guest/register")} style={{ background: "linear-gradient(135deg,#6366f1,#818cf8)", border: "none", borderRadius: 8, height: 36, fontWeight: 600 }}>Register</Button>
               </div>
             )}
             <Button type="text" className="md:hidden" icon={mobileMenu ? <CloseOutlined /> : <MenuOutlined />} onClick={() => setMobileMenu(!mobileMenu)} />
@@ -178,8 +178,8 @@ export default function GuestLayout() {
               <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                 <div style={{ width: 32, height: 32, borderRadius: "50%", background: "linear-gradient(135deg,#f59e0b,#d97706)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16 }}>🏨</div>
                 <div>
-                  <p style={{ color: "#fff", fontWeight: 700, fontSize: 13, margin: 0 }}>Hỗ trợ LuxeHotel</p>
-                  <p style={{ color: "#10b981", fontSize: 11, margin: 0 }}>● Trực tuyến</p>
+                  <p style={{ color: "#fff", fontWeight: 700, fontSize: 13, margin: 0 }}>LuxeHotel Support</p>
+                  <p style={{ color: "#10b981", fontSize: 11, margin: 0 }}>● Online</p>
                 </div>
               </div>
               <Button type="text" icon={<CloseOutlined />} onClick={() => setChatOpen(false)} style={{ color: "#fff", padding: 0 }} />
@@ -199,7 +199,7 @@ export default function GuestLayout() {
                 value={chatInput}
                 onChange={(e) => setChatInput(e.target.value)}
                 onPressEnter={sendChat}
-                placeholder="Nhập tin nhắn..."
+                placeholder="Type a message..."
                 style={{ borderRadius: 10, fontSize: 13 }}
               />
               <Button type="primary" icon={<SendOutlined />} onClick={sendChat}
@@ -228,22 +228,22 @@ export default function GuestLayout() {
                   <div style={{ fontSize: 9, color: "#f59e0b", letterSpacing: 2, textTransform: "uppercase" }}>5 Star Resort</div>
                 </div>
               </div>
-              <p style={{ color: "rgba(255,255,255,0.4)", fontSize: 13, lineHeight: 1.6 }}>Trải nghiệm lưu trú đẳng cấp 5 sao tại trung tâm thành phố.</p>
+              <p style={{ color: "rgba(255,255,255,0.4)", fontSize: 13, lineHeight: 1.6 }}>5-star luxury stay experience in the heart of the city.</p>
             </div>
             <div>
-              <p style={{ fontWeight: 700, marginBottom: 12, color: "#fff" }}>Liên hệ</p>
+              <p style={{ fontWeight: 700, marginBottom: 12, color: "#fff" }}>Contact</p>
               <div style={{ display: "flex", flexDirection: "column", gap: 6, color: "rgba(255,255,255,0.4)", fontSize: 13 }}>
-                <p style={{ margin: 0 }}>📍 123 Đường ABC, Quận 1, TP.HCM</p>
+                <p style={{ margin: 0 }}>📍 123 ABC Street, District 1, HCMC</p>
                 <p style={{ margin: 0 }}>📞 028-1234-5678</p>
                 <p style={{ margin: 0 }}>✉️ info@luxehotel.com</p>
               </div>
             </div>
             <div>
-              <p style={{ fontWeight: 700, marginBottom: 12, color: "#fff" }}>Dịch vụ</p>
+              <p style={{ fontWeight: 700, marginBottom: 12, color: "#fff" }}>Services</p>
               <div style={{ display: "flex", flexDirection: "column", gap: 6, color: "rgba(255,255,255,0.4)", fontSize: 13 }}>
-                <p style={{ margin: 0 }}>🏊 Hồ bơi & Spa</p>
-                <p style={{ margin: 0 }}>🍽️ Nhà hàng 5 sao</p>
-                <p style={{ margin: 0 }}>🚗 Đưa đón sân bay</p>
+                <p style={{ margin: 0 }}>🏊 Pool & Spa</p>
+                <p style={{ margin: 0 }}>🍽️ 5-Star Restaurant</p>
+                <p style={{ margin: 0 }}>🚗 Airport Transfer</p>
               </div>
             </div>
           </div>

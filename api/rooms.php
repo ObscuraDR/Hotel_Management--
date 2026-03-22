@@ -19,7 +19,7 @@ if ($method === 'GET') {
 if ($method === 'POST') {
     $d = body();
     $stmt = $db->prepare('INSERT INTO rooms (number, floor, type, capacity, price, status) VALUES (?,?,?,?,?,?)');
-    $stmt->execute([$d['number'], $d['floor'], $d['type'], $d['capacity'], $d['price'], $d['status'] ?? 'Trống']);
+    $stmt->execute([$d['number'], $d['floor'], $d['type'], $d['capacity'], $d['price'], $d['status'] ?? 'Available']);
     json(['id' => $db->lastInsertId()], 201);
 }
 

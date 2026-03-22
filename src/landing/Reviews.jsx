@@ -1,19 +1,19 @@
 import { StarFilled } from "@ant-design/icons";
 
 const REVIEWS = [
-  { name: "Nguyễn Văn Minh", role: "Giám đốc khách sạn", hotel: "Grand Palace Hotel", avatar: "N", color: "#6366f1", rating: 5, comment: "Hệ thống giúp chúng tôi tiết kiệm 40% thời gian quản lý. Giao diện trực quan, dễ sử dụng, đội ngũ hỗ trợ rất nhiệt tình.", date: "Tháng 12/2024" },
-  { name: "Trần Thị Lan", role: "Quản lý vận hành", hotel: "Sunrise Resort & Spa", avatar: "T", color: "#f59e0b", rating: 5, comment: "Tính năng báo cáo real-time rất hữu ích. Chúng tôi luôn nắm được tình hình kinh doanh mọi lúc mọi nơi.", date: "Tháng 11/2024" },
-  { name: "Lê Hoàng Nam", role: "Trưởng lễ tân", hotel: "City Center Hotel", avatar: "L", color: "#10b981", rating: 5, comment: "Check-in/out nhanh hơn rất nhiều. Khách hàng hài lòng hơn với thời gian chờ được rút ngắn xuống còn 2 phút.", date: "Tháng 10/2024" },
-  { name: "Phạm Thị Hoa", role: "Chủ khách sạn", hotel: "Lotus Boutique Hotel", avatar: "P", color: "#ef4444", rating: 5, comment: "Đầu tư vào LuxeHotel là quyết định đúng đắn nhất. ROI đạt 200% chỉ sau 6 tháng sử dụng.", date: "Tháng 9/2024" },
-  { name: "Vũ Đức Thành", role: "IT Manager", hotel: "Diamond Hotel Group", avatar: "V", color: "#8b5cf6", rating: 5, comment: "Tích hợp API dễ dàng, tài liệu kỹ thuật rõ ràng. Triển khai cho 5 khách sạn chỉ mất 2 tuần.", date: "Tháng 8/2024" },
-  { name: "Hoàng Thị Mai", role: "Revenue Manager", hotel: "Seaside Grand Hotel", avatar: "H", color: "#0ea5e9", rating: 5, comment: "Công cụ phân tích doanh thu giúp tôi tối ưu giá phòng, tăng RevPAR lên 25% trong quý đầu tiên.", date: "Tháng 7/2024" },
+  { name: "John Anderson", role: "Hotel Director", hotel: "Grand Palace Hotel", avatar: "J", color: "#6366f1", rating: 5, comment: "The system helped us save 40% management time. Intuitive interface, easy to use, very responsive support team.", date: "Dec 2024" },
+  { name: "Sarah Chen", role: "Operations Manager", hotel: "Sunrise Resort & Spa", avatar: "S", color: "#f59e0b", rating: 5, comment: "Real-time reporting features are very helpful. We always know our business situation anytime, anywhere.", date: "Nov 2024" },
+  { name: "Michael Davis", role: "Front Office Manager", hotel: "City Center Hotel", avatar: "M", color: "#10b981", rating: 5, comment: "Check-in/out much faster. Customer satisfaction improved with wait time reduced to just 2 minutes.", date: "Oct 2024" },
+  { name: "Emily Wilson", role: "Hotel Owner", hotel: "Lotus Boutique Hotel", avatar: "E", color: "#ef4444", rating: 5, comment: "Investing in LuxeHotel was the best decision. ROI reached 200% after just 6 months of use.", date: "Sep 2024" },
+  { name: "David Lee", role: "IT Manager", hotel: "Diamond Hotel Group", avatar: "D", color: "#8b5cf6", rating: 5, comment: "Easy API integration, clear technical documentation. Deployed to 5 hotels in just 2 weeks.", date: "Aug 2024" },
+  { name: "Lisa Anderson", role: "Revenue Manager", hotel: "Seaside Grand Hotel", avatar: "L", color: "#0ea5e9", rating: 5, comment: "Revenue analysis tools helped me optimize room pricing, increased RevPAR by 25% in the first quarter.", date: "Jul 2024" },
 ];
 
 const SUMMARY = [
-  { label: "Tổng đánh giá", value: "1,240+", icon: "📝" },
-  { label: "Điểm trung bình", value: "4.9/5", icon: "⭐" },
-  { label: "Khuyến nghị", value: "98%", icon: "👍" },
-  { label: "Phản hồi tích cực", value: "99.2%", icon: "😊" },
+  { label: "Total Reviews", value: "1,240+", icon: "📝" },
+  { label: "Average Rating", value: "4.9/5", icon: "⭐" },
+  { label: "Recommendation", value: "98%", icon: "👍" },
+  { label: "Positive Feedback", value: "99.2%", icon: "😊" },
 ];
 
 export default function Reviews() {
@@ -22,13 +22,13 @@ export default function Reviews() {
       <div style={{ maxWidth: 1200, margin: "0 auto" }}>
         {/* Header */}
         <div style={{ textAlign: "center", marginBottom: 56 }}>
-          <p style={{ color: "#6366f1", fontWeight: 700, fontSize: 12, letterSpacing: 2, textTransform: "uppercase", margin: "0 0 10px" }}>Khách hàng nói gì</p>
+          <p style={{ color: "#6366f1", fontWeight: 700, fontSize: 12, letterSpacing: 2, textTransform: "uppercase", margin: "0 0 10px" }}>What Customers Say</p>
           <h1 style={{ fontSize: 42, fontWeight: 900, color: "#1e293b", margin: "0 0 16px", letterSpacing: -0.5 }}>
-            Được tin tưởng bởi<br />
-            <span style={{ color: "#f59e0b" }}>các chuyên gia ngành khách sạn</span>
+            Trusted by<br />
+            <span style={{ color: "#f59e0b" }}>hotel industry experts</span>
           </h1>
           <p style={{ color: "#94a3b8", fontSize: 16, maxWidth: 480, margin: "0 auto", lineHeight: 1.8 }}>
-            Hơn 1,200 đánh giá thực tế từ các khách sạn đang sử dụng hệ thống
+            Over 1,200 real reviews from hotels using our system
           </p>
         </div>
 
@@ -51,7 +51,7 @@ export default function Reviews() {
               <div style={{ display: "flex", gap: 4, justifyContent: "center", marginBottom: 6 }}>
                 {[1,2,3,4,5].map(i => <StarFilled key={i} style={{ color: "#f59e0b", fontSize: 18 }} />)}
               </div>
-              <p style={{ color: "#94a3b8", fontSize: 12, margin: 0 }}>1,240 đánh giá</p>
+              <p style={{ color: "#94a3b8", fontSize: 12, margin: 0 }}>1,240 reviews</p>
             </div>
             <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
               {[
@@ -101,17 +101,17 @@ export default function Reviews() {
         {/* FAQ */}
         <div style={{ marginBottom: 56 }}>
           <div style={{ textAlign: "center", marginBottom: 40 }}>
-            <p style={{ color: "#6366f1", fontWeight: 700, fontSize: 12, letterSpacing: 2, textTransform: "uppercase", margin: "0 0 8px" }}>Câu hỏi thường gặp</p>
-            <h2 style={{ fontSize: 32, fontWeight: 900, color: "#1e293b", margin: 0 }}>Bạn có thắc mắc?</h2>
+            <p style={{ color: "#6366f1", fontWeight: 700, fontSize: 12, letterSpacing: 2, textTransform: "uppercase", margin: "0 0 8px" }}>FAQ</p>
+            <h2 style={{ fontSize: 32, fontWeight: 900, color: "#1e293b", margin: 0 }}>Questions?</h2>
           </div>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
             {[
-              { q: "LuxeHotel có phù hợp với khách sạn nhỏ không?", a: "Hoàn toàn phù hợp. Gói Starter của chúng tôi được thiết kế riêng cho khách sạn dưới 30 phòng với mức giá chỉ từ 1.5 triệu/tháng." },
-              { q: "Mất bao lâu để triển khai hệ thống?", a: "Thường chỉ mất 1–3 ngày làm việc. Đội ngũ kỹ thuật sẽ hỗ trợ toàn bộ quá trình cài đặt và đào tạo nhân viên." },
-              { q: "Dữ liệu có được bảo mật không?", a: "Hệ thống được chứng nhận ISO 27001 và PCI DSS. Dữ liệu được mã hóa AES-256 và sao lưu tự động mỗi ngày." },
-              { q: "Có thể dùng trên điện thoại không?", a: "Có. LuxeHotel hỗ trợ đầy đủ trên trình duyệt di động và có ứng dụng iOS/Android riêng cho quản lý." },
-              { q: "Có thể tích hợp với Booking.com, Agoda không?", a: "Có. Gói Professional trở lên hỗ trợ tích hợp API với tất cả các kênh OTA lớn." },
-              { q: "Chính sách hoàn tiền như thế nào?", a: "Chúng tôi cam kết hoàn tiền 100% trong 30 ngày nếu bạn không hài lòng với dịch vụ." },
+              { q: "Is LuxeHotel suitable for small hotels?", a: "Yes. Our Starter plan is built for properties under 30 rooms, from about 1.5M VND per month." },
+              { q: "How long does implementation take?", a: "Typically 1–3 business days. Our team supports setup and staff training end to end." },
+              { q: "Is my data secure?", a: "We follow ISO 27001 and PCI DSS practices. Data is encrypted (AES-256) with daily automated backups." },
+              { q: "Can I use it on mobile?", a: "Yes. LuxeHotel works fully in mobile browsers, with dedicated iOS/Android apps for managers." },
+              { q: "Can we integrate Booking.com and Agoda?", a: "Yes. Professional and above include API integrations with major OTA channels." },
+              { q: "What is your refund policy?", a: "We offer a full refund within 30 days if you are not satisfied with the service." },
             ].map((faq, i) => (
               <div key={i} style={{ background: "#fff", borderRadius: 16, padding: "24px 20px", border: "1px solid #f1f5f9", boxShadow: "0 2px 8px rgba(0,0,0,0.04)" }}>
                 <p style={{ fontWeight: 700, color: "#1e293b", fontSize: 14, margin: "0 0 8px", display: "flex", gap: 8 }}>
@@ -125,14 +125,14 @@ export default function Reviews() {
 
         {/* Contact CTA */}
         <div style={{ background: "linear-gradient(135deg,#0f172a,#1e3a5f)", borderRadius: 24, padding: "56px 40px", textAlign: "center" }}>
-          <p style={{ color: "#f59e0b", fontWeight: 700, fontSize: 12, letterSpacing: 2, textTransform: "uppercase", margin: "0 0 12px" }}>Liên hệ ngay</p>
-          <h2 style={{ color: "#fff", fontSize: 32, fontWeight: 900, margin: "0 0 12px" }}>Bạn có câu hỏi khác?</h2>
-          <p style={{ color: "rgba(255,255,255,0.55)", fontSize: 15, margin: "0 0 32px", lineHeight: 1.7 }}>Chuyên viên tư vấn của chúng tôi luôn sẵn sàng hỗ trợ bạn</p>
+          <p style={{ color: "#f59e0b", fontWeight: 700, fontSize: 12, letterSpacing: 2, textTransform: "uppercase", margin: "0 0 12px" }}>Contact us</p>
+          <h2 style={{ color: "#fff", fontSize: 32, fontWeight: 900, margin: "0 0 12px" }}>Still have questions?</h2>
+          <p style={{ color: "rgba(255,255,255,0.55)", fontSize: 15, margin: "0 0 32px", lineHeight: 1.7 }}>Our team is ready to help</p>
           <div style={{ display: "flex", gap: 16, justifyContent: "center", flexWrap: "wrap", marginBottom: 32 }}>
             {[
               { icon: "📞", label: "Hotline", value: "028-1234-5678", color: "#10b981" },
               { icon: "✉️", label: "Email", value: "support@luxehotel.com", color: "#6366f1" },
-              { icon: "💬", label: "Live Chat", value: "Phản hồi trong 5 phút", color: "#f59e0b" },
+              { icon: "💬", label: "Live Chat", value: "Reply within 5 minutes", color: "#f59e0b" },
             ].map((c) => (
               <div key={c.label} style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.12)", borderRadius: 16, padding: "20px 28px", textAlign: "center", minWidth: 180 }}>
                 <div style={{ fontSize: 28, marginBottom: 8 }}>{c.icon}</div>
@@ -143,7 +143,7 @@ export default function Reviews() {
           </div>
           <button onClick={() => window.location.href = "/login"}
             style={{ background: "linear-gradient(135deg,#f59e0b,#d97706)", color: "#fff", border: "none", borderRadius: 12, padding: "14px 36px", fontWeight: 700, fontSize: 15, cursor: "pointer" }}>
-            Đăng ký dùng thử miễn phí →
+            Start a free trial →
           </button>
         </div>
       </div>

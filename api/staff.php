@@ -17,7 +17,7 @@ if ($method === 'POST') {
         VALUES (?,?,?,?,?,?,?,?,?)');
     $stmt->execute([
         $d['name'], $d['phone'], $d['role'], $d['department'],
-        $d['shift'] ?? null, $d['salary'], 'Đang làm', 80, date('Y-m-d')
+        $d['shift'] ?? null, $d['salary'], 'Active', 80, date('Y-m-d')
     ]);
     json(['id' => $db->lastInsertId()], 201);
 }

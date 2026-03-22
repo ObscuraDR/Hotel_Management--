@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Layout, Menu, Avatar, Badge, Dropdown, Button, Tooltip } from "antd";
+import { Layout, Menu, Avatar, Badge, Dropdown, Button, Tooltip, Drawer, List } from "antd";
 import {
   DashboardOutlined, HomeOutlined, CalendarOutlined,
   UserOutlined, TeamOutlined, FileTextOutlined,
@@ -8,30 +8,30 @@ import {
   StarFilled,
 } from "@ant-design/icons";
 import { useNavigate, useLocation, Outlet } from "react-router-dom";
-import { hasPermission } from "../utils/authStore";
+import { hasPermission, normalizeRole } from "../utils/authStore";
 
 const { Header, Sider, Content } = Layout;
 
 const ALL_MENU_ITEMS = [
   { key: "/", icon: <DashboardOutlined />, label: "Dashboard", permission: "dashboard" },
   {
-    key: "rooms-group", icon: <HomeOutlined />, label: "Phòng", permission: "rooms",
+    key: "rooms-group", icon: <HomeOutlined />, label: "Rooms", permission: "rooms",
     children: [
-      { key: "/rooms", label: "Danh sách phòng", permission: "rooms" },
-      { key: "/floormap", icon: <ApartmentOutlined />, label: "Sơ đồ tầng", permission: "floormap" },
+      { key: "/rooms", label: "Room List", permission: "rooms" },
+      { key: "/floormap", icon: <ApartmentOutlined />, label: "Floor Map", permission: "floormap" },
     ],
   },
   {
-    key: "bookings-group", icon: <CalendarOutlined />, label: "Đặt Phòng", permission: "bookings",
+    key: "bookings-group", icon: <CalendarOutlined />, label: "Bookings", permission: "bookings",
     children: [
-      { key: "/bookings", label: "Danh sách đặt phòng", permission: "bookings" },
-      { key: "/calendar", icon: <ScheduleOutlined />, label: "Lịch đặt phòng", permission: "calendar" },
+      { key: "/bookings", label: "Booking List", permission: "bookings" },
+      { key: "/calendar", icon: <ScheduleOutlined />, label: "Booking Calendar", permission: "calendar" },
     ],
   },
-  { key: "/customers", icon: <UserOutlined />, label: "Khách Hàng", permission: "customers" },
-  { key: "/staff", icon: <TeamOutlined />, label: "Nhân Viên", permission: "staff" },
-  { key: "/invoices", icon: <FileTextOutlined />, label: "Hóa Đơn", permission: "invoices" },
-  { key: "/accounts", icon: <SafetyCertificateOutlined />, label: "Tài Khoản", permission: "accounts" },
+  { key: "/customers", icon: <UserOutlined />, label: "Customers", permission: "customers" },
+  { key: "/staff", icon: <TeamOutlined />, label: "Staff", permission: "staff" },
+  { key: "/invoices", icon: <FileTextOutlined />, label: "Invoices", permission: "invoices" },
+  { key: "/accounts", icon: <SafetyCertificateOutlined />, label: "Accounts", permission: "accounts" },
 ];
 
 function filterMenu(items, user) {
@@ -45,24 +45,32 @@ function filterMenu(items, user) {
 }
 
 const userMenu = [
-  { key: "profile", icon: <UserOutlined />, label: "Hồ sơ cá nhân" },
-  { key: "settings", icon: <SettingOutlined />, label: "Cài đặt" },
+  { key: "profile", icon: <UserOutlined />, label: "My Profile" },
+  { key: "settings", icon: <SettingOutlined />, label: "Settings" },
   { type: "divider" },
-  { key: "logout", icon: <LogoutOutlined />, label: "Đăng xuất", danger: true },
+  { key: "logout", icon: <LogoutOutlined />, label: "Sign Out", danger: true },
+];
+
+const sampleNotifications = [
+  { title: "New booking #BK-1042", desc: "Deluxe room — check-in tomorrow", time: "5 min ago" },
+  { title: "Room 305 checkout", desc: "Guest requested late checkout", time: "1 hour ago" },
+  { title: "Maintenance report", desc: "Suite 401 — AC inspected", time: "Yesterday" },
 ];
 
 export default function MainLayout() {
   const [collapsed, setCollapsed] = useState(false);
+  const [notifOpen, setNotifOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
-  const user = JSON.parse(localStorage.getItem("user") || "{}");
+  const rawUser = JSON.parse(localStorage.getItem("user") || "{}");
+  const user = rawUser.role ? { ...rawUser, role: normalizeRole(rawUser.role) } : rawUser;
   const menuItems = filterMenu(ALL_MENU_ITEMS, user);
 
   const handleUserMenu = ({ key }) => {
     if (key === "logout") {
       localStorage.removeItem("user");
       navigate("/login");
-    } else if (key === "profile") {
+    } else if (key === "profile" || key === "settings") {
       navigate("/profile");
     }
   };
@@ -103,7 +111,7 @@ export default function MainLayout() {
         {/* Menu label */}
         {!collapsed && (
           <div style={{ padding: "16px 20px 6px", color: "rgba(255,255,255,0.3)", fontSize: 10, letterSpacing: 2, textTransform: "uppercase", fontWeight: 600 }}>
-            Điều hướng
+            Navigation
           </div>
         )}
 
@@ -152,33 +160,35 @@ export default function MainLayout() {
               style={{ fontSize: 16, color: "#64748b" }}
             />
             <div style={{ height: 20, width: 1, background: "#e2e8f0" }} />
-            <Tooltip title="Về trang chủ">
+            <Tooltip title="Go to Home">
               <Button
                 icon={<HomeOutlined />}
                 onClick={() => navigate("/home")}
                 style={{ borderRadius: 8, height: 34, fontWeight: 600, fontSize: 13, color: "#6366f1", borderColor: "#c7d2fe", background: "#eef2ff", display: "flex", alignItems: "center", gap: 4 }}
               >
-                Trang chủ
+                Home
               </Button>
             </Tooltip>
             <div style={{ height: 20, width: 1, background: "#e2e8f0" }} />
             <div>
-              <span style={{ fontSize: 13, color: "#94a3b8" }}>Xin chào, </span>
+              <span style={{ fontSize: 13, color: "#94a3b8" }}>Hello, </span>
               <span style={{ fontSize: 13, fontWeight: 600, color: "#1e293b" }}>{user?.name || "Admin"}</span>
               <span style={{ fontSize: 13, color: "#94a3b8" }}> 👋</span>
             </div>
           </div>
 
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-            <Tooltip title="Thông báo">
+            <Tooltip title="Notifications">
               <Badge count={3} size="small" offset={[-2, 2]}>
                 <Button type="text" icon={<BellOutlined style={{ fontSize: 18, color: "#64748b" }} />}
+                  onClick={() => setNotifOpen(true)}
                   style={{ width: 40, height: 40, borderRadius: 10, display: "flex", alignItems: "center", justifyContent: "center" }}
                 />
               </Badge>
             </Tooltip>
-            <Tooltip title="Cài đặt">
+            <Tooltip title="Settings">
               <Button type="text" icon={<SettingOutlined style={{ fontSize: 18, color: "#64748b" }} />}
+                onClick={() => navigate("/profile")}
                 style={{ width: 40, height: 40, borderRadius: 10, display: "flex", alignItems: "center", justifyContent: "center" }}
               />
             </Tooltip>
@@ -204,6 +214,20 @@ export default function MainLayout() {
           <Outlet />
         </Content>
       </Layout>
+
+      <Drawer title="Notifications" placement="right" width={360} onClose={() => setNotifOpen(false)} open={notifOpen}>
+        <List
+          dataSource={sampleNotifications}
+          renderItem={(item) => (
+            <List.Item style={{ cursor: "default", padding: "12px 0", borderBottom: "1px solid #f1f5f9" }}>
+              <List.Item.Meta
+                title={<span style={{ fontWeight: 600, color: "#1e293b", fontSize: 13 }}>{item.title}</span>}
+                description={<><span style={{ fontSize: 12, color: "#64748b" }}>{item.desc}</span><div style={{ fontSize: 11, color: "#94a3b8", marginTop: 4 }}>{item.time}</div></>}
+              />
+            </List.Item>
+          )}
+        />
+      </Drawer>
     </Layout>
   );
 }

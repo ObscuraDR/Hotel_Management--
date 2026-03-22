@@ -8,7 +8,15 @@ import Staff from "./pages/Staff";
 import Invoices from "./pages/Invoices";
 import FloorMap from "./pages/FloorMap";
 import BookingCalendar from "./pages/BookingCalendar";
-import Home from "./pages/Home";
+import LandingLayout from "./landing/LandingLayout";
+import LandingHome from "./landing/LandingHome";
+import LandingAbout from "./landing/LandingAbout";
+import LandingBooking from "./landing/LandingBooking";
+import LandingDemo from "./landing/LandingDemo";
+import LandingFeaturesIndex from "./landing/LandingFeaturesIndex";
+import LandingFeatureDetail from "./landing/LandingFeatureDetail";
+import LandingStats from "./landing/LandingStats";
+import LandingTestimonials from "./landing/LandingTestimonials";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Profile from "./pages/Profile";
@@ -29,7 +37,16 @@ export default function App() {
     <BrowserRouter>
       <Routes>
         {/* Public routes */}
-        <Route path="/home" element={<Home />} />
+        <Route path="/home" element={<LandingLayout />}>
+          <Route index element={<LandingHome />} />
+          <Route path="about" element={<LandingAbout />} />
+          <Route path="booking" element={<LandingBooking />} />
+          <Route path="demo" element={<LandingDemo />} />
+          <Route path="features" element={<LandingFeaturesIndex />} />
+          <Route path="features/:slug" element={<LandingFeatureDetail />} />
+          <Route path="stats" element={<LandingStats />} />
+          <Route path="testimonials" element={<LandingTestimonials />} />
+        </Route>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
 

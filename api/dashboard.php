@@ -7,21 +7,21 @@ if ($_SERVER['REQUEST_METHOD'] !== 'GET') json(['error' => 'Method not allowed']
 $db = getDB();
 
 $totalRooms    = (int)$db->query('SELECT COUNT(*) FROM rooms')->fetchColumn();
-$occupied      = (int)$db->query('SELECT COUNT(*) FROM rooms WHERE status = "Có khách"')->fetchColumn();
-$available     = (int)$db->query('SELECT COUNT(*) FROM rooms WHERE status = "Trống"')->fetchColumn();
+$occupied      = (int)$db->query('SELECT COUNT(*) FROM rooms WHERE status = "Occupied"')->fetchColumn();
+$available     = (int)$db->query('SELECT COUNT(*) FROM rooms WHERE status = "Available"')->fetchColumn();
 $todayCheckins = (int)$db->query('SELECT COUNT(*) FROM bookings WHERE checkin = CURDATE()')->fetchColumn();
-// Lấy tháng/năm mới nhất có hóa đơn đã thanh toán, fallback về tháng hiện tại
+// Get the latest month/year with paid invoices, fallback to current month
 $latestMonth = $db->query('
     SELECT YEAR(paid_at) AS y, MONTH(paid_at) AS m
     FROM invoices
-    WHERE status = "Đã thanh toán" AND paid_at IS NOT NULL
+    WHERE status = "Paid" AND paid_at IS NOT NULL
     ORDER BY paid_at DESC LIMIT 1
 ')->fetch();
 $revYear  = $latestMonth ? $latestMonth['y'] : (int)date('Y');
 $revMonth = $latestMonth ? $latestMonth['m'] : (int)date('m');
 $revenue = (int)$db->query("
     SELECT COALESCE(SUM(total),0) FROM invoices
-    WHERE status = 'Đã thanh toán'
+    WHERE status = 'Paid'
       AND MONTH(paid_at) = {$revMonth}
       AND YEAR(paid_at)  = {$revYear}
 ")->fetchColumn();
@@ -29,7 +29,7 @@ $revenue = (int)$db->query("
 $roomTypes = $db->query('
     SELECT type,
            COUNT(*) AS total,
-           SUM(status = "Có khách") AS occupied
+           SUM(status = "Occupied") AS occupied
     FROM rooms GROUP BY type')->fetchAll();
 
 $recentBookings = $db->query('

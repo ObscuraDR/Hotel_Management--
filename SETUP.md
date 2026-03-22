@@ -143,6 +143,19 @@ hotel-management/
 
 ---
 
+## Deploy lên production (InfinityFree)
+
+1. Sửa `.env.production`:
+```env
+VITE_API_URL=https://luxehotel.infinityfreeapp.com/api
+```
+2. Build: `npm run build`
+3. Upload `dist/*` và `api/` lên `htdocs/` trên InfinityFree
+4. Import `luxehotel_full.sql` qua phpMyAdmin
+5. Truy cập `https://luxehotel.infinityfreeapp.com`
+
+---
+
 ## Xử lý lỗi thường gặp
 
 **Lỗi kết nối database**
@@ -151,15 +164,11 @@ SQLSTATE[HY000] [1045] Access denied for user 'root'@'localhost'
 ```
 → Kiểm tra lại `DB_USER` và `DB_PASS` trong `api/config/db.php`
 
----
-
 **Lỗi CORS khi gọi API**
 ```
 Access to fetch at 'http://localhost:8000' has been blocked by CORS policy
 ```
 → Đảm bảo PHP server đang chạy ở đúng port `8000` và Vite đang chạy ở port `5173`
-
----
 
 **Lỗi `php` không nhận diện được lệnh**
 ```

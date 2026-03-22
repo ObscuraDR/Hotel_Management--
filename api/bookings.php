@@ -30,7 +30,7 @@ if ($method === 'POST') {
         VALUES (?,?,?,?,?,?,?,?,?,?)');
     $code = 'BK-' . date('Y') . '-' . str_pad($db->query('SELECT COUNT(*)+1 FROM bookings')->fetchColumn(), 3, '0', STR_PAD_LEFT);
     $stmt->execute([$code, $d['customer_id'], $d['room_id'], $d['checkin'], $d['checkout'],
-                    $d['nights'], $d['amount'], $d['status'] ?? 'Đã đặt', $d['source'], $d['notes'] ?? null]);
+                    $d['nights'], $d['amount'], $d['status'] ?? 'Reserved', $d['source'], $d['notes'] ?? null]);
     json(['id' => $db->lastInsertId(), 'booking_code' => $code], 201);
 }
 
@@ -46,6 +46,6 @@ if ($method === 'PUT' && $id) {
 }
 
 if ($method === 'DELETE' && $id) {
-    $db->prepare('UPDATE bookings SET status="Hủy" WHERE id=?')->execute([$id]);
+    $db->prepare('UPDATE bookings SET status="Cancelled" WHERE id=?')->execute([$id]);
     json(['ok' => true]);
 }

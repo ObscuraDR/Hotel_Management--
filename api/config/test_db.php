@@ -18,7 +18,7 @@ header('Content-Type: text/html; charset=utf-8');
   </style>
 </head>
 <body>
-  <h2>🔌 Kiểm tra kết nối Database</h2>
+  <h2>🔌 Database Connection Test</h2>
 <?php
 try {
     $pdo = getDB();
@@ -26,18 +26,18 @@ try {
     $rooms  = $pdo->query("SELECT COUNT(*) AS total FROM rooms")->fetch();
     $accounts = $pdo->query("SELECT COUNT(*) AS total FROM accounts")->fetch();
     echo '<div class="ok">';
-    echo '<strong>✅ Kết nối database thành công!</strong>';
+    echo '<strong>✅ Database connection successful!</strong>';
     echo '</div>';
     echo '<table>';
     echo '<tr><td>Host</td><td>' . DB_HOST . '</td></tr>';
     echo '<tr><td>Database</td><td>' . DB_NAME . '</td></tr>';
-    echo '<tr><td>Số bảng</td><td>' . $tables['total'] . '</td></tr>';
-    echo '<tr><td>Số phòng</td><td>' . $rooms['total'] . '</td></tr>';
-    echo '<tr><td>Số tài khoản</td><td>' . $accounts['total'] . '</td></tr>';
+    echo '<tr><td>Tables</td><td>' . $tables['total'] . '</td></tr>';
+    echo '<tr><td>Rooms</td><td>' . $rooms['total'] . '</td></tr>';
+    echo '<tr><td>Accounts</td><td>' . $accounts['total'] . '</td></tr>';
     echo '</table>';
 } catch (PDOException $e) {
     echo '<div class="err">';
-    echo '<strong>❌ Kết nối thất bại!</strong><br><br>';
+    echo '<strong>❌ Connection failed!</strong><br><br>';
     echo $e->getMessage();
     echo '</div>';
 }

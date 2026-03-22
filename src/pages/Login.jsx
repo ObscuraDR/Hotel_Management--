@@ -1,14 +1,15 @@
 import { useState } from "react";
-import { Form, Input, Button, Checkbox, message } from "antd";
+import { Form, Input, Button, Checkbox, message, Typography } from "antd";
 import { UserOutlined, LockOutlined, EyeTwoTone, EyeInvisibleOutlined } from "@ant-design/icons";
 import { useNavigate, Link } from "react-router-dom";
 import { api } from "../utils/api";
 
+/** Matches `accounts` in luxehotel_seed.sql (demo passwords, plaintext). */
 const DEMO_ACCOUNTS = [
-  { email: "admin@luxehotel.com",   password: "admin123",   role: "Admin",   icon: "👑", color: "#ef4444" },
-  { email: "manager@luxehotel.com", password: "manager123", role: "Quản lý", icon: "🏢", color: "#6366f1" },
-  { email: "letan@luxehotel.com",   password: "letan123",   role: "Lễ tân",  icon: "🛎️", color: "#f59e0b" },
-  { email: "demo@hotel.com",        password: "123456",     role: "Demo",    icon: "🧪", color: "#10b981" },
+  { email: "admin@luxehotel.com",   password: "admin123",   role: "Admin",        icon: "👑", color: "#ef4444" },
+  { email: "manager@luxehotel.com", password: "manager123", role: "Manager",      icon: "🏢", color: "#6366f1" },
+  { email: "letan@luxehotel.com",   password: "letan123",   role: "Receptionist", icon: "🛎️", color: "#f59e0b" },
+  { email: "demo@hotel.com",        password: "123456",     role: "Receptionist", subtitle: "demo", icon: "🧪", color: "#10b981" },
 ];
 
 export default function Login() {
@@ -22,10 +23,10 @@ export default function Login() {
       const result = await api.login(values.email, values.password);
       const user = result.user;
       localStorage.setItem("user", JSON.stringify(user));
-      message.success(`Chào mừng ${user.name}!`);
+      message.success(`Welcome ${user.name}!`);
       navigate("/");
     } catch (e) {
-      message.error(e.message || "Email hoặc mật khẩu không đúng!");
+      message.error(e.message || "Invalid email or password!");
     } finally {
       setLoading(false);
     }
@@ -61,19 +62,19 @@ export default function Login() {
           </div>
           <div>
             <h2 className="text-3xl font-bold leading-tight mb-2">
-              Hệ thống quản lý<br />
-              <span style={{ color: "#f59e0b" }}>khách sạn thông minh</span>
+              Smart hotel<br />
+              <span style={{ color: "#f59e0b" }}>management system</span>
             </h2>
             <p className="text-white/55 text-sm leading-relaxed">
-              Quản lý toàn bộ hoạt động khách sạn từ một nơi duy nhất.
+              Manage all hotel operations from one place.
             </p>
           </div>
           <div className="space-y-2.5">
             {[
-              { icon: "🏨", text: "Quản lý phòng & sơ đồ tầng trực quan" },
-              { icon: "📅", text: "Lịch đặt phòng theo tuần & tháng" },
-              { icon: "📊", text: "Báo cáo doanh thu real-time" },
-              { icon: "👥", text: "Quản lý khách hàng & nhân viên" },
+              { icon: "🏨", text: "Room management & interactive floor map" },
+              { icon: "📅", text: "Weekly & monthly booking calendar" },
+              { icon: "📊", text: "Real-time revenue reports" },
+              { icon: "👥", text: "Customer & staff management" },
             ].map((f, i) => (
               <div key={i} className="flex items-center gap-3">
                 <div className="w-8 h-8 rounded-lg flex items-center justify-center text-sm flex-shrink-0"
@@ -88,7 +89,7 @@ export default function Login() {
 
         {/* Stats */}
         <div className="flex gap-6 relative z-10 pt-4 border-t border-white/10">
-          {[{ value: "120+", label: "Phòng" }, { value: "2,400+", label: "Khách/năm" }, { value: "98%", label: "Hài lòng" }].map((s, i) => (
+          {[{ value: "120+", label: "Rooms" }, { value: "2,400+", label: "Guests/year" }, { value: "98%", label: "Satisfaction" }].map((s, i) => (
             <div key={i}>
               <p className="text-xl font-bold" style={{ color: "#f59e0b" }}>{s.value}</p>
               <p className="text-white/45 text-xs mt-0.5">{s.label}</p>
@@ -112,14 +113,14 @@ export default function Login() {
 
             <div className="p-7">
               <div className="mb-5">
-                <h1 className="text-2xl font-bold text-gray-900">Đăng nhập</h1>
-                <p className="text-gray-400 mt-1 text-sm">Chào mừng trở lại! Vui lòng đăng nhập để tiếp tục.</p>
+                <h1 className="text-2xl font-bold text-gray-900">Sign In</h1>
+                <p className="text-gray-400 mt-1 text-sm">Welcome back! Please sign in to continue.</p>
               </div>
 
-              {/* Demo accounts — 2 cột gọn */}
+              {/* Demo accounts */}
               <div className="mb-5 rounded-2xl overflow-hidden" style={{ border: "1px solid #e5e7eb" }}>
                 <div className="px-3 py-2" style={{ background: "#f8fafc", borderBottom: "1px solid #e5e7eb" }}>
-                  <p className="text-xs font-semibold text-gray-400">🧪 DEMO — Click để điền tự động</p>
+                  <p className="text-xs font-semibold text-gray-400">🧪 DEMO — Click to auto-fill</p>
                 </div>
                 <div className="p-2 grid grid-cols-2 gap-1.5">
                   {DEMO_ACCOUNTS.map((acc) => (
@@ -136,7 +137,7 @@ export default function Login() {
                       <div className="min-w-0">
                         <span className="text-xs font-semibold px-1.5 py-0.5 rounded-full"
                           style={{ background: acc.color + "15", color: acc.color }}>
-                          {acc.role}
+                          {acc.role}{acc.subtitle ? ` · ${acc.subtitle}` : ""}
                         </span>
                       </div>
                     </button>
@@ -148,7 +149,7 @@ export default function Login() {
                 <Form.Item
                   name="email"
                   label={<span className="text-gray-600 font-medium text-sm">Email</span>}
-                  rules={[{ required: true, message: "Vui lòng nhập email!" }, { type: "email", message: "Email không hợp lệ!" }]}
+                  rules={[{ required: true, message: "Please enter your email!" }, { type: "email", message: "Invalid email!" }]}
                   style={{ marginBottom: 12 }}
                 >
                   <Input
@@ -160,8 +161,8 @@ export default function Login() {
 
                 <Form.Item
                   name="password"
-                  label={<span className="text-gray-600 font-medium text-sm">Mật khẩu</span>}
-                  rules={[{ required: true, message: "Vui lòng nhập mật khẩu!" }]}
+                  label={<span className="text-gray-600 font-medium text-sm">Password</span>}
+                  rules={[{ required: true, message: "Please enter your password!" }]}
                   style={{ marginBottom: 12 }}
                 >
                   <Input.Password
@@ -174,11 +175,15 @@ export default function Login() {
 
                 <div className="flex items-center justify-between mb-4">
                   <Form.Item name="remember" valuePropName="checked" noStyle>
-                    <Checkbox><span className="text-sm text-gray-500">Ghi nhớ đăng nhập</span></Checkbox>
+                    <Checkbox><span className="text-sm text-gray-500">Remember me</span></Checkbox>
                   </Form.Item>
-                  <Link to="/forgot-password" className="text-sm font-medium" style={{ color: "#6366f1" }}>
-                    Quên mật khẩu?
-                  </Link>
+                  <Typography.Link
+                    className="text-sm font-medium"
+                    style={{ color: "#6366f1" }}
+                    onClick={() => message.info("Password reset is not implemented yet. Contact an administrator or use a demo account above.")}
+                  >
+                    Forgot password?
+                  </Typography.Link>
                 </div>
 
                 <Form.Item style={{ marginBottom: 0 }}>
@@ -186,14 +191,14 @@ export default function Login() {
                     type="primary" htmlType="submit" block loading={loading}
                     style={{ height: 48, borderRadius: 12, background: "linear-gradient(135deg, #6366f1, #818cf8)", border: "none", fontSize: 15, fontWeight: 600, boxShadow: "0 4px 16px rgba(99,102,241,0.4)" }}
                   >
-                    {loading ? "Đang đăng nhập..." : "Đăng nhập"}
+                    {loading ? "Signing in..." : "Sign In"}
                   </Button>
                 </Form.Item>
               </Form>
 
               <p className="text-center text-gray-400 text-sm mt-4">
-                Chưa có tài khoản?{" "}
-                <Link to="/register" style={{ color: "#6366f1", fontWeight: 600 }}>Đăng ký ngay</Link>
+                Don't have an account?{" "}
+                <Link to="/register" style={{ color: "#6366f1", fontWeight: 600 }}>Register now</Link>
               </p>
 
               {/* Guest portal link */}
@@ -201,7 +206,7 @@ export default function Login() {
                 <Link to="/guest" className="flex items-center justify-center gap-2 w-full py-2.5 rounded-2xl no-underline transition-all hover:opacity-80"
                   style={{ background: "linear-gradient(135deg,#fffbeb,#fef3c7)", border: "1px solid #fde68a" }}>
                   <span className="text-lg">🏨</span>
-                  <span className="text-sm font-semibold text-amber-700">Bạn là khách hàng? Vào trang đặt phòng</span>
+                  <span className="text-sm font-semibold text-amber-700">Are you a guest? Go to booking portal</span>
                   <span className="text-amber-500">→</span>
                 </Link>
               </div>

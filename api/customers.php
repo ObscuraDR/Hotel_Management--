@@ -8,18 +8,18 @@ $db     = getDB();
 
 if ($method === 'GET') {
     $rows = $db->query('SELECT * FROM customers ORDER BY id')->fetchAll();
-    // Tính total_visits và total_spent từ bookings/invoices
+    // Calculate total_visits and total_spent from bookings/invoices
     foreach ($rows as &$c) {
         $stmt = $db->prepare('
             SELECT COUNT(b.id) AS visits, COALESCE(SUM(i.total),0) AS spent
             FROM bookings b
-            LEFT JOIN invoices i ON i.booking_id = b.id AND i.status = "Đã thanh toán"
-            WHERE b.customer_id = ? AND b.status != "Hủy"');
+            LEFT JOIN invoices i ON i.booking_id = b.id AND i.status = "Paid"
+            WHERE b.customer_id = ? AND b.status != "Cancelled"');
         $stmt->execute([$c['id']]);
         $stat = $stmt->fetch();
         $c['total_visits'] = (int)$stat['visits'];
         $c['total_spent']  = (int)$stat['spent'];
-        unset($c['password']); // không trả password ra ngoài
+        unset($c['password']); // do not return password
     }
     json($rows);
 }
@@ -31,7 +31,7 @@ if ($method === 'POST') {
         VALUES (?,?,?,?,?,?,?,?,?,?)');
     $stmt->execute([
         $d['name'], $d['email'], $d['password'] ?? null, $d['phone'],
-        $d['nationality'] ?? 'Việt Nam', $d['id_number'] ?? null, $d['dob'] ?? null,
+        $d['nationality'] ?? 'Vietnam', $d['id_number'] ?? null, $d['dob'] ?? null,
         'Bronze', 0, date('Y-m-d')
     ]);
     json(['id' => $db->lastInsertId()], 201);

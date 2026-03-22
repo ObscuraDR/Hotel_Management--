@@ -6,7 +6,7 @@ import {
   EnvironmentOutlined, PhoneOutlined, MailOutlined,
 } from "@ant-design/icons";
 
-// Ảnh Unsplash thực tế cho khách sạn
+// Real Unsplash photos for hotel
 const HERO_BG = "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=1600&q=80";
 
 const rooms = [
@@ -15,50 +15,50 @@ const rooms = [
     rating: 4.5, reviews: 128,
     color: "#6366f1",
     image: "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=600&q=80",
-    amenities: ["WiFi", "TV", "Điều hòa"],
+    amenities: ["WiFi", "TV", "Air Conditioning"],
   },
   {
     id: 2, name: "Deluxe Room", type: "Deluxe", price: 1200000, capacity: 2, size: "35m²",
     rating: 4.7, reviews: 96,
     color: "#f59e0b",
     image: "https://images.unsplash.com/photo-1618773928121-c32242e63f39?w=600&q=80",
-    amenities: ["WiFi", "TV", "Minibar", "Bồn tắm"],
+    amenities: ["WiFi", "TV", "Minibar", "Bathtub"],
   },
   {
     id: 3, name: "Suite Room", type: "Suite", price: 2500000, capacity: 4, size: "55m²",
     rating: 4.9, reviews: 64,
     color: "#10b981",
     image: "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=600&q=80",
-    amenities: ["WiFi", "TV", "Minibar", "Bồn tắm", "Phòng khách"],
+    amenities: ["WiFi", "TV", "Minibar", "Bathtub", "Living Room"],
   },
   {
     id: 4, name: "VIP Suite", type: "VIP", price: 5000000, capacity: 4, size: "80m²",
     rating: 5.0, reviews: 32,
     color: "#ef4444",
     image: "https://images.unsplash.com/photo-1590490360182-c33d57733427?w=600&q=80",
-    amenities: ["WiFi", "TV", "Minibar", "Bồn tắm", "Butler"],
+    amenities: ["WiFi", "TV", "Minibar", "Bathtub", "Butler"],
   },
 ];
 
 const gallery = [
-  { src: "https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=800&q=80", label: "Hồ bơi vô cực", span: 2 },
-  { src: "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=600&q=80", label: "Nhà hàng 5 sao" },
+  { src: "https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=800&q=80", label: "Infinity Pool", span: 2 },
+  { src: "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=600&q=80", label: "5-Star Restaurant" },
   { src: "https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=600&q=80", label: "Spa & Wellness" },
-  { src: "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=600&q=80", label: "Lobby sang trọng" },
-  { src: "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=600&q=80", label: "View thành phố" },
+  { src: "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=600&q=80", label: "Luxury Lobby" },
+  { src: "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=600&q=80", label: "City View" },
 ];
 
 const services = [
-  { icon: <WifiOutlined />, label: "WiFi miễn phí", desc: "Tốc độ cao toàn khách sạn", color: "#6366f1", bg: "#eef2ff" },
-  { icon: <CoffeeOutlined />, label: "Bữa sáng", desc: "Buffet sáng phong phú", color: "#f59e0b", bg: "#fffbeb" },
-  { icon: <CarOutlined />, label: "Đưa đón sân bay", desc: "24/7 theo yêu cầu", color: "#10b981", bg: "#ecfdf5" },
-  { icon: <SafetyOutlined />, label: "An ninh 24/7", desc: "Bảo vệ xuyên suốt", color: "#ef4444", bg: "#fef2f2" },
+  { icon: <WifiOutlined />, label: "Free WiFi", desc: "High-speed throughout the hotel", color: "#6366f1", bg: "#eef2ff" },
+  { icon: <CoffeeOutlined />, label: "Breakfast", desc: "Rich breakfast buffet", color: "#f59e0b", bg: "#fffbeb" },
+  { icon: <CarOutlined />, label: "Airport Transfer", desc: "24/7 on request", color: "#10b981", bg: "#ecfdf5" },
+  { icon: <SafetyOutlined />, label: "24/7 Security", desc: "Round-the-clock protection", color: "#ef4444", bg: "#fef2f2" },
 ];
 
 const reviews = [
-  { name: "Trần Thị Mai", avatar: "https://i.pravatar.cc/48?img=47", rating: 5, comment: "Phòng rất sạch sẽ, nhân viên thân thiện. Sẽ quay lại lần sau!", date: "10/03/2025", tier: "Gold" },
+  { name: "Tran Thi Mai", avatar: "https://i.pravatar.cc/48?img=47", rating: 5, comment: "Very clean room, friendly staff. Will come back next time!", date: "10/03/2025", tier: "Gold" },
   { name: "John Smith", avatar: "https://i.pravatar.cc/48?img=11", rating: 5, comment: "Excellent service and beautiful rooms. Highly recommended!", date: "08/03/2025", tier: "Platinum" },
-  { name: "Lê Văn Hùng", avatar: "https://i.pravatar.cc/48?img=33", rating: 4, comment: "Vị trí đẹp, tiện nghi đầy đủ. Giá cả hợp lý.", date: "05/03/2025", tier: "Silver" },
+  { name: "Le Van Hung", avatar: "https://i.pravatar.cc/48?img=33", rating: 4, comment: "Great location, full amenities. Reasonable price.", date: "05/03/2025", tier: "Silver" },
 ];
 
 export default function GuestHome() {
@@ -80,35 +80,35 @@ export default function GuestHome() {
         {/* Floating badge */}
         <div style={{ position: "absolute", top: 32, right: 40, background: "rgba(255,255,255,0.12)", backdropFilter: "blur(12px)", border: "1px solid rgba(255,255,255,0.2)", borderRadius: 14, padding: "10px 18px", display: "flex", alignItems: "center", gap: 8 }}>
           <StarFilled style={{ color: "#f59e0b" }} />
-          <span style={{ color: "#fff", fontSize: 13, fontWeight: 600 }}>Khách sạn 5 sao — TP.HCM</span>
+          <span style={{ color: "#fff", fontSize: 13, fontWeight: 600 }}>5-star hotel — Ho Chi Minh City</span>
         </div>
 
         <div style={{ position: "relative", zIndex: 1, maxWidth: 1200, margin: "0 auto", padding: "80px 24px", width: "100%" }}>
           <div style={{ maxWidth: 640 }}>
             <div style={{ display: "inline-flex", alignItems: "center", gap: 6, background: "rgba(245,158,11,0.2)", border: "1px solid rgba(245,158,11,0.4)", borderRadius: 20, padding: "5px 14px", marginBottom: 20 }}>
-              <span style={{ color: "#fbbf24", fontSize: 12, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase" }}>Chào mừng đến LuxeHotel</span>
+              <span style={{ color: "#fbbf24", fontSize: 12, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase" }}>Welcome to LuxeHotel</span>
             </div>
             <h1 style={{ color: "#fff", fontSize: 52, fontWeight: 900, lineHeight: 1.15, margin: "0 0 20px", letterSpacing: -1 }}>
-              Trải nghiệm lưu trú<br />
-              <span style={{ color: "#f59e0b" }}>đẳng cấp 5 sao</span>
+              A stay<br />
+              <span style={{ color: "#f59e0b" }}>worthy of five stars</span>
             </h1>
             <p style={{ color: "rgba(255,255,255,0.65)", fontSize: 17, lineHeight: 1.7, margin: "0 0 36px" }}>
-              Tận hưởng không gian sang trọng, dịch vụ tận tâm và vị trí đắc địa ngay trung tâm thành phố. Mỗi khoảnh khắc tại LuxeHotel là một kỷ niệm đáng nhớ.
+              Elegant spaces, thoughtful service, and a prime downtown location. Every moment at LuxeHotel is one to remember.
             </p>
             <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
               <Button size="large" icon={<CalendarOutlined />} onClick={() => navigate("/guest/rooms")}
                 style={{ height: 52, borderRadius: 14, background: "linear-gradient(135deg,#f59e0b,#d97706)", border: "none", color: "#fff", fontWeight: 700, fontSize: 15, paddingInline: 28, boxShadow: "0 8px 24px rgba(245,158,11,0.4)" }}>
-                Đặt phòng ngay
+                Book now
               </Button>
               <Button size="large" onClick={() => navigate("/guest/rooms")}
                 style={{ height: 52, borderRadius: 14, background: "rgba(255,255,255,0.1)", border: "1px solid rgba(255,255,255,0.3)", color: "#fff", fontWeight: 600, fontSize: 15, paddingInline: 28, backdropFilter: "blur(8px)" }}>
-                Khám phá phòng
+                Explore rooms
               </Button>
             </div>
 
             {/* Stats */}
             <div style={{ display: "flex", gap: 40, marginTop: 52, paddingTop: 32, borderTop: "1px solid rgba(255,255,255,0.12)" }}>
-              {[{ value: "120+", label: "Phòng sang trọng" }, { value: "2,400+", label: "Khách hài lòng/năm" }, { value: "4.9★", label: "Đánh giá trung bình" }].map((s) => (
+              {[{ value: "120+", label: "Luxury rooms" }, { value: "2,400+", label: "Happy guests / year" }, { value: "4.9★", label: "Average rating" }].map((s) => (
                 <div key={s.label}>
                   <p style={{ color: "#f59e0b", fontWeight: 900, fontSize: 26, margin: 0, lineHeight: 1 }}>{s.value}</p>
                   <p style={{ color: "rgba(255,255,255,0.45)", fontSize: 12, margin: "4px 0 0" }}>{s.label}</p>
@@ -145,13 +145,13 @@ export default function GuestHome() {
       <section style={{ maxWidth: 1200, margin: "0 auto", padding: "72px 24px" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: 40 }}>
           <div>
-            <p style={{ color: "#f59e0b", fontWeight: 700, fontSize: 12, letterSpacing: 2, textTransform: "uppercase", margin: "0 0 8px" }}>Lựa chọn của chúng tôi</p>
-            <h2 style={{ fontSize: 34, fontWeight: 900, color: "#1e293b", margin: 0, letterSpacing: -0.5 }}>Phòng nổi bật</h2>
-            <p style={{ color: "#94a3b8", fontSize: 15, margin: "8px 0 0" }}>Lựa chọn phù hợp cho mọi nhu cầu và ngân sách</p>
+            <p style={{ color: "#f59e0b", fontWeight: 700, fontSize: 12, letterSpacing: 2, textTransform: "uppercase", margin: "0 0 8px" }}>Our picks</p>
+            <h2 style={{ fontSize: 34, fontWeight: 900, color: "#1e293b", margin: 0, letterSpacing: -0.5 }}>Featured rooms</h2>
+            <p style={{ color: "#94a3b8", fontSize: 15, margin: "8px 0 0" }}>Something for every need and budget</p>
           </div>
           <Button onClick={() => navigate("/guest/rooms")}
             style={{ borderRadius: 10, height: 40, fontWeight: 600, border: "1px solid #e2e8f0", color: "#475569" }}>
-            Xem tất cả →
+            View all →
           </Button>
         </div>
 
@@ -173,7 +173,7 @@ export default function GuestHome() {
                 </span>
                 <div style={{ position: "absolute", bottom: 14, left: 14 }}>
                   <p style={{ color: "#fff", fontWeight: 800, fontSize: 18, margin: 0, textShadow: "0 1px 4px rgba(0,0,0,0.5)" }}>{room.name}</p>
-                  <p style={{ color: "rgba(255,255,255,0.8)", fontSize: 12, margin: "2px 0 0" }}>{room.size} • {room.capacity} người</p>
+                  <p style={{ color: "rgba(255,255,255,0.8)", fontSize: 12, margin: "2px 0 0" }}>{room.size} • {room.capacity} guests</p>
                 </div>
               </div>
 
@@ -190,11 +190,11 @@ export default function GuestHome() {
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                   <div>
                     <span style={{ fontSize: 20, fontWeight: 800, color: room.color }}>{room.price.toLocaleString("vi-VN")}₫</span>
-                    <span style={{ fontSize: 12, color: "#94a3b8" }}>/đêm</span>
+                    <span style={{ fontSize: 12, color: "#94a3b8" }}>/night</span>
                   </div>
                   <Button type="primary" size="small" onClick={() => navigate("/guest/rooms")}
                     style={{ background: room.color, border: "none", borderRadius: 10, fontWeight: 600, height: 34, paddingInline: 16 }}>
-                    Đặt ngay
+                    Book now
                   </Button>
                 </div>
               </div>
@@ -207,9 +207,9 @@ export default function GuestHome() {
       <section style={{ background: "#fff", padding: "72px 0" }}>
         <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 24px" }}>
           <div style={{ textAlign: "center", marginBottom: 40 }}>
-            <p style={{ color: "#f59e0b", fontWeight: 700, fontSize: 12, letterSpacing: 2, textTransform: "uppercase", margin: "0 0 8px" }}>Không gian sống</p>
-            <h2 style={{ fontSize: 34, fontWeight: 900, color: "#1e293b", margin: 0 }}>Khám phá LuxeHotel</h2>
-            <p style={{ color: "#94a3b8", fontSize: 15, margin: "8px 0 0" }}>Từng góc nhỏ đều được thiết kế để mang lại trải nghiệm tốt nhất</p>
+            <p style={{ color: "#f59e0b", fontWeight: 700, fontSize: 12, letterSpacing: 2, textTransform: "uppercase", margin: "0 0 8px" }}>Living spaces</p>
+            <h2 style={{ fontSize: 34, fontWeight: 900, color: "#1e293b", margin: 0 }}>Discover LuxeHotel</h2>
+            <p style={{ color: "#94a3b8", fontSize: 15, margin: "8px 0 0" }}>Every corner is designed for the best possible stay</p>
           </div>
 
           <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gridTemplateRows: "200px 200px", gap: 12 }}>
@@ -238,9 +238,9 @@ export default function GuestHome() {
       <section style={{ background: "linear-gradient(135deg, #f8fafc, #eef2ff)", padding: "72px 0" }}>
         <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 24px" }}>
           <div style={{ textAlign: "center", marginBottom: 48 }}>
-            <p style={{ color: "#f59e0b", fontWeight: 700, fontSize: 12, letterSpacing: 2, textTransform: "uppercase", margin: "0 0 8px" }}>Đánh giá thực tế</p>
-            <h2 style={{ fontSize: 34, fontWeight: 900, color: "#1e293b", margin: 0 }}>Khách hàng nói gì?</h2>
-            <p style={{ color: "#94a3b8", fontSize: 15, margin: "8px 0 0" }}>Hơn 2,400 đánh giá từ khách hàng thực tế</p>
+            <p style={{ color: "#f59e0b", fontWeight: 700, fontSize: 12, letterSpacing: 2, textTransform: "uppercase", margin: "0 0 8px" }}>Real reviews</p>
+            <h2 style={{ fontSize: 34, fontWeight: 900, color: "#1e293b", margin: 0 }}>What our guests say</h2>
+            <p style={{ color: "#94a3b8", fontSize: 15, margin: "8px 0 0" }}>Over 2,400 reviews from real guests</p>
           </div>
 
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 24 }}>
@@ -268,14 +268,14 @@ export default function GuestHome() {
       <section style={{ background: "#fff", padding: "56px 0" }}>
         <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 24px" }}>
           <div style={{ textAlign: "center", marginBottom: 36 }}>
-            <p style={{ color: "#f59e0b", fontWeight: 700, fontSize: 12, letterSpacing: 2, textTransform: "uppercase", margin: "0 0 8px" }}>Sự kiện & Thông báo</p>
-            <h2 style={{ fontSize: 32, fontWeight: 900, color: "#1e293b", margin: 0 }}>Hoạt động nổi bật</h2>
+            <p style={{ color: "#f59e0b", fontWeight: 700, fontSize: 12, letterSpacing: 2, textTransform: "uppercase", margin: "0 0 8px" }}>Events & news</p>
+            <h2 style={{ fontSize: 32, fontWeight: 900, color: "#1e293b", margin: 0 }}>Highlights</h2>
           </div>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 20 }}>
             {[
-              { emoji: "🎉", title: "Lễ hội ẩm thực tháng 4", desc: "Thưởng thức 50+ món ăn đặc sản từ khắp Việt Nam tại nhà hàng LuxeHotel.", date: "15 - 30/04/2025", color: "#f59e0b", bg: "#fffbeb" },
-              { emoji: "🎵", title: "Live Music Tối Thứ 6", desc: "Ban nhạc jazz sống động tại Sky Bar từ 20:00 mỗi tối thứ 6 hàng tuần.", date: "Mỗi thứ 6 hàng tuần", color: "#6366f1", bg: "#eef2ff" },
-              { emoji: "💪", title: "Yoga & Wellness Weekend", desc: "Chương trình yoga buổi sáng và liệu pháp spa ưu đãi 30% cuối tuần.", date: "Thứ 7 & Chủ nhật", color: "#10b981", bg: "#ecfdf5" },
+              { emoji: "🎉", title: "April food festival", desc: "Enjoy 50+ regional dishes at LuxeHotel’s restaurant.", date: "Apr 15–30, 2025", color: "#f59e0b", bg: "#fffbeb" },
+              { emoji: "🎵", title: "Friday live music", desc: "Live jazz at Sky Bar from 8:00 PM every Friday.", date: "Every Friday", color: "#6366f1", bg: "#eef2ff" },
+              { emoji: "💪", title: "Yoga & wellness weekend", desc: "Morning yoga and 30% off spa treatments on weekends.", date: "Sat & Sun", color: "#10b981", bg: "#ecfdf5" },
             ].map((e) => (
               <div key={e.title} style={{ padding: 24, borderRadius: 20, background: e.bg, border: `1px solid ${e.color}22`, display: "flex", gap: 16, alignItems: "flex-start" }}>
                 <div style={{ fontSize: 36, flexShrink: 0 }}>{e.emoji}</div>
@@ -298,21 +298,21 @@ export default function GuestHome() {
             <div style={{ background: "linear-gradient(135deg,#0f172a,#1e3a5f)", borderRadius: 24, padding: 28, color: "#fff", display: "flex", flexDirection: "column", gap: 16 }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
                 <div>
-                  <p style={{ color: "rgba(255,255,255,0.5)", fontSize: 12, fontWeight: 600, letterSpacing: 1.5, textTransform: "uppercase", margin: "0 0 4px" }}>Thời tiết</p>
-                  <p style={{ fontWeight: 800, fontSize: 18, margin: 0 }}>TP. Hồ Chí Minh</p>
+                  <p style={{ color: "rgba(255,255,255,0.5)", fontSize: 12, fontWeight: 600, letterSpacing: 1.5, textTransform: "uppercase", margin: "0 0 4px" }}>Weather</p>
+                  <p style={{ fontWeight: 800, fontSize: 18, margin: 0 }}>Ho Chi Minh City</p>
                 </div>
                 <span style={{ fontSize: 48 }}>☀️</span>
               </div>
               <div>
                 <p style={{ fontSize: 56, fontWeight: 900, margin: 0, lineHeight: 1 }}>32<span style={{ fontSize: 28 }}>°C</span></p>
-                <p style={{ color: "rgba(255,255,255,0.6)", fontSize: 14, margin: "6px 0 0" }}>Nắng, ít mây</p>
+                <p style={{ color: "rgba(255,255,255,0.6)", fontSize: 14, margin: "6px 0 0" }}>Sunny, few clouds</p>
               </div>
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
                 {[
-                  { label: "Độ ẩm", value: "72%", icon: "💧" },
-                  { label: "Gió", value: "12 km/h", icon: "💨" },
-                  { label: "UV Index", value: "7 (Cao)", icon: "☀️" },
-                  { label: "Tầm nhìn", value: "10 km", icon: "👁️" },
+                  { label: "Humidity", value: "72%", icon: "💧" },
+                  { label: "Wind", value: "12 km/h", icon: "💨" },
+                  { label: "UV index", value: "7 (High)", icon: "☀️" },
+                  { label: "Visibility", value: "10 km", icon: "👁️" },
                 ].map((w) => (
                   <div key={w.label} style={{ background: "rgba(255,255,255,0.08)", borderRadius: 12, padding: "10px 12px" }}>
                     <p style={{ fontSize: 16, margin: "0 0 2px" }}>{w.icon}</p>
@@ -322,9 +322,9 @@ export default function GuestHome() {
                 ))}
               </div>
               <div style={{ borderTop: "1px solid rgba(255,255,255,0.1)", paddingTop: 14 }}>
-                <p style={{ color: "rgba(255,255,255,0.4)", fontSize: 11, margin: "0 0 8px" }}>Dự báo 3 ngày tới</p>
+                <p style={{ color: "rgba(255,255,255,0.4)", fontSize: 11, margin: "0 0 8px" }}>Next 3 days</p>
                 <div style={{ display: "flex", justifyContent: "space-between" }}>
-                  {[{ day: "T4", icon: "⛅", temp: "30°" }, { day: "T5", icon: "🌧️", temp: "28°" }, { day: "T6", icon: "☀️", temp: "33°" }].map((d) => (
+                  {[{ day: "Wed", icon: "⛅", temp: "30°" }, { day: "Thu", icon: "🌧️", temp: "28°" }, { day: "Fri", icon: "☀️", temp: "33°" }].map((d) => (
                     <div key={d.day} style={{ textAlign: "center" }}>
                       <p style={{ color: "rgba(255,255,255,0.5)", fontSize: 11, margin: "0 0 4px" }}>{d.day}</p>
                       <p style={{ fontSize: 20, margin: "0 0 2px" }}>{d.icon}</p>
@@ -339,14 +339,14 @@ export default function GuestHome() {
             <div style={{ borderRadius: 24, overflow: "hidden", boxShadow: "0 4px 24px rgba(0,0,0,0.1)", position: "relative", minHeight: 360 }}>
               <iframe
                 title="LuxeHotel Location"
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3919.4946681007846!2d106.69765!3d10.77609!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31752f38f9ed887b%3A0x14aded5703768989!2zUXXhuq1uIDEsIFRow6BuaCBwaOG7kSBI4buTIENow60gTWluaCwgVmnhu4d0IE5hbQ!5e0!3m2!1svi!2s!4v1710000000000"
+                src="https://www.google.com/maps?q=10.77609,106.69765&hl=en&z=15&output=embed"
                 width="100%" height="100%"
                 style={{ border: 0, display: "block", minHeight: 360 }}
                 allowFullScreen loading="lazy"
               />
               <div style={{ position: "absolute", top: 16, left: 16, background: "rgba(255,255,255,0.95)", backdropFilter: "blur(8px)", borderRadius: 14, padding: "10px 16px", boxShadow: "0 4px 16px rgba(0,0,0,0.12)" }}>
                 <p style={{ fontWeight: 800, color: "#1e293b", fontSize: 14, margin: "0 0 2px" }}>📍 LuxeHotel</p>
-                <p style={{ color: "#64748b", fontSize: 12, margin: 0 }}>123 Đường ABC, Quận 1, TP.HCM</p>
+                <p style={{ color: "#64748b", fontSize: 12, margin: 0 }}>123 ABC Street, District 1, Ho Chi Minh City</p>
               </div>
             </div>
           </div>
@@ -359,19 +359,19 @@ export default function GuestHome() {
           style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} />
         <div style={{ position: "absolute", inset: 0, background: "linear-gradient(135deg, rgba(15,23,42,0.88), rgba(30,58,95,0.82))" }} />
         <div style={{ position: "relative", zIndex: 1, maxWidth: 700, margin: "0 auto", padding: "80px 24px", textAlign: "center" }}>
-          <p style={{ color: "#f59e0b", fontWeight: 700, fontSize: 12, letterSpacing: 2, textTransform: "uppercase", margin: "0 0 12px" }}>Ưu đãi thành viên</p>
-          <h2 style={{ color: "#fff", fontSize: 40, fontWeight: 900, margin: "0 0 16px", letterSpacing: -0.5 }}>Sẵn sàng trải nghiệm?</h2>
+          <p style={{ color: "#f59e0b", fontWeight: 700, fontSize: 12, letterSpacing: 2, textTransform: "uppercase", margin: "0 0 12px" }}>Member perks</p>
+          <h2 style={{ color: "#fff", fontSize: 40, fontWeight: 900, margin: "0 0 16px", letterSpacing: -0.5 }}>Ready to stay with us?</h2>
           <p style={{ color: "rgba(255,255,255,0.6)", fontSize: 16, margin: "0 0 36px", lineHeight: 1.7 }}>
-            Đăng ký ngay để nhận ưu đãi thành viên, tích điểm đổi quà và giảm giá đến 20% cho mọi đặt phòng.
+            Join free for member offers, points you can redeem, and up to 20% off every booking.
           </p>
           <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
             <Button size="large" onClick={() => navigate("/guest/register")}
               style={{ height: 52, borderRadius: 14, background: "linear-gradient(135deg,#f59e0b,#d97706)", border: "none", color: "#fff", fontWeight: 700, fontSize: 15, paddingInline: 32, boxShadow: "0 8px 24px rgba(245,158,11,0.4)" }}>
-              Đăng ký miễn phí
+              Join free
             </Button>
             <Button size="large" onClick={() => navigate("/guest/rooms")}
               style={{ height: 52, borderRadius: 14, background: "rgba(255,255,255,0.1)", border: "1px solid rgba(255,255,255,0.3)", color: "#fff", fontWeight: 600, fontSize: 15, paddingInline: 28 }}>
-              Xem phòng
+              View rooms
             </Button>
           </div>
         </div>

@@ -2,15 +2,10 @@ import { useState } from "react";
 import { Form, Input, Button, message } from "antd";
 import { UserOutlined, LockOutlined, PhoneOutlined, MailOutlined } from "@ant-design/icons";
 import { useNavigate, Link, useLocation } from "react-router-dom";
-import { loginGuest, registerGuest } from "../utils/guestStore";
-
-const DEMO_GUESTS = [
-  { name: "Nguyễn Văn An",  email: "an@gmail.com",    password: "123456", tier: "Gold",     color: "#f59e0b", points: "1,200 điểm" },
-  { name: "Trần Thị Bình",  email: "binh@gmail.com",  password: "123456", tier: "Platinum", color: "#6366f1", points: "3,500 điểm" },
-  { name: "Lê Minh Cường",  email: "cuong@gmail.com", password: "123456", tier: "Silver",   color: "#9ca3af", points: "650 điểm" },
-];
+import { loginGuest, registerGuest, getGuestDemoAccountsForUi } from "../utils/guestStore";
 
 export default function GuestAuth() {
+  const demoAccounts = getGuestDemoAccountsForUi();
   const [loading, setLoading] = useState(false);
   const location = useLocation();
   const [tab, setTab] = useState(location.pathname === "/guest/register" ? "register" : "login");
@@ -24,7 +19,7 @@ export default function GuestAuth() {
     setTimeout(() => {
       const result = loginGuest(values.email, values.password);
       if (result.success) {
-        message.success(`Chào mừng ${result.guest.name}!`);
+        message.success(`Welcome ${result.guest.name}!`);
         navigate(from);
       } else {
         message.error(result.message);
@@ -36,9 +31,9 @@ export default function GuestAuth() {
   const handleRegister = (values) => {
     setLoading(true);
     setTimeout(() => {
-      const result = registerGuest({ name: values.name, email: values.email, password: values.password, phone: values.phone, nationality: "Việt Nam" });
+      const result = registerGuest({ name: values.name, email: values.email, password: values.password, phone: values.phone, nationality: "American" });
       if (result.success) {
-        message.success("Đăng ký thành công! Vui lòng đăng nhập.");
+        message.success("Registration successful! Please sign in.");
         setTab("login");
         loginForm.setFieldsValue({ email: values.email });
         regForm.resetFields();
@@ -76,19 +71,19 @@ export default function GuestAuth() {
           </div>
           <div>
             <h2 className="text-4xl font-bold leading-tight mb-3">
-              Đặt phòng dễ dàng,<br />
-              <span style={{ color: "#f59e0b" }}>trải nghiệm tuyệt vời</span>
+              Easy booking,<br />
+              <span style={{ color: "#f59e0b" }}>amazing experience</span>
             </h2>
             <p className="text-white/55 text-base leading-relaxed">
-              Tạo tài khoản để đặt phòng nhanh hơn, tích điểm thưởng và nhận ưu đãi độc quyền.
+              Create an account to book faster, earn reward points and get exclusive deals.
             </p>
           </div>
           <div className="space-y-3">
             {[
-              { icon: "🎁", text: "Tích điểm mỗi lần đặt phòng" },
-              { icon: "💰", text: "Ưu đãi thành viên lên đến 20%" },
-              { icon: "⚡", text: "Đặt phòng nhanh chỉ 2 phút" },
-              { icon: "📱", text: "Quản lý booking mọi lúc mọi nơi" },
+              { icon: "🎁", text: "Earn points with every booking" },
+              { icon: "💰", text: "Member discounts up to 20%" },
+              { icon: "⚡", text: "Book in just 2 minutes" },
+              { icon: "📱", text: "Manage bookings anytime, anywhere" },
             ].map((f, i) => (
               <div key={i} className="flex items-center gap-3">
                 <div className="w-9 h-9 rounded-xl flex items-center justify-center text-base flex-shrink-0"
@@ -114,12 +109,11 @@ export default function GuestAuth() {
           </Link>
 
           <div className="bg-white rounded-3xl shadow-2xl overflow-hidden">
-            {/* Top accent */}
             <div style={{ height: 4, background: "linear-gradient(to right, #f59e0b, #fbbf24, #6366f1)" }} />
 
             {/* Custom Tab */}
             <div className="flex p-2 gap-1 mx-6 mt-6 rounded-2xl" style={{ background: "#f3f4f6" }}>
-              {[{ key: "login", label: "Đăng nhập" }, { key: "register", label: "Đăng ký" }].map((t) => (
+              {[{ key: "login", label: "Sign In" }, { key: "register", label: "Register" }].map((t) => (
                 <button
                   key={t.key}
                   onClick={() => setTab(t.key)}
@@ -139,17 +133,18 @@ export default function GuestAuth() {
               {/* LOGIN */}
               {tab === "login" && (
                 <>
-                  <p className="text-gray-400 text-sm mb-5">Chào mừng trở lại! Vui lòng đăng nhập.</p>
+                  <p className="text-gray-400 text-sm mb-5">Welcome back! Please sign in.</p>
 
                   {/* Demo accounts */}
                   <div className="mb-5 rounded-2xl overflow-hidden" style={{ border: "1px solid #fde68a" }}>
                     <div className="px-4 py-2.5" style={{ background: "#fffbeb", borderBottom: "1px solid #fde68a" }}>
-                      <p className="text-xs font-semibold text-amber-600 tracking-wide">🧪 TÀI KHOẢN DEMO — Click để điền tự động</p>
+                      <p className="text-xs font-semibold text-amber-600 tracking-wide">🧪 DEMO ACCOUNTS — Click to auto-fill</p>
                     </div>
                     <div className="p-2 space-y-1">
-                      {DEMO_GUESTS.map((acc) => (
+                      {demoAccounts.map((acc) => (
                         <button
                           key={acc.email}
+                          type="button"
                           onClick={() => loginForm.setFieldsValue({ email: acc.email, password: acc.password })}
                           className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-left transition-all hover:scale-[1.01] active:scale-[0.99]"
                           style={{ background: "white", border: `1px solid ${acc.color}25` }}
@@ -160,25 +155,26 @@ export default function GuestAuth() {
                           </div>
                           <div className="flex-1 min-w-0">
                             <p className="text-sm font-semibold text-gray-700 leading-none">{acc.name}</p>
-                            <p className="text-xs mt-0.5 font-medium" style={{ color: acc.color }}>{acc.tier} • {acc.points}</p>
+                            <p className="text-xs text-gray-500 mt-0.5 truncate" title={acc.email}>{acc.email}</p>
+                            <p className="text-xs mt-0.5 font-medium" style={{ color: acc.color }}>{acc.tier} · {acc.points}</p>
                           </div>
                           <span className="text-xs text-gray-300 flex-shrink-0">↵</span>
                         </button>
                       ))}
                     </div>
-                    <p className="text-xs text-amber-400 pb-2.5 text-center">Mật khẩu tất cả: <strong className="text-amber-500">123456</strong></p>
+                    <p className="text-xs text-amber-400 pb-2.5 text-center">All passwords: <strong className="text-amber-500">123456</strong></p>
                   </div>
 
                   <Form form={loginForm} layout="vertical" onFinish={handleLogin} size="large">
                     <Form.Item name="email" label={<span className="text-gray-600 font-medium text-sm">Email</span>} rules={[{ required: true }, { type: "email" }]}>
                       <Input prefix={<MailOutlined style={{ color: "#d1d5db" }} />} placeholder="email@gmail.com" style={{ borderRadius: 12, height: 46 }} />
                     </Form.Item>
-                    <Form.Item name="password" label={<span className="text-gray-600 font-medium text-sm">Mật khẩu</span>} rules={[{ required: true }]}>
+                    <Form.Item name="password" label={<span className="text-gray-600 font-medium text-sm">Password</span>} rules={[{ required: true }]}>
                       <Input.Password prefix={<LockOutlined style={{ color: "#d1d5db" }} />} placeholder="••••••••" style={{ borderRadius: 12, height: 46 }} />
                     </Form.Item>
                     <Button type="primary" htmlType="submit" block loading={loading}
                       style={{ height: 50, borderRadius: 12, background: "linear-gradient(135deg, #f59e0b, #d97706)", border: "none", fontWeight: 600, fontSize: 15, boxShadow: "0 4px 16px rgba(245,158,11,0.4)" }}>
-                      Đăng nhập
+                      Sign In
                     </Button>
                   </Form>
                 </>
@@ -187,32 +183,32 @@ export default function GuestAuth() {
               {/* REGISTER */}
               {tab === "register" && (
                 <>
-                  <p className="text-gray-400 text-sm mb-5">Tạo tài khoản để đặt phòng và tích điểm thưởng.</p>
+                  <p className="text-gray-400 text-sm mb-5">Create an account to book and earn reward points.</p>
                   <Form form={regForm} layout="vertical" onFinish={handleRegister} size="large">
-                    <Form.Item name="name" label={<span className="text-gray-600 font-medium text-sm">Họ tên đầy đủ</span>} rules={[{ required: true, message: "Nhập họ tên!" }]}>
-                      <Input prefix={<UserOutlined style={{ color: "#d1d5db" }} />} placeholder="Nguyễn Văn An" style={{ borderRadius: 12, height: 46 }} />
+                    <Form.Item name="name" label={<span className="text-gray-600 font-medium text-sm">Full Name</span>} rules={[{ required: true, message: "Enter your name!" }]}>
+                      <Input prefix={<UserOutlined style={{ color: "#d1d5db" }} />} placeholder="John Smith" style={{ borderRadius: 12, height: 46 }} />
                     </Form.Item>
-                    <Form.Item name="phone" label={<span className="text-gray-600 font-medium text-sm">Số điện thoại</span>} rules={[{ required: true, message: "Nhập số điện thoại!" }]}>
+                    <Form.Item name="phone" label={<span className="text-gray-600 font-medium text-sm">Phone Number</span>} rules={[{ required: true, message: "Enter phone number!" }]}>
                       <Input prefix={<PhoneOutlined style={{ color: "#d1d5db" }} />} placeholder="0901 234 567" style={{ borderRadius: 12, height: 46 }} />
                     </Form.Item>
-                    <Form.Item name="email" label={<span className="text-gray-600 font-medium text-sm">Email</span>} rules={[{ required: true }, { type: "email", message: "Email không hợp lệ!" }]}>
+                    <Form.Item name="email" label={<span className="text-gray-600 font-medium text-sm">Email</span>} rules={[{ required: true }, { type: "email", message: "Invalid email!" }]}>
                       <Input prefix={<MailOutlined style={{ color: "#d1d5db" }} />} placeholder="email@gmail.com" style={{ borderRadius: 12, height: 46 }} />
                     </Form.Item>
-                    <Form.Item name="password" label={<span className="text-gray-600 font-medium text-sm">Mật khẩu</span>} rules={[{ required: true }, { min: 6, message: "Tối thiểu 6 ký tự!" }]}>
-                      <Input.Password prefix={<LockOutlined style={{ color: "#d1d5db" }} />} placeholder="Tối thiểu 6 ký tự" style={{ borderRadius: 12, height: 46 }} />
+                    <Form.Item name="password" label={<span className="text-gray-600 font-medium text-sm">Password</span>} rules={[{ required: true }, { min: 6, message: "Minimum 6 characters!" }]}>
+                      <Input.Password prefix={<LockOutlined style={{ color: "#d1d5db" }} />} placeholder="Minimum 6 characters" style={{ borderRadius: 12, height: 46 }} />
                     </Form.Item>
-                    <Form.Item name="confirm" label={<span className="text-gray-600 font-medium text-sm">Xác nhận mật khẩu</span>} dependencies={["password"]}
+                    <Form.Item name="confirm" label={<span className="text-gray-600 font-medium text-sm">Confirm Password</span>} dependencies={["password"]}
                       rules={[{ required: true }, ({ getFieldValue }) => ({
                         validator(_, value) {
                           if (!value || getFieldValue("password") === value) return Promise.resolve();
-                          return Promise.reject("Mật khẩu không khớp!");
+                          return Promise.reject("Passwords do not match!");
                         },
                       })]}>
-                      <Input.Password prefix={<LockOutlined style={{ color: "#d1d5db" }} />} placeholder="Nhập lại mật khẩu" style={{ borderRadius: 12, height: 46 }} />
+                      <Input.Password prefix={<LockOutlined style={{ color: "#d1d5db" }} />} placeholder="Re-enter password" style={{ borderRadius: 12, height: 46 }} />
                     </Form.Item>
                     <Button type="primary" htmlType="submit" block loading={loading}
                       style={{ height: 50, borderRadius: 12, background: "linear-gradient(135deg, #f59e0b, #d97706)", border: "none", fontWeight: 600, fontSize: 15, boxShadow: "0 4px 16px rgba(245,158,11,0.4)" }}>
-                      Tạo tài khoản
+                      Create Account
                     </Button>
                   </Form>
                 </>
@@ -220,8 +216,8 @@ export default function GuestAuth() {
 
               <div className="mt-5 pt-5 border-t border-gray-100 text-center">
                 <p className="text-sm text-gray-400">
-                  Bạn là nhân viên?{" "}
-                  <Link to="/login" style={{ color: "#6366f1", fontWeight: 600 }}>Đăng nhập hệ thống</Link>
+                  Are you a staff member?{" "}
+                  <Link to="/login" style={{ color: "#6366f1", fontWeight: 600 }}>Staff Login</Link>
                 </p>
               </div>
             </div>

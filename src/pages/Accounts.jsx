@@ -12,15 +12,15 @@ import { api } from "../utils/api";
 const { Option } = Select;
 
 const roleConfig = {
-  "Admin":       { color: "#ef4444", bg: "#fef2f2", tag: "red" },
-  "Quản lý":     { color: "#6366f1", bg: "#eef2ff", tag: "purple" },
-  "Lễ tân":      { color: "#f59e0b", bg: "#fffbeb", tag: "orange" },
-  "Buồng phòng": { color: "#10b981", bg: "#ecfdf5", tag: "green" },
+  "Admin":        { color: "#ef4444", bg: "#fef2f2", tag: "red" },
+  "Manager":      { color: "#6366f1", bg: "#eef2ff", tag: "purple" },
+  "Receptionist": { color: "#f59e0b", bg: "#fffbeb", tag: "orange" },
+  "Housekeeping": { color: "#10b981", bg: "#ecfdf5", tag: "green" },
 };
 
-const ROLES       = ["Admin", "Quản lý", "Lễ tân", "Buồng phòng"];
+const ROLES       = ["Admin", "Manager", "Receptionist", "Housekeeping"];
 const DEPARTMENTS = ["Management", "Front Office", "Housekeeping", "F&B", "Security"];
-const SHIFTS      = ["Ca sáng", "Ca chiều", "Ca đêm", "Hành chính"];
+const SHIFTS      = ["Morning", "Afternoon", "Night", "Office Hours"];
 
 export default function Accounts() {
   const [accounts,    setAccounts]    = useState([]);
@@ -30,7 +30,7 @@ export default function Accounts() {
   const [detailTarget,setDetailTarget]= useState(null);
   const [pwdModal,    setPwdModal]    = useState(false);
   const [pwdTarget,   setPwdTarget]   = useState(null);
-  const [filterRole,  setFilterRole]  = useState("Tất cả");
+  const [filterRole,  setFilterRole]  = useState("All");
   const [saving,      setSaving]      = useState(false);
   const [form]    = Form.useForm();
   const [pwdForm] = Form.useForm();
@@ -42,7 +42,7 @@ export default function Accounts() {
       setLoading(true);
       setAccounts(await api.getAccounts());
     } catch {
-      message.error("Không thể tải danh sách tài khoản!");
+      message.error("Failed to load accounts!");
     } finally {
       setLoading(false);
     }
@@ -64,47 +64,47 @@ export default function Accounts() {
         await api.updateAccount(editTarget.id, values);
         if (editTarget.id === currentUser.id)
           localStorage.setItem("user", JSON.stringify({ ...currentUser, ...values }));
-        message.success("Cập nhật tài khoản thành công!");
+        message.success("Account updated successfully!");
       } else {
-        if (!values.password) { message.error("Vui lòng nhập mật khẩu!"); return; }
+        if (!values.password) { message.error("Please enter a password!"); return; }
         await api.addAccount(values);
-        message.success("Thêm tài khoản thành công!");
+        message.success("Account added successfully!");
       }
       setModalOpen(false);
       refresh();
     } catch (e) {
-      message.error(e.message || "Thao tác thất bại!");
+      message.error(e.message || "Operation failed!");
     } finally {
       setSaving(false);
     }
   };
 
   const handleDelete = async (id) => {
-    if (id === currentUser.id) { message.error("Không thể xóa tài khoản đang đăng nhập!"); return; }
+    if (id === currentUser.id) { message.error("Cannot delete the currently logged-in account!"); return; }
     try {
       await api.deleteAccount(id);
-      message.success("Đã xóa tài khoản!");
+      message.success("Account deleted!");
       refresh();
-    } catch { message.error("Xóa thất bại!"); }
+    } catch { message.error("Delete failed!"); }
   };
 
   const handleChangePwd = async (values) => {
     try {
       setSaving(true);
       await api.updateAccount(pwdTarget.id, { ...pwdTarget, password: values.newPassword });
-      message.success("Đổi mật khẩu thành công!");
+      message.success("Password changed successfully!");
       setPwdModal(false);
       pwdForm.resetFields();
-    } catch { message.error("Đổi mật khẩu thất bại!"); }
+    } catch { message.error("Password change failed!"); }
     finally { setSaving(false); }
   };
 
-  const filtered   = filterRole === "Tất cả" ? accounts : accounts.filter((a) => a.role === filterRole);
+  const filtered   = filterRole === "All" ? accounts : accounts.filter((a) => a.role === filterRole);
   const roleCounts = ROLES.reduce((acc, r) => { acc[r] = accounts.filter((a) => a.role === r).length; return acc; }, {});
 
   const columns = [
     {
-      title: "Tài khoản", dataIndex: "name",
+      title: "Account", dataIndex: "name",
       render: (v, r) => (
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
           <Avatar style={{ background: roleConfig[r.role]?.color || "#6366f1", fontWeight: 700 }}>{v?.[0]}</Avatar>
@@ -115,33 +115,33 @@ export default function Accounts() {
         </div>
       ),
     },
-    { title: "Mã NV", dataIndex: "staff_id", render: (v) => <span style={{ fontFamily: "monospace", color: "#6366f1", fontWeight: 700 }}>{v}</span> },
+    { title: "Staff ID", dataIndex: "staff_id", render: (v) => <span style={{ fontFamily: "monospace", color: "#6366f1", fontWeight: 700 }}>{v}</span> },
     {
-      title: "Vai trò", dataIndex: "role",
+      title: "Role", dataIndex: "role",
       render: (v) => <Tag icon={<CrownOutlined />} color={roleConfig[v]?.tag || "default"}>{v}</Tag>,
     },
-    { title: "Bộ phận",     dataIndex: "department", render: (v) => <span style={{ color: "#475569", fontSize: 13 }}>{v || "—"}</span> },
-    { title: "Điện thoại",  dataIndex: "phone",      render: (v) => <span style={{ color: "#64748b", fontSize: 13 }}>{v || "—"}</span> },
-    { title: "Ngày vào làm",dataIndex: "join_date",  render: (v) => <span style={{ color: "#64748b", fontSize: 13 }}>{v || "—"}</span> },
+    { title: "Department", dataIndex: "department", render: (v) => <span style={{ color: "#475569", fontSize: 13 }}>{v || "—"}</span> },
+    { title: "Phone",      dataIndex: "phone",      render: (v) => <span style={{ color: "#64748b", fontSize: 13 }}>{v || "—"}</span> },
+    { title: "Start Date", dataIndex: "join_date",  render: (v) => <span style={{ color: "#64748b", fontSize: 13 }}>{v || "—"}</span> },
     {
-      title: "Trạng thái",
+      title: "Status",
       render: (_, r) => (
         <Badge
           status={r.id === currentUser.id ? "processing" : "success"}
-          text={r.id === currentUser.id ? "Đang online" : "Hoạt động"}
+          text={r.id === currentUser.id ? "Online" : "Active"}
         />
       ),
     },
     {
-      title: "Thao tác",
+      title: "Actions",
       render: (_, r) => (
         <Space>
           <Button size="small" icon={<EyeOutlined />}  onClick={() => setDetailTarget(r)} style={{ borderRadius: 8 }} />
           <Button size="small" icon={<EditOutlined />}  onClick={() => openEdit(r)}        style={{ borderRadius: 8 }} />
           <Button size="small" icon={<LockOutlined />}  onClick={() => { setPwdTarget(r); setPwdModal(true); }} style={{ borderRadius: 8 }} />
           <Popconfirm
-            title="Xóa tài khoản này?" description="Hành động này không thể hoàn tác."
-            onConfirm={() => handleDelete(r.id)} okText="Xóa" cancelText="Hủy" okButtonProps={{ danger: true }}
+            title="Delete this account?" description="This action cannot be undone."
+            onConfirm={() => handleDelete(r.id)} okText="Delete" cancelText="Cancel" okButtonProps={{ danger: true }}
           >
             <Button size="small" icon={<DeleteOutlined />} danger disabled={r.id === currentUser.id} style={{ borderRadius: 8 }} />
           </Popconfirm>
@@ -159,14 +159,14 @@ export default function Accounts() {
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", position: "relative" }}>
           <div>
             <div style={{ color: "#94a3b8", fontSize: 12, fontWeight: 600, letterSpacing: 2, textTransform: "uppercase", marginBottom: 6 }}>
-              <SafetyCertificateOutlined style={{ marginRight: 6 }} />Quản lý tài khoản
+              <SafetyCertificateOutlined style={{ marginRight: 6 }} />Account Management
             </div>
-            <h1 style={{ color: "#fff", fontSize: 24, fontWeight: 800, margin: 0 }}>Tài Khoản Hệ Thống</h1>
-            <p style={{ color: "rgba(255,255,255,0.5)", margin: "4px 0 0", fontSize: 13 }}>Tổng {accounts.length} tài khoản</p>
+            <h1 style={{ color: "#fff", fontSize: 24, fontWeight: 800, margin: 0 }}>System Accounts</h1>
+            <p style={{ color: "rgba(255,255,255,0.5)", margin: "4px 0 0", fontSize: 13 }}>Total {accounts.length} accounts</p>
           </div>
           <Button type="primary" icon={<PlusOutlined />} onClick={openAdd}
             style={{ background: "linear-gradient(135deg,#f59e0b,#d97706)", border: "none", borderRadius: 10, height: 38, fontWeight: 600 }}>
-            Thêm Tài Khoản
+            Add Account
           </Button>
         </div>
       </div>
@@ -175,7 +175,7 @@ export default function Accounts() {
       <Row gutter={[14, 14]} style={{ marginBottom: 20 }}>
         {ROLES.map((r) => (
           <Col xs={12} sm={6} key={r}>
-            <Card bordered={false} onClick={() => setFilterRole(filterRole === r ? "Tất cả" : r)}
+            <Card bordered={false} onClick={() => setFilterRole(filterRole === r ? "All" : r)}
               style={{ borderRadius: 14, cursor: "pointer", border: `2px solid ${filterRole === r ? roleConfig[r].color : "transparent"}`, boxShadow: "0 1px 10px rgba(0,0,0,0.06)", overflow: "hidden" }}
               styles={{ body: { padding: 0 } }}>
               <div style={{ padding: "16px 20px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
@@ -195,14 +195,14 @@ export default function Accounts() {
 
       {/* Filter tabs */}
       <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 20 }}>
-        {["Tất cả", ...ROLES].map((r) => (
+        {["All", ...ROLES].map((r) => (
           <button key={r} onClick={() => setFilterRole(r)} style={{
             padding: "7px 16px", borderRadius: 20, border: "none", cursor: "pointer", fontSize: 13, fontWeight: 600, transition: "all 0.2s",
             background: filterRole === r ? "#6366f1" : "#fff",
             color: filterRole === r ? "#fff" : "#64748b",
             boxShadow: filterRole === r ? "0 4px 12px rgba(99,102,241,0.3)" : "0 1px 4px rgba(0,0,0,0.06)",
           }}>
-            {r} {r !== "Tất cả" && `(${roleCounts[r] || 0})`}
+            {r} {r !== "All" && `(${roleCounts[r] || 0})`}
           </button>
         ))}
       </div>
@@ -219,54 +219,54 @@ export default function Accounts() {
 
       {/* Add/Edit Modal */}
       <Modal
-        title={editTarget ? "Chỉnh sửa tài khoản" : "Thêm tài khoản mới"}
+        title={editTarget ? "Edit Account" : "Add New Account"}
         open={modalOpen} onCancel={() => setModalOpen(false)}
-        onOk={() => form.submit()} okText={editTarget ? "Lưu" : "Thêm"} cancelText="Hủy"
+        onOk={() => form.submit()} okText={editTarget ? "Save" : "Add"} cancelText="Cancel"
         okButtonProps={{ style: { background: "#6366f1" }, loading: saving }} width={560}
       >
         <Form form={form} layout="vertical" onFinish={handleSave} style={{ marginTop: 16 }}>
           <Row gutter={12}>
             <Col span={12}>
-              <Form.Item name="name" label="Họ tên" rules={[{ required: true, message: "Nhập họ tên!" }]}>
+              <Form.Item name="name" label="Full Name" rules={[{ required: true, message: "Enter full name!" }]}>
                 <Input prefix={<UserOutlined />} style={{ borderRadius: 8 }} />
               </Form.Item>
             </Col>
             <Col span={12}>
-              <Form.Item name="phone" label="Điện thoại">
+              <Form.Item name="phone" label="Phone">
                 <Input style={{ borderRadius: 8 }} />
               </Form.Item>
             </Col>
           </Row>
-          <Form.Item name="email" label="Email" rules={[{ required: true }, { type: "email", message: "Email không hợp lệ!" }]}>
+          <Form.Item name="email" label="Email" rules={[{ required: true }, { type: "email", message: "Invalid email!" }]}>
             <Input style={{ borderRadius: 8 }} disabled={!!editTarget} />
           </Form.Item>
           {!editTarget && (
-            <Form.Item name="password" label="Mật khẩu" rules={[{ required: true }, { min: 6, message: "Tối thiểu 6 ký tự!" }]}>
+            <Form.Item name="password" label="Password" rules={[{ required: true }, { min: 6, message: "Minimum 6 characters!" }]}>
               <Input.Password prefix={<LockOutlined />} style={{ borderRadius: 8 }} />
             </Form.Item>
           )}
           <Row gutter={12}>
             <Col span={12}>
-              <Form.Item name="role" label="Vai trò" rules={[{ required: true, message: "Chọn vai trò!" }]}>
+              <Form.Item name="role" label="Role" rules={[{ required: true, message: "Select a role!" }]}>
                 <Select style={{ borderRadius: 8 }}>
                   {ROLES.map((r) => <Option key={r} value={r}>{r}</Option>)}
                 </Select>
               </Form.Item>
             </Col>
             <Col span={12}>
-              <Form.Item name="department" label="Bộ phận">
+              <Form.Item name="department" label="Department">
                 <Select style={{ borderRadius: 8 }}>
                   {DEPARTMENTS.map((d) => <Option key={d} value={d}>{d}</Option>)}
                 </Select>
               </Form.Item>
             </Col>
           </Row>
-          <Form.Item name="shift" label="Ca làm việc">
+          <Form.Item name="shift" label="Work Shift">
             <Select style={{ borderRadius: 8 }}>
               {SHIFTS.map((s) => <Option key={s} value={s}>{s}</Option>)}
             </Select>
           </Form.Item>
-          <Form.Item name="bio" label="Giới thiệu">
+          <Form.Item name="bio" label="Bio">
             <Input.TextArea rows={2} style={{ borderRadius: 8 }} />
           </Form.Item>
         </Form>
@@ -274,10 +274,10 @@ export default function Accounts() {
 
       {/* Detail Modal */}
       <Modal
-        title="Chi tiết tài khoản" open={!!detailTarget} onCancel={() => setDetailTarget(null)}
+        title="Account Details" open={!!detailTarget} onCancel={() => setDetailTarget(null)}
         footer={[
-          <Button key="edit" type="primary" onClick={() => { setDetailTarget(null); openEdit(detailTarget); }} style={{ background: "#6366f1" }}>Chỉnh sửa</Button>,
-          <Button key="close" onClick={() => setDetailTarget(null)}>Đóng</Button>,
+          <Button key="edit" type="primary" onClick={() => { setDetailTarget(null); openEdit(detailTarget); }} style={{ background: "#6366f1" }}>Edit</Button>,
+          <Button key="close" onClick={() => setDetailTarget(null)}>Close</Button>,
         ]}
       >
         {detailTarget && (
@@ -288,18 +288,18 @@ export default function Accounts() {
                 <p style={{ fontWeight: 800, fontSize: 18, color: "#1e293b", margin: 0 }}>{detailTarget.name}</p>
                 <div style={{ display: "flex", gap: 6, marginTop: 4 }}>
                   <Tag color={roleConfig[detailTarget.role]?.tag}>{detailTarget.role}</Tag>
-                  {detailTarget.id === currentUser.id && <Tag color="blue">Bạn</Tag>}
+                  {detailTarget.id === currentUser.id && <Tag color="blue">You</Tag>}
                 </div>
               </div>
             </div>
             <Row gutter={[10, 10]}>
               {[
-                { label: "Mã NV",        value: detailTarget.staff_id },
-                { label: "Email",        value: detailTarget.email },
-                { label: "Điện thoại",   value: detailTarget.phone    || "—" },
-                { label: "Bộ phận",      value: detailTarget.department || "—" },
-                { label: "Ca làm việc",  value: detailTarget.shift    || "—" },
-                { label: "Ngày vào làm", value: detailTarget.join_date || "—" },
+                { label: "Staff ID",   value: detailTarget.staff_id },
+                { label: "Email",      value: detailTarget.email },
+                { label: "Phone",      value: detailTarget.phone      || "—" },
+                { label: "Department", value: detailTarget.department  || "—" },
+                { label: "Work Shift", value: detailTarget.shift       || "—" },
+                { label: "Start Date", value: detailTarget.join_date   || "—" },
               ].map((item) => (
                 <Col span={12} key={item.label}>
                   <div style={{ padding: 12, background: "#f8fafc", borderRadius: 10 }}>
@@ -311,7 +311,7 @@ export default function Accounts() {
             </Row>
             {detailTarget.bio && (
               <div style={{ marginTop: 10, padding: 12, background: "#eef2ff", borderRadius: 10 }}>
-                <p style={{ fontSize: 11, color: "#6366f1", margin: "0 0 4px" }}>Giới thiệu</p>
+                <p style={{ fontSize: 11, color: "#6366f1", margin: "0 0 4px" }}>Bio</p>
                 <p style={{ fontSize: 13, color: "#4338ca", margin: 0 }}>{detailTarget.bio}</p>
               </div>
             )}
@@ -321,24 +321,24 @@ export default function Accounts() {
 
       {/* Change Password Modal */}
       <Modal
-        title={`Đổi mật khẩu — ${pwdTarget?.name}`}
+        title={`Change Password — ${pwdTarget?.name}`}
         open={pwdModal} onCancel={() => { setPwdModal(false); pwdForm.resetFields(); }}
-        onOk={() => pwdForm.submit()} okText="Xác nhận" cancelText="Hủy"
+        onOk={() => pwdForm.submit()} okText="Confirm" cancelText="Cancel"
         okButtonProps={{ style: { background: "#6366f1" }, loading: saving }}
       >
         <Form form={pwdForm} layout="vertical" onFinish={handleChangePwd} style={{ marginTop: 16 }}>
-          <Form.Item name="newPassword" label="Mật khẩu mới" rules={[{ required: true }, { min: 6, message: "Tối thiểu 6 ký tự!" }]}>
+          <Form.Item name="newPassword" label="New Password" rules={[{ required: true }, { min: 6, message: "Minimum 6 characters!" }]}>
             <Input.Password prefix={<LockOutlined />} style={{ borderRadius: 8 }} />
           </Form.Item>
           <Form.Item
-            name="confirmPassword" label="Xác nhận mật khẩu"
+            name="confirmPassword" label="Confirm Password"
             dependencies={["newPassword"]}
             rules={[
-              { required: true, message: "Xác nhận mật khẩu!" },
+              { required: true, message: "Confirm your password!" },
               ({ getFieldValue }) => ({
                 validator(_, value) {
                   if (!value || getFieldValue("newPassword") === value) return Promise.resolve();
-                  return Promise.reject("Mật khẩu không khớp!");
+                  return Promise.reject("Passwords do not match!");
                 },
               }),
             ]}

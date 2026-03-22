@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Card, Tag, Modal, Button, Select, Badge, Tooltip } from "antd";
 import {
   HomeOutlined, UserOutlined, ToolOutlined,
@@ -10,46 +11,45 @@ const { Option } = Select;
 const floors = [4, 3, 2, 1];
 
 const allRooms = [
-  // Tầng 1
-  { id: 101, floor: 1, type: "Standard", status: "Trống", price: 800000, capacity: 2, guest: null },
-  { id: 102, floor: 1, type: "Standard", status: "Có khách", price: 800000, capacity: 2, guest: "Nguyễn Văn An", checkin: "16/03", checkout: "18/03" },
-  { id: 103, floor: 1, type: "Standard", status: "Đang dọn", price: 800000, capacity: 2, guest: null },
-  { id: 104, floor: 1, type: "Standard", status: "Trống", price: 800000, capacity: 2, guest: null },
-  { id: 105, floor: 1, type: "Standard", status: "Có khách", price: 800000, capacity: 2, guest: "Trần Thị Mai", checkin: "15/03", checkout: "17/03" },
-  { id: 106, floor: 1, type: "Standard", status: "Bảo trì", price: 800000, capacity: 2, guest: null },
-  // Tầng 2
-  { id: 201, floor: 2, type: "Deluxe", status: "Trống", price: 1200000, capacity: 2, guest: null },
-  { id: 202, floor: 2, type: "Deluxe", status: "Có khách", price: 1200000, capacity: 3, guest: "Lê Minh Cường", checkin: "16/03", checkout: "20/03" },
-  { id: 203, floor: 2, type: "Deluxe", status: "Trống", price: 1200000, capacity: 2, guest: null },
-  { id: 204, floor: 2, type: "Deluxe", status: "Có khách", price: 1200000, capacity: 2, guest: "Phạm Thu Hà", checkin: "14/03", checkout: "16/03" },
-  { id: 205, floor: 2, type: "Deluxe", status: "Đang dọn", price: 1200000, capacity: 2, guest: null },
-  // Tầng 3
-  { id: 301, floor: 3, type: "Suite", status: "Trống", price: 2500000, capacity: 4, guest: null },
-  { id: 302, floor: 3, type: "Suite", status: "Có khách", price: 2500000, capacity: 4, guest: "Hoàng Văn Bình", checkin: "16/03", checkout: "22/03" },
-  { id: 303, floor: 3, type: "Suite", status: "Trống", price: 2500000, capacity: 4, guest: null },
-  { id: 304, floor: 3, type: "Suite", status: "Bảo trì", price: 2500000, capacity: 4, guest: null },
-  // Tầng 4
-  { id: 401, floor: 4, type: "VIP", status: "Trống", price: 5000000, capacity: 4, guest: null },
-  { id: 402, floor: 4, type: "VIP", status: "Có khách", price: 5000000, capacity: 4, guest: "Vũ Thị Lan", checkin: "17/03", checkout: "25/03" },
-  { id: 403, floor: 4, type: "VIP", status: "Trống", price: 5000000, capacity: 4, guest: null },
+  // Floor 1
+  { id: 101, floor: 1, type: "Standard", status: "Available",   price: 800000,  capacity: 2, guest: null },
+  { id: 102, floor: 1, type: "Standard", status: "Occupied",    price: 800000,  capacity: 2, guest: "John Smith",  checkin: "16/03", checkout: "18/03" },
+  { id: 103, floor: 1, type: "Standard", status: "Cleaning",    price: 800000,  capacity: 2, guest: null },
+  { id: 104, floor: 1, type: "Standard", status: "Available",   price: 800000,  capacity: 2, guest: null },
+  { id: 105, floor: 1, type: "Standard", status: "Occupied",    price: 800000,  capacity: 2, guest: "Sarah Johnson",   checkin: "15/03", checkout: "17/03" },
+  { id: 106, floor: 1, type: "Standard", status: "Maintenance", price: 800000,  capacity: 2, guest: null },
+  // Floor 2
+  { id: 201, floor: 2, type: "Deluxe",   status: "Available",   price: 1200000, capacity: 2, guest: null },
+  { id: 202, floor: 2, type: "Deluxe",   status: "Occupied",    price: 1200000, capacity: 3, guest: "Michael Brown",  checkin: "16/03", checkout: "20/03" },
+  { id: 203, floor: 2, type: "Deluxe",   status: "Available",   price: 1200000, capacity: 2, guest: null },
+  { id: 204, floor: 2, type: "Deluxe",   status: "Occupied",    price: 1200000, capacity: 2, guest: "Emma Wilson",    checkin: "14/03", checkout: "16/03" },
+  { id: 205, floor: 2, type: "Deluxe",   status: "Cleaning",    price: 1200000, capacity: 2, guest: null },
+  // Floor 3
+  { id: 301, floor: 3, type: "Suite",    status: "Available",   price: 2500000, capacity: 4, guest: null },
+  { id: 302, floor: 3, type: "Suite",    status: "Occupied",    price: 2500000, capacity: 4, guest: "David Lee", checkin: "16/03", checkout: "22/03" },
+  { id: 303, floor: 3, type: "Suite",    status: "Available",   price: 2500000, capacity: 4, guest: null },
+  { id: 304, floor: 3, type: "Suite",    status: "Maintenance", price: 2500000, capacity: 4, guest: null },
+  // Floor 4
+  { id: 401, floor: 4, type: "VIP",      status: "Available",   price: 5000000, capacity: 4, guest: null },
+  { id: 402, floor: 4, type: "VIP",      status: "Occupied",    price: 5000000, capacity: 4, guest: "Lisa Anderson",     checkin: "17/03", checkout: "25/03" },
+  { id: 403, floor: 4, type: "VIP",      status: "Available",   price: 5000000, capacity: 4, guest: null },
 ];
 
 const statusConfig = {
-  "Trống":     { color: "#10b981", bg: "#ecfdf5", border: "#6ee7b7", icon: <CheckCircleOutlined />, tagColor: "green" },
-  "Có khách":  { color: "#f59e0b", bg: "#fffbeb", border: "#fcd34d", icon: <UserOutlined />,        tagColor: "orange" },
-  "Đang dọn":  { color: "#6366f1", bg: "#eef2ff", border: "#a5b4fc", icon: <HomeOutlined />,        tagColor: "purple" },
-  "Bảo trì":   { color: "#ef4444", bg: "#fef2f2", border: "#fca5a5", icon: <ToolOutlined />,        tagColor: "red" },
+  "Available":   { color: "#10b981", bg: "#ecfdf5", border: "#6ee7b7", icon: <CheckCircleOutlined />, tagColor: "green" },
+  "Occupied":    { color: "#f59e0b", bg: "#fffbeb", border: "#fcd34d", icon: <UserOutlined />,        tagColor: "orange" },
+  "Cleaning":    { color: "#6366f1", bg: "#eef2ff", border: "#a5b4fc", icon: <HomeOutlined />,        tagColor: "purple" },
+  "Maintenance": { color: "#ef4444", bg: "#fef2f2", border: "#fca5a5", icon: <ToolOutlined />,        tagColor: "red" },
 };
 
 const typeColor = { Standard: "#6366f1", Deluxe: "#f59e0b", Suite: "#10b981", VIP: "#ef4444" };
 
-const legend = Object.entries(statusConfig).map(([label, cfg]) => ({ label, ...cfg }));
-
 export default function FloorMap() {
+  const navigate = useNavigate();
   const [rooms, setRooms] = useState(allRooms);
   const [selectedRoom, setSelectedRoom] = useState(null);
-  const [filterStatus, setFilterStatus] = useState("Tất cả");
-  const [filterFloor, setFilterFloor] = useState("Tất cả");
+  const [filterStatus, setFilterStatus] = useState("All");
+  const [filterFloor, setFilterFloor] = useState("All");
 
   const stats = Object.keys(statusConfig).map((s) => ({
     label: s,
@@ -64,8 +64,8 @@ export default function FloorMap() {
 
   const filteredRooms = (floor) =>
     rooms.filter((r) => {
-      const matchFloor = filterFloor === "Tất cả" || r.floor === Number(filterFloor);
-      const matchStatus = filterStatus === "Tất cả" || r.status === filterStatus;
+      const matchFloor = filterFloor === "All" || r.floor === Number(filterFloor);
+      const matchStatus = filterStatus === "All" || r.status === filterStatus;
       return r.floor === floor && matchFloor && matchStatus;
     });
 
@@ -76,17 +76,17 @@ export default function FloorMap() {
         <div style={{ position: "absolute", top: -40, right: -40, width: 180, height: 180, borderRadius: "50%", background: "rgba(99,102,241,0.1)" }} />
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12, position: "relative" }}>
           <div>
-            <div style={{ color: "#94a3b8", fontSize: 12, fontWeight: 600, letterSpacing: 2, textTransform: "uppercase", marginBottom: 6 }}>Sơ đồ phòng</div>
-            <h1 style={{ color: "#fff", fontSize: 24, fontWeight: 800, margin: 0 }}>Sơ Đồ Tầng</h1>
-            <p style={{ color: "rgba(255,255,255,0.5)", margin: "4px 0 0", fontSize: 13 }}>Tổng quan trực quan theo tầng</p>
+            <div style={{ color: "#94a3b8", fontSize: 12, fontWeight: 600, letterSpacing: 2, textTransform: "uppercase", marginBottom: 6 }}>Floor Map</div>
+            <h1 style={{ color: "#fff", fontSize: 24, fontWeight: 800, margin: 0 }}>Floor Map</h1>
+            <p style={{ color: "rgba(255,255,255,0.5)", margin: "4px 0 0", fontSize: 13 }}>Visual overview by floor</p>
           </div>
           <div style={{ display: "flex", gap: 8 }}>
             <Select value={filterFloor} onChange={setFilterFloor} style={{ width: 130, borderRadius: 8 }}>
-              <Option value="Tất cả">Tất cả tầng</Option>
-              {floors.map((f) => <Option key={f} value={f}>Tầng {f}</Option>)}
+              <Option value="All">All floors</Option>
+              {floors.map((f) => <Option key={f} value={f}>Floor {f}</Option>)}
             </Select>
             <Select value={filterStatus} onChange={setFilterStatus} style={{ width: 150, borderRadius: 8 }}>
-              <Option value="Tất cả">Tất cả trạng thái</Option>
+              <Option value="All">All statuses</Option>
               {Object.keys(statusConfig).map((s) => <Option key={s} value={s}>{s}</Option>)}
             </Select>
           </div>
@@ -96,7 +96,7 @@ export default function FloorMap() {
       {/* Stats */}
       <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 20 }}>
         {stats.map((s) => (
-          <div key={s.label} onClick={() => setFilterStatus(filterStatus === s.label ? "Tất cả" : s.label)}
+          <div key={s.label} onClick={() => setFilterStatus(filterStatus === s.label ? "All" : s.label)}
             style={{
               display: "flex", alignItems: "center", gap: 10, padding: "10px 18px", borderRadius: 14, cursor: "pointer",
               background: s.bg, border: `2px solid ${filterStatus === s.label ? s.color : s.border}`,
@@ -111,7 +111,7 @@ export default function FloorMap() {
         ))}
         <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 18px", borderRadius: 14, background: "#f8fafc", border: "2px solid #e2e8f0" }}>
           <div>
-            <p style={{ fontSize: 11, color: "#94a3b8", fontWeight: 600, margin: 0 }}>Tổng</p>
+            <p style={{ fontSize: 11, color: "#94a3b8", fontWeight: 600, margin: 0 }}>Total</p>
             <p style={{ fontSize: 20, fontWeight: 800, color: "#475569", margin: 0, lineHeight: 1 }}>{rooms.length}</p>
           </div>
         </div>
@@ -121,7 +121,7 @@ export default function FloorMap() {
       <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
         {floors.map((floor) => {
           const floorRooms = filteredRooms(floor);
-          if (filterFloor !== "Tất cả" && floor !== Number(filterFloor)) return null;
+          if (filterFloor !== "All" && floor !== Number(filterFloor)) return null;
           return (
             <Card
               key={floor}
@@ -133,18 +133,18 @@ export default function FloorMap() {
                     style={{ background: typeColor[floor === 1 ? "Standard" : floor === 2 ? "Deluxe" : floor === 3 ? "Suite" : "VIP"] }}>
                     {floor}
                   </div>
-                  <span>Tầng {floor}</span>
+                  <span>Floor {floor}</span>
                   <Tag color={floor === 1 ? "default" : floor === 2 ? "blue" : floor === 3 ? "purple" : "gold"}>
                     {floor === 1 ? "Standard" : floor === 2 ? "Deluxe" : floor === 3 ? "Suite" : "VIP"}
                   </Tag>
                   <span className="text-gray-400 text-sm font-normal">
-                    {rooms.filter((r) => r.floor === floor && r.status === "Trống").length} phòng trống
+                    {rooms.filter((r) => r.floor === floor && r.status === "Available").length} available
                   </span>
                 </div>
               }
             >
               {floorRooms.length === 0 ? (
-                <p className="text-gray-400 text-center py-4">Không có phòng phù hợp</p>
+                <p className="text-gray-400 text-center py-4">No matching rooms</p>
               ) : (
                 <div className="flex flex-wrap gap-3">
                   {floorRooms.map((room) => {
@@ -154,9 +154,9 @@ export default function FloorMap() {
                         key={room.id}
                         title={
                           <div className="text-xs">
-                            <p className="font-bold">Phòng {room.id}</p>
-                            <p>{room.type} • {room.capacity} người</p>
-                            <p>{room.price.toLocaleString("vi-VN")}₫/đêm</p>
+                            <p className="font-bold">Room {room.id}</p>
+                            <p>{room.type} • {room.capacity} guests</p>
+                            <p>{room.price.toLocaleString("vi-VN")}₫/night</p>
                             {room.guest && <p>👤 {room.guest}</p>}
                             {room.checkin && <p>📅 {room.checkin} → {room.checkout}</p>}
                           </div>
@@ -194,7 +194,7 @@ export default function FloorMap() {
               style={{ background: selectedRoom ? typeColor[selectedRoom.type] : "#6366f1" }}>
               {selectedRoom?.id}
             </div>
-            <span>Phòng {selectedRoom?.id} — {selectedRoom?.type}</span>
+            <span>Room {selectedRoom?.id} — {selectedRoom?.type}</span>
           </div>
         }
         open={!!selectedRoom}
@@ -204,22 +204,20 @@ export default function FloorMap() {
       >
         {selectedRoom && (
           <div className="space-y-4">
-            {/* Status Badge */}
             <div className="flex items-center justify-between p-3 rounded-xl"
               style={{ background: statusConfig[selectedRoom.status].bg }}>
-              <span className="font-medium">Trạng thái hiện tại</span>
+              <span className="font-medium">Current Status</span>
               <Tag color={statusConfig[selectedRoom.status].tagColor} icon={statusConfig[selectedRoom.status].icon}>
                 {selectedRoom.status}
               </Tag>
             </div>
 
-            {/* Info */}
             <div className="grid grid-cols-2 gap-3">
               {[
-                { label: "Loại phòng", value: selectedRoom.type },
-                { label: "Tầng", value: `Tầng ${selectedRoom.floor}` },
-                { label: "Sức chứa", value: `${selectedRoom.capacity} người` },
-                { label: "Giá/đêm", value: `${selectedRoom.price.toLocaleString("vi-VN")}₫` },
+                { label: "Room Type", value: selectedRoom.type },
+                { label: "Floor", value: `Floor ${selectedRoom.floor}` },
+                { label: "Capacity", value: `${selectedRoom.capacity} guests` },
+                { label: "Price/night", value: `${selectedRoom.price.toLocaleString("vi-VN")}₫` },
               ].map((item) => (
                 <div key={item.label} className="p-3 bg-gray-50 rounded-lg">
                   <p className="text-xs text-gray-400">{item.label}</p>
@@ -228,18 +226,16 @@ export default function FloorMap() {
               ))}
             </div>
 
-            {/* Guest Info */}
             {selectedRoom.guest && (
               <div className="p-3 bg-amber-50 rounded-xl border border-amber-200">
-                <p className="text-xs text-amber-500 mb-1">Khách đang ở</p>
+                <p className="text-xs text-amber-500 mb-1">Current Guest</p>
                 <p className="font-bold text-amber-700">{selectedRoom.guest}</p>
                 <p className="text-sm text-amber-600">📅 {selectedRoom.checkin} → {selectedRoom.checkout}</p>
               </div>
             )}
 
-            {/* Change Status */}
             <div>
-              <p className="text-sm text-gray-500 mb-2">Đổi trạng thái phòng</p>
+              <p className="text-sm text-gray-500 mb-2">Change Room Status</p>
               <div className="flex gap-2 flex-wrap">
                 {Object.keys(statusConfig).map((s) => (
                   <Button
@@ -256,8 +252,19 @@ export default function FloorMap() {
             </div>
 
             <div className="flex gap-2 pt-2">
-              <Button type="primary" block style={{ background: "#6366f1" }}>Đặt phòng này</Button>
-              <Button block onClick={() => setSelectedRoom(null)}>Đóng</Button>
+              <Button
+                type="primary"
+                block
+                style={{ background: "#6366f1" }}
+                onClick={() => {
+                  const id = selectedRoom.id;
+                  setSelectedRoom(null);
+                  navigate(`/bookings?room=${id}`);
+                }}
+              >
+                Book This Room
+              </Button>
+              <Button block onClick={() => setSelectedRoom(null)}>Close</Button>
             </div>
           </div>
         )}

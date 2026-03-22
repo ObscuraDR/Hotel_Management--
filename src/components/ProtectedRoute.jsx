@@ -9,8 +9,8 @@ function Forbidden() {
     <Result
       status="403"
       title="403"
-      subTitle="Bạn không có quyền truy cập trang này."
-      extra={<Button type="primary" onClick={() => navigate("/")}>Về Dashboard</Button>}
+      subTitle="You do not have permission to access this page."
+      extra={<Button type="primary" onClick={() => navigate("/")}>Back to Dashboard</Button>}
     />
   );
 }

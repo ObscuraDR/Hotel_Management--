@@ -13,10 +13,10 @@ if ($method === 'GET') {
 
 if ($method === 'POST') {
     $d = body();
-    // Kiểm tra email trùng
+    // Check for duplicate email
     $exists = $db->prepare('SELECT id FROM accounts WHERE email = ?');
     $exists->execute([$d['email']]);
-    if ($exists->fetch()) json(['error' => 'Email đã tồn tại!'], 409);
+    if ($exists->fetch()) json(['error' => 'Email already exists!'], 409);
 
     $count   = $db->query('SELECT COUNT(*) FROM accounts')->fetchColumn();
     $staffId = 'NV-' . str_pad($count + 1, 3, '0', STR_PAD_LEFT);

@@ -19,9 +19,9 @@ if ($method === 'GET') {
 }
 
 if ($method === 'PUT' && $id) {
-    // Thanh toán hóa đơn
+    // Pay invoice
     $d = body();
-    $db->prepare('UPDATE invoices SET status="Đã thanh toán", method=?, paid_at=NOW() WHERE id=?')
+    $db->prepare('UPDATE invoices SET status="Paid", method=?, paid_at=NOW() WHERE id=?')
        ->execute([$d['method'], $id]);
     json(['ok' => true]);
 }

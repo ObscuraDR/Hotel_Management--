@@ -4,13 +4,13 @@ export default function About() {
       <div style={{ maxWidth: 1200, margin: "0 auto" }}>
         {/* Header */}
         <div style={{ textAlign: "center", marginBottom: 64 }}>
-          <p style={{ color: "#6366f1", fontWeight: 700, fontSize: 12, letterSpacing: 2, textTransform: "uppercase", margin: "0 0 10px" }}>Về chúng tôi</p>
+          <p style={{ color: "#6366f1", fontWeight: 700, fontSize: 12, letterSpacing: 2, textTransform: "uppercase", margin: "0 0 10px" }}>About Us</p>
           <h1 style={{ fontSize: 42, fontWeight: 900, color: "#1e293b", margin: "0 0 16px", letterSpacing: -0.5 }}>
-            Hơn 10 năm kinh nghiệm<br />
-            <span style={{ color: "#f59e0b" }}>trong ngành khách sạn</span>
+            Over 10 years of experience<br />
+            <span style={{ color: "#f59e0b" }}>in the hotel industry</span>
           </h1>
           <p style={{ color: "#64748b", fontSize: 16, maxWidth: 560, margin: "0 auto", lineHeight: 1.8 }}>
-            LuxeHotel Management System được xây dựng bởi đội ngũ chuyên gia với sứ mệnh giúp các khách sạn vận hành hiệu quả hơn mỗi ngày.
+            LuxeHotel Management System is built by a team of experts with a mission to help hotels operate more efficiently every day.
           </p>
         </div>
 
@@ -18,17 +18,17 @@ export default function About() {
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 64, alignItems: "center", marginBottom: 80 }}>
           <div>
             <p style={{ color: "#64748b", fontSize: 15, lineHeight: 1.9, margin: "0 0 20px" }}>
-              Chúng tôi hiểu rõ những thách thức mà các khách sạn phải đối mặt mỗi ngày — từ quản lý phòng, nhân viên, đến hóa đơn và báo cáo. LuxeHotel ra đời để giải quyết tất cả trong một nền tảng duy nhất.
+              We understand the challenges that hotels face daily — from room management, staff, to invoices and reports. LuxeHotel was created to solve all of this in a single platform.
             </p>
             <p style={{ color: "#64748b", fontSize: 15, lineHeight: 1.9, margin: "0 0 36px" }}>
-              Sứ mệnh của chúng tôi là giúp các khách sạn — từ nhỏ đến lớn — vận hành hiệu quả hơn, tiết kiệm chi phí và mang lại trải nghiệm tốt nhất cho khách hàng.
+              Our mission is to help hotels — from small to large — operate more efficiently, save costs and deliver the best experience for guests.
             </p>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
               {[
-                { icon: "🏆", title: "Giải thưởng", desc: "Top 10 phần mềm quản lý khách sạn 2024" },
-                { icon: "🔒", title: "Bảo mật", desc: "Dữ liệu được mã hóa & bảo vệ tuyệt đối" },
-                { icon: "☁️", title: "Cloud-based", desc: "Truy cập mọi lúc, mọi nơi, mọi thiết bị" },
-                { icon: "🛠️", title: "Hỗ trợ 24/7", desc: "Đội ngũ kỹ thuật luôn sẵn sàng hỗ trợ" },
+                { icon: "🏆", title: "Awards", desc: "Top 10 hotel management software 2024" },
+                { icon: "🔒", title: "Security", desc: "Data encrypted & absolutely protected" },
+                { icon: "☁️", title: "Cloud-based", desc: "Access anytime, anywhere, any device" },
+                { icon: "🛠️", title: "24/7 Support", desc: "Technical team always ready to help" },
               ].map((item) => (
                 <div key={item.title} style={{ display: "flex", gap: 12, alignItems: "flex-start", padding: 16, borderRadius: 14, background: "#f8fafc", border: "1px solid #e2e8f0" }}>
                   <div style={{ width: 40, height: 40, borderRadius: 12, background: "#fff", border: "1px solid #e2e8f0", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18, flexShrink: 0 }}>{item.icon}</div>
@@ -46,9 +46,9 @@ export default function About() {
             </div>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 12 }}>
               {[
-                { value: "50+", label: "Thành viên", color: "#6366f1", bg: "#eef2ff" },
-                { value: "10+", label: "Năm kinh nghiệm", color: "#f59e0b", bg: "#fffbeb" },
-                { value: "500+", label: "Khách hàng", color: "#10b981", bg: "#ecfdf5" },
+                { value: "50+", label: "Members", color: "#6366f1", bg: "#eef2ff" },
+                { value: "10+", label: "Years Experience", color: "#f59e0b", bg: "#fffbeb" },
+                { value: "500+", label: "Clients", color: "#10b981", bg: "#ecfdf5" },
               ].map((s) => (
                 <div key={s.label} style={{ textAlign: "center", padding: "20px 12px", borderRadius: 16, background: s.bg, border: `1px solid ${s.color}20` }}>
                   <p style={{ color: s.color, fontWeight: 900, fontSize: 28, margin: "0 0 4px", lineHeight: 1 }}>{s.value}</p>
@@ -62,15 +62,15 @@ export default function About() {
         {/* Core values */}
         <div style={{ marginBottom: 80 }}>
           <div style={{ textAlign: "center", marginBottom: 40 }}>
-            <p style={{ color: "#6366f1", fontWeight: 700, fontSize: 12, letterSpacing: 2, textTransform: "uppercase", margin: "0 0 8px" }}>Giá trị cốt lõi</p>
-            <h2 style={{ fontSize: 32, fontWeight: 900, color: "#1e293b", margin: 0 }}>Những gì chúng tôi tin tưởng</h2>
+            <p style={{ color: "#6366f1", fontWeight: 700, fontSize: 12, letterSpacing: 2, textTransform: "uppercase", margin: "0 0 8px" }}>Core Values</p>
+            <h2 style={{ fontSize: 32, fontWeight: 900, color: "#1e293b", margin: 0 }}>What We Believe In</h2>
           </div>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 20 }}>
             {[
-              { icon: "🎯", color: "#6366f1", bg: "#eef2ff", title: "Tập trung khách hàng", desc: "Mọi quyết định đều xuất phát từ nhu cầu thực tế của khách hàng và người dùng cuối." },
-              { icon: "🚀", color: "#f59e0b", bg: "#fffbeb", title: "Đổi mới liên tục", desc: "Không ngừng cải tiến sản phẩm, cập nhật công nghệ mới nhất để mang lại giá trị tốt nhất." },
-              { icon: "🤝", color: "#10b981", bg: "#ecfdf5", title: "Minh bạch & Tin cậy", desc: "Cam kết minh bạch trong mọi hoạt động, xây dựng niềm tin lâu dài với đối tác." },
-              { icon: "⚡", color: "#ef4444", bg: "#fef2f2", title: "Hiệu suất cao", desc: "Hệ thống được tối ưu để xử lý hàng nghìn giao dịch mỗi giây với độ trễ tối thiểu." },
+              { icon: "🎯", color: "#6366f1", bg: "#eef2ff", title: "Customer Focus", desc: "Every decision starts from the real needs of customers and end users." },
+              { icon: "🚀", color: "#f59e0b", bg: "#fffbeb", title: "Continuous Innovation", desc: "Constantly improving products, updating with the latest technology to deliver the best value." },
+              { icon: "🤝", color: "#10b981", bg: "#ecfdf5", title: "Transparency & Trust", desc: "Committed to transparency in all activities, building long-term trust with partners." },
+              { icon: "⚡", color: "#ef4444", bg: "#fef2f2", title: "High Performance", desc: "System optimized to handle thousands of transactions per second with minimal latency." },
             ].map((v) => (
               <div key={v.title} style={{ background: "#fff", borderRadius: 20, padding: "28px 24px", boxShadow: "0 4px 16px rgba(0,0,0,0.06)", border: "1px solid #f1f5f9", textAlign: "center", transition: "transform 0.2s" }}
                 onMouseEnter={e => e.currentTarget.style.transform = "translateY(-4px)"}
@@ -86,15 +86,15 @@ export default function About() {
         {/* Team */}
         <div style={{ marginBottom: 80 }}>
           <div style={{ textAlign: "center", marginBottom: 40 }}>
-            <p style={{ color: "#6366f1", fontWeight: 700, fontSize: 12, letterSpacing: 2, textTransform: "uppercase", margin: "0 0 8px" }}>Đội ngũ lãnh đạo</p>
-            <h2 style={{ fontSize: 32, fontWeight: 900, color: "#1e293b", margin: 0 }}>Những người đứng sau LuxeHotel</h2>
+            <p style={{ color: "#6366f1", fontWeight: 700, fontSize: 12, letterSpacing: 2, textTransform: "uppercase", margin: "0 0 8px" }}>Leadership Team</p>
+            <h2 style={{ fontSize: 32, fontWeight: 900, color: "#1e293b", margin: 0 }}>The People Behind LuxeHotel</h2>
           </div>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 20 }}>
             {[
-              { name: "Nguyễn Minh Tuấn", role: "CEO & Co-founder", avatar: "T", color: "#6366f1", exp: "15 năm kinh nghiệm", desc: "Cựu GM tại Marriott International, chuyên gia chiến lược khách sạn." },
-              { name: "Trần Thị Phương", role: "CTO & Co-founder", avatar: "P", color: "#f59e0b", exp: "12 năm kinh nghiệm", desc: "Kỹ sư phần mềm cấp cao, từng làm việc tại Google và Microsoft." },
-              { name: "Lê Văn Khoa", role: "Head of Product", avatar: "K", color: "#10b981", exp: "10 năm kinh nghiệm", desc: "Chuyên gia UX/UI, thiết kế sản phẩm cho hơn 50 doanh nghiệp lớn." },
-              { name: "Hoàng Thị Nga", role: "Head of Customer Success", avatar: "N", color: "#8b5cf6", exp: "8 năm kinh nghiệm", desc: "Chuyên gia chăm sóc khách hàng, đảm bảo 98% tỷ lệ hài lòng." },
+              { name: "John Anderson", role: "CEO & Co-founder", avatar: "J", color: "#6366f1", exp: "15 years experience", desc: "Former GM at Marriott International, hotel strategy expert." },
+              { name: "Sarah Chen", role: "CTO & Co-founder", avatar: "S", color: "#f59e0b", exp: "12 years experience", desc: "Senior software engineer, previously worked at Google and Microsoft." },
+              { name: "Michael Davis", role: "Head of Product", avatar: "M", color: "#10b981", exp: "10 years experience", desc: "UX/UI expert, designed products for over 50 large enterprises." },
+              { name: "Emily Wilson", role: "Head of Customer Success", avatar: "E", color: "#8b5cf6", exp: "8 years experience", desc: "Customer service expert, ensuring 98% satisfaction rate." },
             ].map((m) => (
               <div key={m.name} style={{ background: "#fff", borderRadius: 20, padding: "28px 20px", boxShadow: "0 4px 16px rgba(0,0,0,0.06)", border: "1px solid #f1f5f9", textAlign: "center", transition: "transform 0.2s" }}
                 onMouseEnter={e => e.currentTarget.style.transform = "translateY(-4px)"}
@@ -112,15 +112,15 @@ export default function About() {
         {/* Partners */}
         <div style={{ background: "#f8fafc", borderRadius: 24, padding: "48px 40px", marginBottom: 80, border: "1px solid #e2e8f0" }}>
           <div style={{ textAlign: "center", marginBottom: 36 }}>
-            <p style={{ color: "#6366f1", fontWeight: 700, fontSize: 12, letterSpacing: 2, textTransform: "uppercase", margin: "0 0 8px" }}>Đối tác & Chứng nhận</p>
-            <h2 style={{ fontSize: 28, fontWeight: 800, color: "#1e293b", margin: 0 }}>Được công nhận bởi các tổ chức uy tín</h2>
+            <p style={{ color: "#6366f1", fontWeight: 700, fontSize: 12, letterSpacing: 2, textTransform: "uppercase", margin: "0 0 8px" }}>Partners & certifications</p>
+            <h2 style={{ fontSize: 28, fontWeight: 800, color: "#1e293b", margin: 0 }}>Recognized by trusted organizations</h2>
           </div>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 16, marginBottom: 32 }}>
             {[
-              { name: "ISO 27001", desc: "Chứng nhận bảo mật thông tin quốc tế", icon: "🔐", color: "#6366f1" },
-              { name: "PCI DSS", desc: "Tiêu chuẩn bảo mật dữ liệu thanh toán", icon: "💳", color: "#10b981" },
-              { name: "AWS Partner", desc: "Đối tác chính thức của Amazon Web Services", icon: "☁️", color: "#f59e0b" },
-              { name: "VNPT Partner", desc: "Đối tác chiến lược của VNPT Việt Nam", icon: "📡", color: "#ef4444" },
+              { name: "ISO 27001", desc: "International information security certification", icon: "🔐", color: "#6366f1" },
+              { name: "PCI DSS", desc: "Payment card data security standard", icon: "💳", color: "#10b981" },
+              { name: "AWS Partner", desc: "Official Amazon Web Services partner", icon: "☁️", color: "#f59e0b" },
+              { name: "VNPT Partner", desc: "Strategic partner of VNPT Vietnam", icon: "📡", color: "#ef4444" },
             ].map((p) => (
               <div key={p.name} style={{ background: "#fff", borderRadius: 16, padding: "20px 16px", textAlign: "center", border: "1px solid #e2e8f0" }}>
                 <div style={{ fontSize: 32, marginBottom: 10 }}>{p.icon}</div>
@@ -138,13 +138,13 @@ export default function About() {
 
         {/* Timeline */}
         <div style={{ background: "linear-gradient(135deg,#0f172a,#1e3a5f)", borderRadius: 24, padding: "48px 40px" }}>
-          <h2 style={{ color: "#fff", fontSize: 28, fontWeight: 800, textAlign: "center", margin: "0 0 40px" }}>Hành trình phát triển</h2>
+          <h2 style={{ color: "#fff", fontSize: 28, fontWeight: 800, textAlign: "center", margin: "0 0 40px" }}>Our journey</h2>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 24 }}>
             {[
-              { year: "2014", title: "Thành lập", desc: "Ra mắt phiên bản đầu tiên phục vụ 5 khách sạn" },
-              { year: "2017", title: "Mở rộng", desc: "Phát triển lên 100+ khách sạn trên toàn quốc" },
-              { year: "2021", title: "Cloud", desc: "Chuyển đổi hoàn toàn lên nền tảng đám mây" },
-              { year: "2024", title: "Top 10", desc: "Được vinh danh Top 10 phần mềm quản lý khách sạn" },
+              { year: "2014", title: "Founded", desc: "First release serving 5 hotels" },
+              { year: "2017", title: "Scale-up", desc: "Grew to 100+ hotels nationwide" },
+              { year: "2021", title: "Cloud", desc: "Full migration to the cloud" },
+              { year: "2024", title: "Top 10", desc: "Named a top 10 hotel management platform" },
             ].map((t, i) => (
               <div key={t.year} style={{ textAlign: "center", padding: "24px 16px", background: "rgba(255,255,255,0.06)", borderRadius: 16, border: "1px solid rgba(255,255,255,0.1)" }}>
                 <div style={{ width: 48, height: 48, borderRadius: "50%", background: "linear-gradient(135deg,#f59e0b,#d97706)", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 12px", fontWeight: 800, color: "#fff", fontSize: 13 }}>{i + 1}</div>

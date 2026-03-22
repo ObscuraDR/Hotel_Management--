@@ -21,7 +21,7 @@ export default function Customers() {
   const [modalOpen, setModalOpen] = useState(false);
   const [editCustomer, setEditCustomer] = useState(null);
   const [detailCustomer, setDetailCustomer] = useState(null);
-  const [filterTier, setFilterTier] = useState("Tất cả");
+  const [filterTier, setFilterTier] = useState("All");
   const [form] = Form.useForm();
 
   const fetchCustomers = async () => {
@@ -31,7 +31,7 @@ export default function Customers() {
       setCustomers(data);
       setDetailCustomer((prev) => prev ? data.find((c) => c.id === prev.id) ?? prev : null);
     } catch {
-      message.error("Không thể tải danh sách khách hàng!");
+      message.error("Failed to load customers!");
     } finally {
       setLoading(false);
     }
@@ -46,14 +46,13 @@ export default function Customers() {
     setModalOpen(true);
   };
 
-  const tiers = ["Tất cả", "Bronze", "Silver", "Gold", "Platinum"];
-  const filtered = filterTier === "Tất cả" ? customers : customers.filter((c) => c.tier === filterTier);
-
+  const tiers = ["All", "Bronze", "Silver", "Gold", "Platinum"];
+  const filtered = filterTier === "All" ? customers : customers.filter((c) => c.tier === filterTier);
   const tierCounts = tiers.slice(1).reduce((acc, t) => { acc[t] = customers.filter((c) => c.tier === t).length; return acc; }, {});
 
   const columns = [
     {
-      title: "Khách hàng", dataIndex: "name",
+      title: "Customer", dataIndex: "name",
       render: (v, r, i) => (
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
           <Avatar size={36} style={{ background: avatarColors[i % 7], fontWeight: 700, flexShrink: 0 }}>{v?.[0]}</Avatar>
@@ -64,12 +63,12 @@ export default function Customers() {
         </div>
       ),
     },
-    { title: "Điện thoại", dataIndex: "phone", render: (v) => <span style={{ color: "#64748b", fontSize: 13 }}>{v}</span> },
-    { title: "Quốc tịch", dataIndex: "nationality", render: (v) => <span style={{ color: "#64748b", fontSize: 13 }}>{v}</span> },
-    { title: "Số lần ở", dataIndex: "total_visits", render: (v) => <span style={{ fontWeight: 700, color: "#475569" }}>{v} lần</span> },
-    { title: "Tổng chi tiêu", dataIndex: "total_spent", render: (v) => <span style={{ fontWeight: 700, color: "#10b981", fontSize: 13 }}>{Number(v).toLocaleString("vi-VN")}₫</span> },
+    { title: "Phone", dataIndex: "phone", render: (v) => <span style={{ color: "#64748b", fontSize: 13 }}>{v}</span> },
+    { title: "Nationality", dataIndex: "nationality", render: (v) => <span style={{ color: "#64748b", fontSize: 13 }}>{v}</span> },
+    { title: "Total Stays", dataIndex: "total_visits", render: (v) => <span style={{ fontWeight: 700, color: "#475569" }}>{v} times</span> },
+    { title: "Total Spent", dataIndex: "total_spent", render: (v) => <span style={{ fontWeight: 700, color: "#10b981", fontSize: 13 }}>{Number(v).toLocaleString("vi-VN")}₫</span> },
     {
-      title: "Hạng", dataIndex: "tier",
+      title: "Tier", dataIndex: "tier",
       render: (v) => {
         const cfg = tierConfig[v] || tierConfig.Bronze;
         return (
@@ -79,13 +78,13 @@ export default function Customers() {
         );
       },
     },
-    { title: "Ngày tham gia", dataIndex: "join_date", render: (v) => <span style={{ color: "#94a3b8", fontSize: 12 }}>{v}</span> },
+    { title: "Join Date", dataIndex: "join_date", render: (v) => <span style={{ color: "#94a3b8", fontSize: 12 }}>{v}</span> },
     {
-      title: "Thao tác",
+      title: "Actions",
       render: (_, r) => (
         <Space>
           <Button size="small" icon={<EyeOutlined />} onClick={() => setDetailCustomer(r)} style={{ borderRadius: 8 }} />
-          <Popconfirm title="Sửa khách hàng?" description={`Chỉnh sửa thông tin của ${r.name}?`} onConfirm={() => openEdit(r)} okText="Sửa" cancelText="Hủy">
+          <Popconfirm title="Edit customer?" description={`Edit info for ${r.name}?`} onConfirm={() => openEdit(r)} okText="Edit" cancelText="Cancel">
             <Button size="small" icon={<EditOutlined />} style={{ borderRadius: 8 }} />
           </Popconfirm>
         </Space>
@@ -94,7 +93,7 @@ export default function Customers() {
   ];
 
   return (
-    <Spin spinning={loading} tip="Đang tải...">
+    <Spin spinning={loading} tip="Loading...">
     <div style={{ padding: 4 }}>
       {/* Page Header */}
       <div style={{ background: "linear-gradient(135deg, #0f172a 0%, #1e3a5f 100%)", borderRadius: 20, padding: "24px 32px", marginBottom: 24, position: "relative", overflow: "hidden" }}>
@@ -102,14 +101,14 @@ export default function Customers() {
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", position: "relative" }}>
           <div>
             <div style={{ color: "#94a3b8", fontSize: 12, fontWeight: 600, letterSpacing: 2, textTransform: "uppercase", marginBottom: 6 }}>
-              <UserOutlined style={{ marginRight: 6 }} />Quản lý khách hàng
+              <UserOutlined style={{ marginRight: 6 }} />Customer Management
             </div>
-            <h1 style={{ color: "#fff", fontSize: 24, fontWeight: 800, margin: 0 }}>Danh Sách Khách Hàng</h1>
-            <p style={{ color: "rgba(255,255,255,0.5)", margin: "4px 0 0", fontSize: 13 }}>Tổng {customers.length} khách hàng</p>
+            <h1 style={{ color: "#fff", fontSize: 24, fontWeight: 800, margin: 0 }}>Customer List</h1>
+            <p style={{ color: "rgba(255,255,255,0.5)", margin: "4px 0 0", fontSize: 13 }}>Total {customers.length} customers</p>
           </div>
           <Button icon={<PlusOutlined />} onClick={openAdd}
             style={{ background: "linear-gradient(135deg,#f59e0b,#d97706)", border: "none", color: "#fff", borderRadius: 10, height: 38, fontWeight: 600 }}>
-            Thêm Khách Hàng
+            Add Customer
           </Button>
         </div>
       </div>
@@ -118,7 +117,7 @@ export default function Customers() {
       <Row gutter={[14, 14]} style={{ marginBottom: 20 }}>
         {tiers.slice(1).map((t) => (
           <Col xs={12} sm={6} key={t}>
-            <Card bordered={false} onClick={() => setFilterTier(filterTier === t ? "Tất cả" : t)}
+            <Card bordered={false} onClick={() => setFilterTier(filterTier === t ? "All" : t)}
               style={{ borderRadius: 14, border: `2px solid ${filterTier === t ? tierConfig[t].color : "transparent"}`, boxShadow: "0 1px 10px rgba(0,0,0,0.06)", cursor: "pointer", overflow: "hidden" }}
               styles={{ body: { padding: 0 } }}>
               <div style={{ padding: "16px 20px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
@@ -152,50 +151,50 @@ export default function Customers() {
         <Table dataSource={filtered} columns={columns} pagination={{ pageSize: 8 }} size="middle" scroll={{ x: 900 }} />
       </Card>
 
-      {/* Add Modal */}
-      <Modal title={editCustomer ? "Sửa Khách Hàng" : "Thêm Khách Hàng"} open={modalOpen} onCancel={() => { setModalOpen(false); setEditCustomer(null); }} onOk={() => form.submit()} okText={editCustomer ? "Lưu" : "Thêm"} cancelText="Hủy" okButtonProps={{ style: { background: "#6366f1" }, loading: saving }}>
+      {/* Add/Edit Modal */}
+      <Modal title={editCustomer ? "Edit Customer" : "Add Customer"} open={modalOpen} onCancel={() => { setModalOpen(false); setEditCustomer(null); }} onOk={() => form.submit()} okText={editCustomer ? "Save" : "Add"} cancelText="Cancel" okButtonProps={{ style: { background: "#6366f1" }, loading: saving }}>
         <Form form={form} layout="vertical" onFinish={async (v) => {
           try {
             setSaving(true);
             if (editCustomer) {
               await api.updateCustomer(editCustomer.id, { ...v, tier: editCustomer.tier });
-              message.success("Cập nhật khách hàng thành công!");
+              message.success("Customer updated successfully!");
             } else {
               await api.addCustomer(v);
-              message.success("Thêm khách hàng thành công!");
+              message.success("Customer added successfully!");
             }
             setModalOpen(false); setEditCustomer(null); form.resetFields();
             fetchCustomers();
           } catch {
-            message.error("Thao tác thất bại!");
+            message.error("Operation failed!");
           } finally {
             setSaving(false);
           }
         }}>
           <Row gutter={12}>
-            <Col span={12}><Form.Item name="name" label="Họ tên" rules={[{ required: true }]}><Input style={{ borderRadius: 8 }} /></Form.Item></Col>
-            <Col span={12}><Form.Item name="phone" label="Điện thoại" rules={[{ required: true }]}><Input style={{ borderRadius: 8 }} /></Form.Item></Col>
+            <Col span={12}><Form.Item name="name" label="Full Name" rules={[{ required: true }]}><Input style={{ borderRadius: 8 }} /></Form.Item></Col>
+            <Col span={12}><Form.Item name="phone" label="Phone" rules={[{ required: true }]}><Input style={{ borderRadius: 8 }} /></Form.Item></Col>
           </Row>
           <Form.Item name="email" label="Email"><Input style={{ borderRadius: 8 }} /></Form.Item>
           <Row gutter={12}>
             <Col span={12}>
-              <Form.Item name="nationality" label="Quốc tịch">
-                <Select defaultValue="Việt Nam" style={{ borderRadius: 8 }}>
-                  <Option value="Việt Nam">Việt Nam</Option>
-                  <Option value="Mỹ">Mỹ</Option>
-                  <Option value="Nhật Bản">Nhật Bản</Option>
-                  <Option value="Hàn Quốc">Hàn Quốc</Option>
-                  <Option value="Khác">Khác</Option>
+              <Form.Item name="nationality" label="Nationality">
+                <Select defaultValue="American" style={{ borderRadius: 8 }}>
+                  <Option value="American">American</Option>
+                  <Option value="USA">USA</Option>
+                  <Option value="Japan">Japan</Option>
+                  <Option value="South Korea">South Korea</Option>
+                  <Option value="Other">Other</Option>
                 </Select>
               </Form.Item>
             </Col>
-            <Col span={12}><Form.Item name="id_number" label="CCCD/Passport"><Input style={{ borderRadius: 8 }} /></Form.Item></Col>
+            <Col span={12}><Form.Item name="id_number" label="ID/Passport"><Input style={{ borderRadius: 8 }} /></Form.Item></Col>
           </Row>
         </Form>
       </Modal>
 
       {/* Detail Modal */}
-      <Modal title="Hồ sơ khách hàng" open={!!detailCustomer} onCancel={() => setDetailCustomer(null)} footer={null}>
+      <Modal title="Customer Profile" open={!!detailCustomer} onCancel={() => setDetailCustomer(null)} footer={null}>
         {detailCustomer && (
           <div style={{ paddingTop: 8 }}>
             <div style={{ display: "flex", alignItems: "center", gap: 14, padding: 16, borderRadius: 14, background: (tierConfig[detailCustomer.tier] || tierConfig.Bronze).bg, marginBottom: 16 }}>
@@ -209,10 +208,10 @@ export default function Customers() {
             </div>
             <Row gutter={[10, 10]}>
               {[
-                { label: "Điện thoại", value: detailCustomer.phone },
+                { label: "Phone", value: detailCustomer.phone },
                 { label: "Email", value: detailCustomer.email },
-                { label: "Quốc tịch", value: detailCustomer.nationality },
-                { label: "Ngày tham gia", value: detailCustomer.join_date },
+                { label: "Nationality", value: detailCustomer.nationality },
+                { label: "Join Date", value: detailCustomer.join_date },
               ].map((item) => (
                 <Col span={12} key={item.label}>
                   <div style={{ padding: 12, background: "#f8fafc", borderRadius: 10 }}>
@@ -226,13 +225,13 @@ export default function Customers() {
               <Col span={12}>
                 <div style={{ padding: 16, background: "#eef2ff", borderRadius: 12, textAlign: "center" }}>
                   <p style={{ fontSize: 26, fontWeight: 800, color: "#6366f1", margin: 0 }}>{detailCustomer.total_visits}</p>
-                  <p style={{ fontSize: 12, color: "#94a3b8", margin: 0 }}>Lần lưu trú</p>
+                  <p style={{ fontSize: 12, color: "#94a3b8", margin: 0 }}>Total Stays</p>
                 </div>
               </Col>
               <Col span={12}>
                 <div style={{ padding: 16, background: "#ecfdf5", borderRadius: 12, textAlign: "center" }}>
                   <p style={{ fontSize: 16, fontWeight: 800, color: "#10b981", margin: 0 }}>{Number(detailCustomer.total_spent).toLocaleString("vi-VN")}₫</p>
-                  <p style={{ fontSize: 12, color: "#94a3b8", margin: 0 }}>Tổng chi tiêu</p>
+                  <p style={{ fontSize: 12, color: "#94a3b8", margin: 0 }}>Total Spent</p>
                 </div>
               </Col>
             </Row>

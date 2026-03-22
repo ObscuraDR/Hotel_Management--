@@ -1,7 +1,7 @@
 -- ============================================================
 --  LuxeHotel Management System — Schema Only
---  Chạy file này CHỈ KHI setup lần đầu hoặc muốn reset hoàn toàn.
---  Để khôi phục dữ liệu mẫu, chạy: luxehotel_seed.sql
+--  Run this file ONLY for initial setup or complete reset.
+--  To restore sample data, run: luxehotel_seed.sql
 --  Database: MySQL 8.0+
 -- ============================================================
 
@@ -19,7 +19,7 @@ CREATE TABLE rooms (
     type        ENUM('Standard','Deluxe','Suite','VIP') NOT NULL,
     capacity    TINYINT      NOT NULL DEFAULT 2,
     price       DECIMAL(12,0) NOT NULL COMMENT 'VND per night',
-    status      ENUM('Trống','Có khách','Đang dọn','Bảo trì') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Trống',
+    status      ENUM('Available','Occupied','Cleaning','Maintenance') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Available',
     created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -39,9 +39,9 @@ CREATE TABLE accounts (
     name        VARCHAR(100) NOT NULL,
     email       VARCHAR(150) NOT NULL UNIQUE,
     password    VARCHAR(255) NOT NULL,
-    role        ENUM('Admin','Quản lý','Lễ tân','Buồng phòng') NOT NULL,
+    role        ENUM('Admin','Manager','Receptionist','Housekeeper') NOT NULL,
     department  ENUM('Management','Front Office','Housekeeping','F&B','Security'),
-    shift       ENUM('Ca sáng','Ca chiều','Ca đêm','Hành chính'),
+    shift       ENUM('Morning','Afternoon','Night','Regular'),
     phone       VARCHAR(20),
     join_date   DATE,
     bio         TEXT,
@@ -59,7 +59,7 @@ CREATE TABLE staff (
     department  VARCHAR(50)  NOT NULL,
     shift       VARCHAR(20),
     salary      DECIMAL(12,0) NOT NULL,
-    status      ENUM('Đang làm','Nghỉ phép','Đã nghỉ') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Đang làm',
+    status      ENUM('Active','On Leave','Resigned') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Active',
     performance TINYINT      NOT NULL DEFAULT 80 COMMENT '0-100',
     join_date   DATE,
     created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -74,7 +74,7 @@ CREATE TABLE customers (
     email       VARCHAR(150) UNIQUE,
     password    VARCHAR(255),
     phone       VARCHAR(20),
-    nationality VARCHAR(50)  DEFAULT 'Việt Nam',
+    nationality VARCHAR(50)  DEFAULT 'Vietnam',
     id_number   VARCHAR(30)  COMMENT 'CCCD / Passport',
     dob         DATE,
     tier        ENUM('Bronze','Silver','Gold','Platinum') NOT NULL DEFAULT 'Bronze',
@@ -95,8 +95,8 @@ CREATE TABLE bookings (
     checkout    DATE         NOT NULL,
     nights      TINYINT      NOT NULL,
     amount      DECIMAL(14,0) NOT NULL,
-    status      ENUM('Đã đặt','Đang ở','Check-out','Hủy') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Đã đặt',
-    source      ENUM('Trực tiếp','Booking.com','Agoda','Website') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Trực tiếp',
+    status      ENUM('Booked','Checked In','Checked Out','Cancelled') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Booked',
+    source      ENUM('Direct','Booking.com','Agoda','Website') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Direct',
     notes       TEXT,
     created_by  INT COMMENT 'accounts.id',
     created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -121,8 +121,8 @@ CREATE TABLE invoices (
     room_cost   DECIMAL(14,0) NOT NULL,
     service_cost DECIMAL(14,0) NOT NULL DEFAULT 0,
     total       DECIMAL(14,0) NOT NULL,
-    status      ENUM('Chờ thanh toán','Đã thanh toán') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Chờ thanh toán',
-    method      ENUM('Tiền mặt','Thẻ ngân hàng','Chuyển khoản') NULL,
+    status      ENUM('Pending','Paid') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Pending',
+    method      ENUM('Cash','Bank Card','Bank Transfer') NULL,
     paid_at     DATETIME     NULL,
     created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (booking_id) REFERENCES bookings(id)
@@ -136,10 +136,10 @@ CREATE OR REPLACE VIEW v_room_summary AS
 SELECT
     type,
     COUNT(*)                                          AS total,
-    SUM(status = 'Trống')                             AS available,
-    SUM(status = 'Có khách')                          AS occupied,
-    SUM(status IN ('Đang dọn','Bảo trì'))             AS unavailable,
-    ROUND(SUM(status = 'Có khách') / COUNT(*) * 100, 1) AS occupancy_pct
+    SUM(status = 'Available')                             AS available,
+    SUM(status = 'Occupied')                          AS occupied,
+    SUM(status IN ('Cleaning','Maintenance'))             AS unavailable,
+    ROUND(SUM(status = 'Occupied') / COUNT(*) * 100, 1) AS occupancy_pct
 FROM rooms
 GROUP BY type;
 
@@ -169,7 +169,7 @@ SELECT
     COUNT(*)                         AS invoices_paid,
     SUM(i.total)                     AS revenue
 FROM invoices i
-WHERE i.status = 'Đã thanh toán'
+WHERE i.status = 'Paid'
 GROUP BY DATE_FORMAT(i.paid_at, '%Y-%m')
 ORDER BY month DESC;
 
@@ -186,6 +186,6 @@ SELECT
     COALESCE(SUM(i.total), 0) AS total_spent,
     MAX(b.checkout)           AS last_visit
 FROM customers c
-LEFT JOIN bookings b ON b.customer_id = c.id AND b.status != 'Hủy'
-LEFT JOIN invoices i ON i.booking_id = b.id AND i.status = 'Đã thanh toán'
+LEFT JOIN bookings b ON b.customer_id = c.id AND b.status != 'Cancelled'
+LEFT JOIN invoices i ON i.booking_id = b.id AND i.status = 'Paid'
 GROUP BY c.id;

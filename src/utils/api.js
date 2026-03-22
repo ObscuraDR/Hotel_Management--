@@ -1,12 +1,34 @@
-const BASE = '/api';
+const BASE = import.meta.env.VITE_API_URL || '/api';
 
 async function request(url, options = {}) {
-  const res = await fetch(BASE + url, {
-    headers: { 'Content-Type': 'application/json' },
-    ...options,
-  });
-  const data = await res.json();
-  if (!res.ok) throw new Error(data.error || 'Lỗi server');
+  let res;
+  try {
+    res = await fetch(BASE + url, {
+      headers: { 'Content-Type': 'application/json' },
+      ...options,
+    });
+  } catch {
+    throw new Error(
+      'Could not reach the API server. Run PHP from the api folder (e.g. php -S localhost:8000 -t api) and ensure Vite proxies /api — see SETUP.md.'
+    );
+  }
+
+  const text = await res.text();
+  let data = {};
+  if (text) {
+    try {
+      data = JSON.parse(text);
+    } catch {
+      throw new Error(
+        'Server response was not JSON (the API may be down or PHP returned an error). Check the network tab and server logs.'
+      );
+    }
+  }
+
+  if (!res.ok) {
+    const msg = data.error || data.message || `Server error (${res.status})`;
+    throw new Error(typeof msg === 'string' ? msg : 'Server error');
+  }
   return data;
 }
 

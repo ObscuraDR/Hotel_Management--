@@ -11,13 +11,13 @@ import { api } from "../utils/api";
 const { Option } = Select;
 
 const ROLES = [
-  { value: "Admin",       label: "Admin",       desc: "Toàn quyền hệ thống",    icon: "👑", color: "#ef4444" },
-  { value: "Quản lý",    label: "Quản lý",    desc: "Quản lý vận hành",        icon: "🏢", color: "#6366f1" },
-  { value: "Lễ tân",      label: "Lễ tân",      desc: "Check-in/out",            icon: "🛎️", color: "#f59e0b" },
-  { value: "Buồng phòng", label: "Buồng phòng", desc: "Dọn dẹp, bảo trì",       icon: "🧹", color: "#10b981" },
+  { value: "Admin",        label: "Admin",        desc: "Full system access",    icon: "👑", color: "#ef4444" },
+  { value: "Manager",      label: "Manager",      desc: "Operations management", icon: "🏢", color: "#6366f1" },
+  { value: "Receptionist", label: "Receptionist", desc: "Check-in/out",          icon: "🛎️", color: "#f59e0b" },
+  { value: "Housekeeping", label: "Housekeeping", desc: "Cleaning & maintenance", icon: "🧹", color: "#10b981" },
 ];
 
-const STEPS = ["Thông tin cá nhân", "Tài khoản & Bảo mật", "Xác nhận"];
+const STEPS = ["Personal Info", "Account & Security", "Confirmation"];
 
 export default function Register() {
   const [current, setCurrent] = useState(0);
@@ -32,7 +32,7 @@ export default function Register() {
       const values = await form.validateFields();
       setFormData((prev) => ({ ...prev, ...values }));
       setCurrent((c) => c + 1);
-    } catch (_e) {}
+    } catch {} // eslint-disable-line no-empty
   };
 
   const onFinish = async () => {
@@ -46,10 +46,10 @@ export default function Register() {
         phone: formData.phone || "",
         department: formData.department || "",
       });
-      message.success("Đăng ký thành công! Vui lòng đăng nhập.");
+      message.success("Registration successful! Please sign in.");
       navigate("/login");
     } catch (e) {
-      message.error(e.message || "Email đã tồn tại hoặc có lỗi xảy ra!");
+      message.error(e.message || "Email already exists or an error occurred!");
       setCurrent(1);
     } finally {
       setLoading(false);
@@ -79,10 +79,10 @@ export default function Register() {
         <div className="relative z-10 space-y-6">
           <div>
             <h2 className="text-3xl font-bold leading-tight mb-2">
-              Tạo tài khoản<br />
-              <span style={{ color: "#f59e0b" }}>quản lý khách sạn</span>
+              Create account<br />
+              <span style={{ color: "#f59e0b" }}>for hotel management</span>
             </h2>
-            <p className="text-white/55 text-sm">Chỉ mất 2 phút để thiết lập tài khoản.</p>
+            <p className="text-white/55 text-sm">Takes only 2 minutes to set up your account.</p>
           </div>
 
           {/* Step indicators */}
@@ -101,19 +101,18 @@ export default function Register() {
                 </div>
                 <div>
                   <p className={`text-sm font-medium ${i === current ? "text-white" : i < current ? "text-white/60" : "text-white/35"}`}>{s}</p>
-                  {i === current && <p className="text-xs text-white/40">Đang thực hiện</p>}
+                  {i === current && <p className="text-xs text-white/40">In progress</p>}
                 </div>
               </div>
             ))}
           </div>
 
-          {/* Guest notice compact */}
           <div className="p-3.5 rounded-2xl flex items-start gap-3" style={{ background: "rgba(245,158,11,0.12)", border: "1px solid rgba(245,158,11,0.25)" }}>
             <span className="text-lg flex-shrink-0">🏨</span>
             <div>
-              <p className="text-sm font-semibold text-amber-300">Bạn là khách hàng?</p>
+              <p className="text-sm font-semibold text-amber-300">Are you a guest?</p>
               <Link to="/guest/register" className="text-xs text-amber-400 no-underline hover:text-amber-300 transition-colors">
-                Đăng ký tại cổng khách →
+                Register at guest portal →
               </Link>
             </div>
           </div>
@@ -135,8 +134,8 @@ export default function Register() {
           {/* Mobile guest notice */}
           <div className="mb-4 p-3 rounded-2xl flex items-center gap-3 lg:hidden" style={{ background: "#fffbeb", border: "1px solid #fde68a" }}>
             <span>🏨</span>
-            <p className="text-xs text-amber-700 flex-1">Bạn là khách hàng?{" "}
-              <Link to="/guest/register" style={{ color: "#d97706", fontWeight: 600 }}>Đăng ký tại đây →</Link>
+            <p className="text-xs text-amber-700 flex-1">Are you a guest?{" "}
+              <Link to="/guest/register" style={{ color: "#d97706", fontWeight: 600 }}>Register here →</Link>
             </p>
           </div>
 
@@ -144,10 +143,9 @@ export default function Register() {
             <div style={{ height: 4, background: "linear-gradient(to right, #6366f1, #818cf8, #f59e0b)" }} />
 
             <div className="p-6">
-              {/* Header */}
               <div className="flex items-center justify-between mb-1">
                 <span className="text-xs font-semibold px-2.5 py-1 rounded-full" style={{ background: "#eef2ff", color: "#6366f1" }}>
-                  Bước {current + 1} / {STEPS.length}
+                  Step {current + 1} / {STEPS.length}
                 </span>
               </div>
               <h1 className="text-xl font-bold text-gray-900 mb-3">{STEPS[current]}</h1>
@@ -166,20 +164,20 @@ export default function Register() {
                 {current === 0 && (
                   <div>
                     <div className="grid grid-cols-2 gap-3">
-                      <Form.Item name="lastName" label={<span className="text-gray-600 font-medium text-sm">Họ</span>} rules={[{ required: true, message: "Nhập họ!" }]} style={{ marginBottom: 12 }}>
-                        <Input prefix={<UserOutlined style={{ color: "#d1d5db" }} />} placeholder="Nguyễn" style={{ borderRadius: 12, height: 44 }} />
+                      <Form.Item name="lastName" label={<span className="text-gray-600 font-medium text-sm">Last Name</span>} rules={[{ required: true, message: "Enter last name!" }]} style={{ marginBottom: 12 }}>
+                        <Input prefix={<UserOutlined style={{ color: "#d1d5db" }} />} placeholder="Smith" style={{ borderRadius: 12, height: 44 }} />
                       </Form.Item>
-                      <Form.Item name="firstName" label={<span className="text-gray-600 font-medium text-sm">Tên</span>} rules={[{ required: true, message: "Nhập tên!" }]} style={{ marginBottom: 12 }}>
-                        <Input placeholder="Văn An" style={{ borderRadius: 12, height: 44 }} />
+                      <Form.Item name="firstName" label={<span className="text-gray-600 font-medium text-sm">First Name</span>} rules={[{ required: true, message: "Enter first name!" }]} style={{ marginBottom: 12 }}>
+                        <Input placeholder="John" style={{ borderRadius: 12, height: 44 }} />
                       </Form.Item>
                     </div>
 
                     <div className="grid grid-cols-2 gap-3">
-                      <Form.Item name="phone" label={<span className="text-gray-600 font-medium text-sm">Số điện thoại</span>} rules={[{ required: true, message: "Nhập SĐT!" }]} style={{ marginBottom: 12 }}>
+                      <Form.Item name="phone" label={<span className="text-gray-600 font-medium text-sm">Phone Number</span>} rules={[{ required: true, message: "Enter phone number!" }]} style={{ marginBottom: 12 }}>
                         <Input prefix={<PhoneOutlined style={{ color: "#d1d5db" }} />} placeholder="0901 234 567" style={{ borderRadius: 12, height: 44 }} />
                       </Form.Item>
-                      <Form.Item name="department" label={<span className="text-gray-600 font-medium text-sm">Bộ phận</span>} style={{ marginBottom: 12 }}>
-                        <Select placeholder="Chọn bộ phận" size="large">
+                      <Form.Item name="department" label={<span className="text-gray-600 font-medium text-sm">Department</span>} style={{ marginBottom: 12 }}>
+                        <Select placeholder="Select department" size="large">
                           {["Front Office", "Housekeeping", "F&B", "Security", "Management"].map((d) => (
                             <Option key={d} value={d}>{d}</Option>
                           ))}
@@ -187,7 +185,7 @@ export default function Register() {
                       </Form.Item>
                     </div>
 
-                    <Form.Item name="role" label={<span className="text-gray-600 font-medium text-sm">Vai trò</span>} rules={[{ required: true, message: "Chọn vai trò!" }]} style={{ marginBottom: 0 }}>
+                    <Form.Item name="role" label={<span className="text-gray-600 font-medium text-sm">Role</span>} rules={[{ required: true, message: "Select a role!" }]} style={{ marginBottom: 0 }}>
                       <div className="grid grid-cols-4 gap-2 mt-1">
                         {ROLES.map((r) => (
                           <div
@@ -214,43 +212,43 @@ export default function Register() {
                   <div>
                     <Form.Item
                       name="email"
-                      label={<span className="text-gray-600 font-medium text-sm">Email công ty</span>}
-                      rules={[{ required: true, message: "Nhập email!" }, { type: "email", message: "Email không hợp lệ!" }]}
+                      label={<span className="text-gray-600 font-medium text-sm">Company Email</span>}
+                      rules={[{ required: true, message: "Enter email!" }, { type: "email", message: "Invalid email!" }]}
                       style={{ marginBottom: 12 }}
                     >
-                      <Input prefix={<MailOutlined style={{ color: "#d1d5db" }} />} placeholder="ten@luxehotel.com" style={{ borderRadius: 12, height: 44 }} />
+                      <Input prefix={<MailOutlined style={{ color: "#d1d5db" }} />} placeholder="name@luxehotel.com" style={{ borderRadius: 12, height: 44 }} />
                     </Form.Item>
 
                     <Form.Item
                       name="password"
-                      label={<span className="text-gray-600 font-medium text-sm">Mật khẩu</span>}
-                      rules={[{ required: true, message: "Nhập mật khẩu!" }, { min: 8, message: "Tối thiểu 8 ký tự!" }]}
+                      label={<span className="text-gray-600 font-medium text-sm">Password</span>}
+                      rules={[{ required: true, message: "Enter password!" }, { min: 8, message: "Minimum 8 characters!" }]}
                       style={{ marginBottom: 12 }}
                     >
-                      <Input.Password prefix={<LockOutlined style={{ color: "#d1d5db" }} />} placeholder="Tối thiểu 8 ký tự" style={{ borderRadius: 12, height: 44 }} />
+                      <Input.Password prefix={<LockOutlined style={{ color: "#d1d5db" }} />} placeholder="Minimum 8 characters" style={{ borderRadius: 12, height: 44 }} />
                     </Form.Item>
 
                     <Form.Item
                       name="confirmPassword"
-                      label={<span className="text-gray-600 font-medium text-sm">Xác nhận mật khẩu</span>}
+                      label={<span className="text-gray-600 font-medium text-sm">Confirm Password</span>}
                       dependencies={["password"]}
                       rules={[
-                        { required: true, message: "Xác nhận mật khẩu!" },
+                        { required: true, message: "Confirm your password!" },
                         ({ getFieldValue }) => ({
                           validator(_, value) {
                             if (!value || getFieldValue("password") === value) return Promise.resolve();
-                            return Promise.reject("Mật khẩu không khớp!");
+                            return Promise.reject("Passwords do not match!");
                           },
                         }),
                       ]}
                       style={{ marginBottom: 12 }}
                     >
-                      <Input.Password prefix={<LockOutlined style={{ color: "#d1d5db" }} />} placeholder="Nhập lại mật khẩu" style={{ borderRadius: 12, height: 44 }} />
+                      <Input.Password prefix={<LockOutlined style={{ color: "#d1d5db" }} />} placeholder="Re-enter password" style={{ borderRadius: 12, height: 44 }} />
                     </Form.Item>
 
                     <div className="p-3 rounded-xl flex flex-wrap gap-x-4 gap-y-1" style={{ background: "#eff6ff", border: "1px solid #dbeafe" }}>
-                      <p className="text-xs font-semibold text-blue-600 w-full mb-1">Yêu cầu mật khẩu:</p>
-                      {["Tối thiểu 8 ký tự", "Chữ hoa & thường", "Ít nhất 1 số", "Ký tự đặc biệt"].map((req, i) => (
+                      <p className="text-xs font-semibold text-blue-600 w-full mb-1">Password requirements:</p>
+                      {["Minimum 8 characters", "Upper & lowercase", "At least 1 number", "Special character"].map((req, i) => (
                         <div key={i} className="flex items-center gap-1.5 text-xs text-blue-500">
                           <div className="w-1.5 h-1.5 rounded-full bg-blue-300 flex-shrink-0" />
                           {req}
@@ -268,17 +266,17 @@ export default function Register() {
                         style={{ background: "linear-gradient(135deg, #6366f1, #818cf8)", boxShadow: "0 8px 24px rgba(99,102,241,0.35)" }}>
                         🎉
                       </div>
-                      <h3 className="text-lg font-bold text-gray-800">Sẵn sàng tạo tài khoản!</h3>
-                      <p className="text-gray-400 text-sm">Kiểm tra lại thông tin trước khi hoàn tất</p>
+                      <h3 className="text-lg font-bold text-gray-800">Ready to create account!</h3>
+                      <p className="text-gray-400 text-sm">Review your info before finishing</p>
                     </div>
 
                     <div className="rounded-2xl overflow-hidden" style={{ border: "1px solid #e5e7eb" }}>
                       {[
-                        { label: "Họ tên", value: `${formData.lastName || ""} ${formData.firstName || ""}`.trim() || "—" },
-                        { label: "Điện thoại", value: formData.phone || "—" },
+                        { label: "Full Name", value: `${formData.lastName || ""} ${formData.firstName || ""}`.trim() || "—" },
+                        { label: "Phone", value: formData.phone || "—" },
                         { label: "Email", value: formData.email || "—" },
-                        { label: "Vai trò", value: formData.role || "—" },
-                        { label: "Bộ phận", value: formData.department || "—" },
+                        { label: "Role", value: formData.role || "—" },
+                        { label: "Department", value: formData.department || "—" },
                       ].map((item, i) => (
                         <div key={item.label} className="flex justify-between items-center px-4 py-2.5 text-sm"
                           style={{ background: i % 2 === 0 ? "#fafafa" : "white", borderBottom: i < 4 ? "1px solid #f3f4f6" : "none" }}>
@@ -290,7 +288,7 @@ export default function Register() {
 
                     <div className="p-3 rounded-xl flex items-center gap-2.5 text-sm" style={{ background: "#f0fdf4", border: "1px solid #bbf7d0" }}>
                       <CheckCircleOutlined style={{ color: "#10b981", fontSize: 16 }} />
-                      <span className="text-green-700 text-xs">Tài khoản sẽ được kích hoạt sau khi Admin phê duyệt</span>
+                      <span className="text-green-700 text-xs">Account will be activated after Admin approval</span>
                     </div>
                   </div>
                 )}
@@ -304,7 +302,7 @@ export default function Register() {
                     onClick={() => setCurrent((c) => c - 1)}
                     style={{ height: 46, borderRadius: 12, flex: 1 }}
                   >
-                    Quay lại
+                    Back
                   </Button>
                 )}
                 {current < STEPS.length - 1 ? (
@@ -313,7 +311,7 @@ export default function Register() {
                     onClick={nextStep}
                     style={{ height: 46, borderRadius: 12, background: "linear-gradient(135deg, #6366f1, #818cf8)", border: "none", flex: 2, fontWeight: 600, boxShadow: "0 4px 16px rgba(99,102,241,0.4)" }}
                   >
-                    Tiếp theo <ArrowRightOutlined />
+                    Next <ArrowRightOutlined />
                   </Button>
                 ) : (
                   <Button
@@ -322,14 +320,14 @@ export default function Register() {
                     onClick={onFinish}
                     style={{ height: 46, borderRadius: 12, background: "linear-gradient(135deg, #10b981, #059669)", border: "none", flex: 2, fontWeight: 600, boxShadow: "0 4px 16px rgba(16,185,129,0.4)" }}
                   >
-                    {loading ? "Đang tạo tài khoản..." : "✓ Hoàn tất đăng ký"}
+                    {loading ? "Creating account..." : "✓ Complete Registration"}
                   </Button>
                 )}
               </div>
 
               <p className="text-center text-gray-400 text-sm mt-4">
-                Đã có tài khoản?{" "}
-                <Link to="/login" style={{ color: "#6366f1", fontWeight: 600 }}>Đăng nhập</Link>
+                Already have an account?{" "}
+                <Link to="/login" style={{ color: "#6366f1", fontWeight: 600 }}>Sign In</Link>
               </p>
             </div>
           </div>

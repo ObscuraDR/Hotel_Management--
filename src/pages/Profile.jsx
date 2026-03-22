@@ -1,79 +1,77 @@
 import { useState } from "react";
-import { Card, Row, Col, Avatar, Button, Form, Input, Select, Tag, Divider, Modal, message, Upload, Tabs } from "antd";
+import { Card, Row, Col, Avatar, Button, Form, Input, Select, Tag, Divider, Modal, message, Upload, Tabs, Popconfirm, List } from "antd";
 import {
   EditOutlined, LockOutlined, CameraOutlined,
   MailOutlined, PhoneOutlined, UserOutlined,
   CheckCircleOutlined, SafetyOutlined, HistoryOutlined,
 } from "@ant-design/icons";
-import { useNavigate } from "react-router-dom";
 
 const { Option } = Select;
-const { TabPane } = Tabs;
 
 const activityLog = [
-  { action: "Đăng nhập hệ thống",        time: "16/03/2025 08:30", icon: "🔐", color: "#6366f1" },
-  { action: "Cập nhật phòng 102 → Đang dọn", time: "16/03/2025 09:15", icon: "🏨", color: "#f59e0b" },
-  { action: "Tạo đặt phòng mới #INV-006", time: "16/03/2025 10:02", icon: "📅", color: "#10b981" },
-  { action: "Check-in khách Nguyễn Văn An", time: "16/03/2025 11:45", icon: "✅", color: "#10b981" },
-  { action: "Xuất báo cáo doanh thu T3",  time: "15/03/2025 17:20", icon: "📊", color: "#8b5cf6" },
-  { action: "Đăng nhập hệ thống",         time: "15/03/2025 08:05", icon: "🔐", color: "#6366f1" },
+  { action: "Signed in to system",              time: "16/03/2025 08:30", icon: "🔐", color: "#6366f1" },
+  { action: "Updated room 102 → Cleaning",      time: "16/03/2025 09:15", icon: "🏨", color: "#f59e0b" },
+  { action: "Created new booking #INV-006",      time: "16/03/2025 10:02", icon: "📅", color: "#10b981" },
+  { action: "Checked in guest John Smith",    time: "16/03/2025 11:45", icon: "✅", color: "#10b981" },
+  { action: "Exported revenue report Mar",       time: "15/03/2025 17:20", icon: "📊", color: "#8b5cf6" },
+  { action: "Signed in to system",              time: "15/03/2025 08:05", icon: "🔐", color: "#6366f1" },
 ];
 
 const roleConfig = {
-  Admin:      { color: "#ef4444", bg: "#fef2f2", label: "Admin" },
-  "Quản lý":  { color: "#6366f1", bg: "#eef2ff", label: "Quản lý" },
-  "Lễ tân":   { color: "#f59e0b", bg: "#fffbeb", label: "Lễ tân" },
-  "Buồng phòng": { color: "#10b981", bg: "#ecfdf5", label: "Buồng phòng" },
+  Admin:        { color: "#ef4444", bg: "#fef2f2", label: "Admin" },
+  "Manager":    { color: "#6366f1", bg: "#eef2ff", label: "Manager" },
+  "Receptionist":{ color: "#f59e0b", bg: "#fffbeb", label: "Receptionist" },
+  "Housekeeping":{ color: "#10b981", bg: "#ecfdf5", label: "Housekeeping" },
 };
 
 export default function Profile() {
-  const navigate = useNavigate();
   const [user, setUser] = useState(JSON.parse(localStorage.getItem("user") || "{}"));
   const [editMode, setEditMode] = useState(false);
   const [pwdModal, setPwdModal] = useState(false);
+  const [twoFaOpen, setTwoFaOpen] = useState(false);
+  const [sessionsOpen, setSessionsOpen] = useState(false);
   const [avatarColor] = useState("#6366f1");
   const [form] = Form.useForm();
   const [pwdForm] = Form.useForm();
 
-  const roleCfg = roleConfig[user.role] || roleConfig["Lễ tân"];
+  const roleCfg = roleConfig[user.role] || roleConfig["Receptionist"];
 
   const saveProfile = (values) => {
     const updated = { ...user, ...values };
     localStorage.setItem("user", JSON.stringify(updated));
     setUser(updated);
     setEditMode(false);
-    message.success("Cập nhật thông tin thành công!");
+    message.success("Profile updated successfully!");
   };
 
   const changePassword = (values) => {
     if (values.newPassword !== values.confirmPassword) {
-      message.error("Mật khẩu mới không khớp!");
+      message.error("Passwords do not match!");
       return;
     }
     setPwdModal(false);
     pwdForm.resetFields();
-    message.success("Đổi mật khẩu thành công!");
+    message.success("Password changed successfully!");
   };
 
   const stats = [
-    { label: "Ngày làm việc", value: "128", icon: "📅", color: "#6366f1", bg: "#eef2ff" },
-    { label: "Đặt phòng xử lý", value: "342", icon: "🏨", color: "#f59e0b", bg: "#fffbeb" },
-    { label: "Khách check-in", value: "215", icon: "👥", color: "#10b981", bg: "#ecfdf5" },
-    { label: "Đánh giá TB", value: "4.8★", icon: "⭐", color: "#ef4444", bg: "#fef2f2" },
+    { label: "Working Days", value: "128", icon: "📅", color: "#6366f1", bg: "#eef2ff" },
+    { label: "Bookings Handled", value: "342", icon: "🏨", color: "#f59e0b", bg: "#fffbeb" },
+    { label: "Guests Checked In", value: "215", icon: "👥", color: "#10b981", bg: "#ecfdf5" },
+    { label: "Avg. Rating", value: "4.8★", icon: "⭐", color: "#ef4444", bg: "#fef2f2" },
   ];
 
   return (
     <div className="space-y-6 max-w-5xl mx-auto">
       <div>
-        <h1 className="text-2xl font-bold text-gray-800">Thông Tin Cá Nhân</h1>
-        <p className="text-gray-500 text-sm">Quản lý hồ sơ và bảo mật tài khoản</p>
+        <h1 className="text-2xl font-bold text-gray-800">My Profile</h1>
+        <p className="text-gray-500 text-sm">Manage your profile and account security</p>
       </div>
 
       <Row gutter={[20, 20]}>
         {/* Left — Avatar & quick info */}
         <Col xs={24} lg={8}>
           <Card bordered={false} style={{ borderRadius: 16, boxShadow: "0 2px 12px rgba(0,0,0,0.06)", textAlign: "center" }}>
-            {/* Avatar */}
             <div className="relative inline-block mb-4">
               <Avatar
                 size={96}
@@ -89,7 +87,7 @@ export default function Profile() {
               </div>
             </div>
 
-            <h2 className="text-xl font-bold text-gray-800">{user.name || "Người dùng"}</h2>
+            <h2 className="text-xl font-bold text-gray-800">{user.name || "User"}</h2>
             <p className="text-gray-400 text-sm mb-3">{user.email || "—"}</p>
 
             <Tag
@@ -104,13 +102,12 @@ export default function Profile() {
 
             <Divider />
 
-            {/* Quick info */}
             <div className="space-y-3 text-left">
               {[
                 { icon: <MailOutlined />, label: "Email", value: user.email || "—" },
-                { icon: <PhoneOutlined />, label: "Điện thoại", value: user.phone || "0901 234 567" },
-                { icon: <UserOutlined />, label: "Bộ phận", value: user.department || "Front Office" },
-                { icon: <CheckCircleOutlined />, label: "Trạng thái", value: "Đang hoạt động", valueColor: "#10b981" },
+                { icon: <PhoneOutlined />, label: "Phone", value: user.phone || "0901 234 567" },
+                { icon: <UserOutlined />, label: "Department", value: user.department || "Front Office" },
+                { icon: <CheckCircleOutlined />, label: "Status", value: "Active", valueColor: "#10b981" },
               ].map((item) => (
                 <div key={item.label} className="flex items-center gap-3">
                   <div className="w-8 h-8 rounded-lg bg-gray-50 flex items-center justify-center text-gray-400">
@@ -134,14 +131,14 @@ export default function Profile() {
                 onClick={() => { setEditMode(true); form.setFieldsValue({ name: user.name, email: user.email, phone: user.phone || "0901 234 567", department: user.department || "Front Office" }); }}
                 style={{ borderRadius: 10, background: "#6366f1" }}
               >
-                Chỉnh sửa hồ sơ
+                Edit Profile
               </Button>
               <Button
                 block icon={<LockOutlined />}
                 onClick={() => setPwdModal(true)}
                 style={{ borderRadius: 10 }}
               >
-                Đổi mật khẩu
+                Change Password
               </Button>
             </div>
           </Card>
@@ -150,21 +147,24 @@ export default function Profile() {
         {/* Right — Tabs */}
         <Col xs={24} lg={16}>
           <Card bordered={false} style={{ borderRadius: 16, boxShadow: "0 2px 12px rgba(0,0,0,0.06)" }}>
-            <Tabs defaultActiveKey="info">
-              {/* Tab 1: Thông tin */}
-              <TabPane tab={<span><UserOutlined /> Thông tin</span>} key="info">
-                {!editMode ? (
+            <Tabs defaultActiveKey="info" items={[
+              {
+                key: "info",
+                label: <span><UserOutlined /> Info</span>,
+                children: (
+                  <div>
+                  {!editMode ? (
                   <div className="space-y-5">
                     <div className="grid grid-cols-2 gap-4">
                       {[
-                        { label: "Họ tên", value: user.name || "—" },
-                        { label: "Vai trò", value: user.role || "—" },
+                        { label: "Full Name", value: user.name || "—" },
+                        { label: "Role", value: user.role || "—" },
                         { label: "Email", value: user.email || "—" },
-                        { label: "Điện thoại", value: user.phone || "0901 234 567" },
-                        { label: "Bộ phận", value: user.department || "Front Office" },
-                        { label: "Ngày vào làm", value: user.joinDate || "01/01/2024" },
-                        { label: "Mã nhân viên", value: user.staffId || "NV-001" },
-                        { label: "Ca làm việc", value: user.shift || "Ca sáng" },
+                        { label: "Phone", value: user.phone || "0901 234 567" },
+                        { label: "Department", value: user.department || "Front Office" },
+                        { label: "Start Date", value: user.joinDate || "01/01/2024" },
+                        { label: "Staff ID", value: user.staffId || "NV-001" },
+                        { label: "Work Shift", value: user.shift || "Morning" },
                       ].map((item) => (
                         <div key={item.label} className="p-3 bg-gray-50 rounded-xl">
                           <p className="text-xs text-gray-400 mb-1">{item.label}</p>
@@ -173,11 +173,10 @@ export default function Profile() {
                       ))}
                     </div>
 
-                    {/* Bio */}
                     <div className="p-4 bg-indigo-50 rounded-xl">
-                      <p className="text-xs text-indigo-400 mb-1">Giới thiệu</p>
+                      <p className="text-xs text-indigo-400 mb-1">Bio</p>
                       <p className="text-sm text-indigo-700">
-                        {user.bio || "Nhân viên tận tâm với nhiều năm kinh nghiệm trong ngành khách sạn. Luôn đặt sự hài lòng của khách hàng lên hàng đầu."}
+                        {user.bio || "A dedicated employee with years of experience in the hospitality industry. Always puts guest satisfaction first."}
                       </p>
                     </div>
                   </div>
@@ -185,12 +184,12 @@ export default function Profile() {
                   <Form form={form} layout="vertical" onFinish={saveProfile}>
                     <Row gutter={12}>
                       <Col span={12}>
-                        <Form.Item name="name" label="Họ tên" rules={[{ required: true }]}>
+                        <Form.Item name="name" label="Full Name" rules={[{ required: true }]}>
                           <Input prefix={<UserOutlined />} style={{ borderRadius: 8 }} />
                         </Form.Item>
                       </Col>
                       <Col span={12}>
-                        <Form.Item name="phone" label="Điện thoại">
+                        <Form.Item name="phone" label="Phone">
                           <Input prefix={<PhoneOutlined />} style={{ borderRadius: 8 }} />
                         </Form.Item>
                       </Col>
@@ -200,7 +199,7 @@ export default function Profile() {
                     </Form.Item>
                     <Row gutter={12}>
                       <Col span={12}>
-                        <Form.Item name="department" label="Bộ phận">
+                        <Form.Item name="department" label="Department">
                           <Select style={{ borderRadius: 8 }}>
                             {["Front Office", "Housekeeping", "F&B", "Security", "Management"].map((d) => (
                               <Option key={d} value={d}>{d}</Option>
@@ -209,130 +208,145 @@ export default function Profile() {
                         </Form.Item>
                       </Col>
                       <Col span={12}>
-                        <Form.Item name="shift" label="Ca làm việc">
+                        <Form.Item name="shift" label="Work Shift">
                           <Select>
-                            {["Ca sáng", "Ca chiều", "Ca đêm", "Hành chính"].map((s) => (
+                            {["Morning", "Afternoon", "Night", "Office Hours"].map((s) => (
                               <Option key={s} value={s}>{s}</Option>
                             ))}
                           </Select>
                         </Form.Item>
                       </Col>
                     </Row>
-                    <Form.Item name="bio" label="Giới thiệu bản thân">
+                    <Form.Item name="bio" label="Bio">
                       <Input.TextArea rows={3} style={{ borderRadius: 8 }} />
                     </Form.Item>
                     <div className="flex gap-2">
                       <Button type="primary" htmlType="submit" style={{ background: "#6366f1", borderRadius: 8 }}>
-                        Lưu thay đổi
+                        Save Changes
                       </Button>
-                      <Button onClick={() => setEditMode(false)} style={{ borderRadius: 8 }}>Hủy</Button>
+                      <Button onClick={() => setEditMode(false)} style={{ borderRadius: 8 }}>Cancel</Button>
                     </div>
                   </Form>
                 )}
-              </TabPane>
-
-              {/* Tab 2: Thống kê */}
-              <TabPane tab={<span><HistoryOutlined /> Thống kê</span>} key="stats">
-                <div className="grid grid-cols-2 gap-4 mb-6">
-                  {stats.map((s) => (
-                    <div key={s.label} className="p-4 rounded-xl flex items-center gap-3"
-                      style={{ background: s.bg }}>
-                      <div className="text-2xl">{s.icon}</div>
-                      <div>
-                        <p className="text-2xl font-bold" style={{ color: s.color }}>{s.value}</p>
-                        <p className="text-xs text-gray-500">{s.label}</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-
-                {/* Activity log */}
-                <div>
-                  <p className="font-semibold text-gray-700 mb-3">Hoạt động gần đây</p>
-                  <div className="space-y-2">
-                    {activityLog.map((log, i) => (
-                      <div key={i} className="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 transition-all">
-                        <div className="w-9 h-9 rounded-xl flex items-center justify-center text-lg"
-                          style={{ background: log.color + "15" }}>
-                          {log.icon}
+                  </div>
+                ),
+              },
+              {
+                key: "stats",
+                label: <span><HistoryOutlined /> Stats</span>,
+                children: (
+                  <div>
+                  <div className="grid grid-cols-2 gap-4 mb-6">
+                    {stats.map((s) => (
+                      <div key={s.label} className="p-4 rounded-xl flex items-center gap-3"
+                        style={{ background: s.bg }}>
+                        <div className="text-2xl">{s.icon}</div>
+                        <div>
+                          <p className="text-2xl font-bold" style={{ color: s.color }}>{s.value}</p>
+                          <p className="text-xs text-gray-500">{s.label}</p>
                         </div>
-                        <div className="flex-1">
-                          <p className="text-sm font-medium text-gray-700">{log.action}</p>
-                          <p className="text-xs text-gray-400">{log.time}</p>
-                        </div>
-                        <div className="w-2 h-2 rounded-full" style={{ background: log.color }} />
                       </div>
                     ))}
                   </div>
-                </div>
-              </TabPane>
 
-              {/* Tab 3: Bảo mật */}
-              <TabPane tab={<span><SafetyOutlined /> Bảo mật</span>} key="security">
-                <div className="space-y-4">
-                  {[
-                    { title: "Mật khẩu", desc: "Lần đổi cuối: 30 ngày trước", status: "Tốt", statusColor: "#10b981", action: "Đổi mật khẩu", onClick: () => setPwdModal(true) },
-                    { title: "Xác thực 2 bước (2FA)", desc: "Bảo vệ tài khoản bằng OTP", status: "Chưa bật", statusColor: "#f59e0b", action: "Bật ngay" },
-                    { title: "Phiên đăng nhập", desc: "1 thiết bị đang hoạt động", status: "An toàn", statusColor: "#10b981", action: "Xem chi tiết" },
-                  ].map((item) => (
-                    <div key={item.title} className="flex items-center justify-between p-4 rounded-xl border border-gray-100 hover:border-indigo-200 transition-all">
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-xl bg-gray-50 flex items-center justify-center">
-                          <SafetyOutlined style={{ color: "#6366f1" }} />
+                  <div>
+                    <p className="font-semibold text-gray-700 mb-3">Recent Activity</p>
+                    <div className="space-y-2">
+                      {activityLog.map((log, i) => (
+                        <div key={i} className="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 transition-all">
+                          <div className="w-9 h-9 rounded-xl flex items-center justify-center text-lg"
+                            style={{ background: log.color + "15" }}>
+                            {log.icon}
+                          </div>
+                          <div className="flex-1">
+                            <p className="text-sm font-medium text-gray-700">{log.action}</p>
+                            <p className="text-xs text-gray-400">{log.time}</p>
+                          </div>
+                          <div className="w-2 h-2 rounded-full" style={{ background: log.color }} />
                         </div>
-                        <div>
-                          <p className="font-semibold text-gray-800">{item.title}</p>
-                          <p className="text-xs text-gray-400">{item.desc}</p>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-3">
-                        <Tag style={{ color: item.statusColor, borderColor: item.statusColor + "40", background: item.statusColor + "15" }}>
-                          {item.status}
-                        </Tag>
-                        <Button size="small" onClick={item.onClick} style={{ borderRadius: 8 }}>{item.action}</Button>
-                      </div>
+                      ))}
                     </div>
-                  ))}
-
-                  <div className="p-4 bg-red-50 rounded-xl border border-red-100 mt-4">
-                    <p className="font-semibold text-red-600 mb-1">Vùng nguy hiểm</p>
-                    <p className="text-sm text-red-400 mb-3">Các hành động này không thể hoàn tác</p>
-                    <Button danger style={{ borderRadius: 8 }}>Đăng xuất tất cả thiết bị</Button>
                   </div>
-                </div>
-              </TabPane>
-            </Tabs>
+                  </div>
+                ),
+              },
+              {
+                key: "security",
+                label: <span><SafetyOutlined /> Security</span>,
+                children: (
+                  <div className="space-y-4">
+                    {[
+                      { title: "Password", desc: "Last changed: 30 days ago", status: "Good", statusColor: "#10b981", action: "Change Password", onClick: () => setPwdModal(true) },
+                      { title: "Two-Factor Auth (2FA)", desc: "Protect your account with OTP", status: "Not enabled", statusColor: "#f59e0b", action: "Enable Now", onClick: () => setTwoFaOpen(true) },
+                      { title: "Login Sessions", desc: "1 active device", status: "Secure", statusColor: "#10b981", action: "View Details", onClick: () => setSessionsOpen(true) },
+                    ].map((item) => (
+                      <div key={item.title} className="flex items-center justify-between p-4 rounded-xl border border-gray-100 hover:border-indigo-200 transition-all">
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 rounded-xl bg-gray-50 flex items-center justify-center">
+                            <SafetyOutlined style={{ color: "#6366f1" }} />
+                          </div>
+                          <div>
+                            <p className="font-semibold text-gray-800">{item.title}</p>
+                            <p className="text-xs text-gray-400">{item.desc}</p>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-3">
+                          <Tag style={{ color: item.statusColor, borderColor: item.statusColor + "40", background: item.statusColor + "15" }}>
+                            {item.status}
+                          </Tag>
+                          <Button size="small" onClick={item.onClick} style={{ borderRadius: 8 }}>{item.action}</Button>
+                        </div>
+                      </div>
+                    ))}
+
+                    <div className="p-4 bg-red-50 rounded-xl border border-red-100 mt-4">
+                      <p className="font-semibold text-red-600 mb-1">Danger Zone</p>
+                      <p className="text-sm text-red-400 mb-3">These actions cannot be undone</p>
+                      <Popconfirm
+                        title="Sign out all other devices?"
+                        description="You will stay signed in on this browser only."
+                        onConfirm={() => message.success("Other sessions have been signed out.")}
+                        okText="Sign out others"
+                        cancelText="Cancel"
+                      >
+                        <Button danger style={{ borderRadius: 8 }}>Sign out all devices</Button>
+                      </Popconfirm>
+                    </div>
+                  </div>
+                ),
+              },
+            ]} />
           </Card>
         </Col>
       </Row>
 
       {/* Change Password Modal */}
       <Modal
-        title={<span><LockOutlined className="mr-2" />Đổi mật khẩu</span>}
+        title={<span><LockOutlined className="mr-2" />Change Password</span>}
         open={pwdModal}
         onCancel={() => { setPwdModal(false); pwdForm.resetFields(); }}
         onOk={() => pwdForm.submit()}
-        okText="Xác nhận"
-        cancelText="Hủy"
+        okText="Confirm"
+        cancelText="Cancel"
         okButtonProps={{ style: { background: "#6366f1" } }}
       >
         <Form form={pwdForm} layout="vertical" onFinish={changePassword} className="mt-4">
-          <Form.Item name="currentPassword" label="Mật khẩu hiện tại" rules={[{ required: true, message: "Nhập mật khẩu hiện tại!" }]}>
+          <Form.Item name="currentPassword" label="Current Password" rules={[{ required: true, message: "Enter current password!" }]}>
             <Input.Password prefix={<LockOutlined />} style={{ borderRadius: 8 }} />
           </Form.Item>
-          <Form.Item name="newPassword" label="Mật khẩu mới" rules={[{ required: true }, { min: 8, message: "Tối thiểu 8 ký tự!" }]}>
+          <Form.Item name="newPassword" label="New Password" rules={[{ required: true }, { min: 8, message: "Minimum 8 characters!" }]}>
             <Input.Password prefix={<LockOutlined />} style={{ borderRadius: 8 }} />
           </Form.Item>
           <Form.Item
             name="confirmPassword"
-            label="Xác nhận mật khẩu mới"
+            label="Confirm New Password"
             dependencies={["newPassword"]}
             rules={[
-              { required: true, message: "Xác nhận mật khẩu!" },
+              { required: true, message: "Confirm your password!" },
               ({ getFieldValue }) => ({
                 validator(_, value) {
                   if (!value || getFieldValue("newPassword") === value) return Promise.resolve();
-                  return Promise.reject("Mật khẩu không khớp!");
+                  return Promise.reject("Passwords do not match!");
                 },
               }),
             ]}
@@ -340,6 +354,49 @@ export default function Profile() {
             <Input.Password prefix={<LockOutlined />} style={{ borderRadius: 8 }} />
           </Form.Item>
         </Form>
+      </Modal>
+
+      <Modal
+        title="Enable two-factor authentication"
+        open={twoFaOpen}
+        onCancel={() => setTwoFaOpen(false)}
+        onOk={() => { setTwoFaOpen(false); message.success("2FA enrollment started — finish setup in your authenticator app."); }}
+        okText="I have the app ready"
+        cancelText="Later"
+        okButtonProps={{ style: { background: "#6366f1" } }}
+      >
+        <p className="text-gray-600 text-sm mb-3">
+          Add a second step after your password: open an authenticator app (Google Authenticator, Microsoft Authenticator, etc.),
+          scan the QR code we will show on the next screen, then enter the 6-digit code to confirm.
+        </p>
+        <p className="text-gray-400 text-xs m-0">In a production deployment, your administrator would complete SMTP/SMS setup first.</p>
+      </Modal>
+
+      <Modal
+        title="Active login sessions"
+        open={sessionsOpen}
+        onCancel={() => setSessionsOpen(false)}
+        footer={<Button type="primary" style={{ background: "#6366f1" }} onClick={() => setSessionsOpen(false)}>Close</Button>}
+        width={480}
+      >
+        <List
+          size="small"
+          dataSource={[
+            { device: "Chrome on Windows", where: "This device", when: "Active now", current: true },
+            { device: "Safari on iPhone", where: "Ho Chi Minh City, VN", when: "2 days ago", current: false },
+          ]}
+          renderItem={(item) => (
+            <List.Item>
+              <div className="flex justify-between w-full gap-3">
+                <div>
+                  <p className="font-semibold text-gray-800 m-0 text-sm">{item.device}</p>
+                  <p className="text-xs text-gray-400 m-0">{item.where} · {item.when}</p>
+                </div>
+                {item.current && <Tag color="green">Current</Tag>}
+              </div>
+            </List.Item>
+          )}
+        />
       </Modal>
     </div>
   );
