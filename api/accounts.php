@@ -20,8 +20,10 @@ if ($method === 'POST') {
 
     $count   = $db->query('SELECT COUNT(*) FROM accounts')->fetchColumn();
     $staffId = 'NV-' . str_pad($count + 1, 3, '0', STR_PAD_LEFT);
-    $db->prepare('INSERT INTO accounts (staff_id, name, email, password, role, department, shift, phone, join_date, bio) VALUES (?,?,?,?,?,?,?,?,?,?)')
-       ->execute([$staffId, $d['name'], $d['email'], $d['password'], $d['role'], $d['department'] ?? null, $d['shift'] ?? null, $d['phone'] ?? null, date('Y-m-d'), $d['bio'] ?? null]);
+    $db->prepare('INSERT INTO accounts (staff_id, name, email, password, role, department, shift, phone, join_date, bio) 
+            VALUES (?,?,?,?,?,?,?,?,?,?)')
+       ->execute([$staffId, $d['name'], $d['email'], $d['password'], $d['role'], 
+            $d['department'] ?? null, $d['shift'] ?? null, $d['phone'] ?? null, date('Y-m-d'), $d['bio'] ?? null]);
     json(['id' => $db->lastInsertId(), 'staff_id' => $staffId], 201);
 }
 

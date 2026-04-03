@@ -90,6 +90,8 @@ export default function GuestRooms() {
 
   const discount = guest ? (tierDiscount[guest.tier] || 0) : 0;
   const [lightbox, setLightbox] = useState(null);
+  const [detailRoom, setDetailRoom] = useState(null);
+  const [detailImgIdx, setDetailImgIdx] = useState(0);
   const [compareList, setCompareList] = useState([]);
   const [compareModal, setCompareModal] = useState(false);
   const [searchDates, setSearchDates] = useState(() => parseRoomsSearchFromLocation().searchDates);
@@ -251,27 +253,42 @@ export default function GuestRooms() {
 
                 <Divider style={{ margin: "12px 0" }} />
 
-                <div className="flex items-center justify-between">
-                  <div>
-                    {discount > 0 && <p className="text-xs text-gray-400 line-through">{room.price.toLocaleString("vi-VN")}₫</p>}
-                    <span className="text-xl font-bold" style={{ color: room.color }}>{discountedPrice.toLocaleString("vi-VN")}₫</span>
-                    <span className="text-xs text-gray-400">/night</span>
-                  </div>
-                  <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
+                <div className="flex flex-col gap-3">
+                  <div className="flex items-start justify-between gap-3">
+                    <div>
+                      {discount > 0 && <p className="text-xs text-gray-400 line-through">{room.price.toLocaleString("vi-VN")}₫</p>}
+                      <span className="text-xl font-bold" style={{ color: room.color }}>{discountedPrice.toLocaleString("vi-VN")}₫</span>
+                      <span className="text-xs text-gray-400">/night</span>
+                    </div>
                     <Tooltip title={compareList.find((r) => r.id === room.id) ? "Remove" : compareList.length >= 3 ? "Max 3 rooms" : "Compare"}>
                       <Checkbox
                         checked={!!compareList.find((r) => r.id === room.id)}
                         disabled={!compareList.find((r) => r.id === room.id) && compareList.length >= 3}
                         onChange={() => toggleCompare(room)}
-                        style={{ fontSize: 11 }}
-                      >Compare</Checkbox>
+                        style={{ fontSize: 11, whiteSpace: "nowrap" }}
+                      >
+                        Compare
+                      </Checkbox>
                     </Tooltip>
-                    <Button type="primary" onClick={() => {
-                      setBookingRoom(room);
-                      form.resetFields();
-                      if (searchDates) form.setFieldsValue({ dates: searchDates });
-                    }}
-                      style={{ background: room.color, borderColor: room.color, borderRadius: 10, fontWeight: 600 }}>
+                  </div>
+                  <div className="grid grid-cols-2 gap-2">
+                    <Button
+                      block
+                      onClick={() => { setDetailRoom(room); setDetailImgIdx(0); }}
+                      style={{ borderRadius: 10, fontWeight: 600 }}
+                    >
+                      Details
+                    </Button>
+                    <Button
+                      block
+                      type="primary"
+                      onClick={() => {
+                        setBookingRoom(room);
+                        form.resetFields();
+                        if (searchDates) form.setFieldsValue({ dates: searchDates });
+                      }}
+                      style={{ background: room.color, borderColor: room.color, borderRadius: 10, fontWeight: 700 }}
+                    >
                       Book room
                     </Button>
                   </div>
@@ -281,6 +298,75 @@ export default function GuestRooms() {
           );
         })}
       </div>
+
+      {/* Detail Modal */}
+      <Modal open={!!detailRoom} onCancel={() => setDetailRoom(null)} footer={null} width={720} centered>
+        {detailRoom && (() => {
+          const imgs = roomImages[detailRoom.id] || [detailRoom.image];
+          const dp = detailRoom.price - detailRoom.price * discount / 100;
+          return (
+            <div>
+              {/* Gallery */}
+              <div style={{ position: "relative", borderRadius: 12, overflow: "hidden", height: 320, background: "#000", marginBottom: 20 }}>
+                <img src={imgs[detailImgIdx]} alt={detailRoom.name}
+                  style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                <Button icon={<LeftOutlined />}
+                  onClick={() => setDetailImgIdx((i) => (i - 1 + imgs.length) % imgs.length)}
+                  style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", background: "rgba(0,0,0,0.5)", border: "none", color: "#fff", borderRadius: "50%", width: 36, height: 36 }} />
+                <Button icon={<RightOutlined />}
+                  onClick={() => setDetailImgIdx((i) => (i + 1) % imgs.length)}
+                  style={{ position: "absolute", right: 12, top: "50%", transform: "translateY(-50%)", background: "rgba(0,0,0,0.5)", border: "none", color: "#fff", borderRadius: "50%", width: 36, height: 36 }} />
+                <div style={{ position: "absolute", bottom: 10, left: 0, right: 0, display: "flex", justifyContent: "center", gap: 6 }}>
+                  {imgs.map((_, i) => (
+                    <div key={i} onClick={() => setDetailImgIdx(i)}
+                      style={{ width: i === detailImgIdx ? 24 : 8, height: 8, borderRadius: 4, background: i === detailImgIdx ? "#f59e0b" : "rgba(255,255,255,0.5)", cursor: "pointer", transition: "all 0.2s" }} />
+                  ))}
+                </div>
+                <Tag style={{ position: "absolute", top: 12, right: 12, color: detailRoom.color, background: "rgba(255,255,255,0.95)", borderColor: detailRoom.color, fontWeight: 700 }}>{detailRoom.type}</Tag>
+              </div>
+
+              {/* Info */}
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
+                <div>
+                  <h2 style={{ fontWeight: 800, fontSize: 22, color: "#1e293b", margin: "0 0 4px" }}>{detailRoom.name}</h2>
+                  <p style={{ color: "#94a3b8", fontSize: 13, margin: "0 0 10px" }}>{detailRoom.size} • Floor {detailRoom.floor} • {detailRoom.capacity} guests</p>
+                  <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 12 }}>
+                    <Rate disabled defaultValue={detailRoom.rating} style={{ fontSize: 13 }} />
+                    <span style={{ fontSize: 12, color: "#94a3b8" }}>{detailRoom.rating} ({detailRoom.reviews} reviews)</span>
+                  </div>
+                  <p style={{ color: "#475569", fontSize: 14, lineHeight: 1.6 }}>{detailRoom.desc}</p>
+                </div>
+
+                <div>
+                  <p style={{ fontWeight: 700, color: "#1e293b", marginBottom: 10 }}>Amenities</p>
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 20 }}>
+                    {detailRoom.amenities.map((a) => (
+                      <span key={a} style={{ fontSize: 12, background: "#f8fafc", border: "1px solid #e2e8f0", padding: "4px 10px", borderRadius: 20, color: "#475569" }}>{a}</span>
+                    ))}
+                  </div>
+
+                  <Divider style={{ margin: "12px 0" }} />
+
+                  <div style={{ marginBottom: 16 }}>
+                    {discount > 0 && (
+                      <p style={{ fontSize: 13, color: "#94a3b8", textDecoration: "line-through", margin: 0 }}>{detailRoom.price.toLocaleString("vi-VN")}₫/night</p>
+                    )}
+                    <span style={{ fontSize: 26, fontWeight: 800, color: detailRoom.color }}>{dp.toLocaleString("vi-VN")}₫</span>
+                    <span style={{ fontSize: 13, color: "#94a3b8" }}>/night</span>
+                    {discount > 0 && <span style={{ marginLeft: 8, fontSize: 12, color: "#22c55e", fontWeight: 600 }}>-{discount}%</span>}
+                  </div>
+
+                  <Button block type="primary" size="large"
+                    onClick={() => { setDetailRoom(null); setBookingRoom(detailRoom); form.resetFields(); if (searchDates) form.setFieldsValue({ dates: searchDates }); }}
+                    style={{ background: detailRoom.color, border: "none", borderRadius: 10, fontWeight: 700 }}>
+                    Book Now
+                  </Button>
+                </div>
+              </div>
+            </div>
+          );
+        })()}
+      </Modal>
 
       {/* Lightbox Modal */}
       <Modal open={!!lightbox} onCancel={() => setLightbox(null)} footer={null} width={800} centered

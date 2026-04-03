@@ -9,6 +9,7 @@ import {
 } from "@ant-design/icons";
 import { useNavigate, useLocation, Outlet } from "react-router-dom";
 import { hasPermission, normalizeRole } from "../utils/authStore";
+import Footer from "../components/Footer";
 
 const { Header, Sider, Content } = Layout;
 
@@ -213,6 +214,7 @@ export default function MainLayout() {
         <Content style={{ margin: 24, minHeight: "calc(100vh - 112px)", background: "#f8fafc" }}>
           <Outlet />
         </Content>
+        <Footer />
       </Layout>
 
       <Drawer title="Notifications" placement="right" width={360} onClose={() => setNotifOpen(false)} open={notifOpen}>

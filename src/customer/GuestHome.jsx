@@ -68,31 +68,31 @@ export default function GuestHome() {
     <div style={{ background: "#f8fafc" }}>
 
       {/* ── HERO ── */}
-      <section style={{ position: "relative", minHeight: 620, display: "flex", alignItems: "center", overflow: "hidden" }}>
+      <section style={{ position: "relative", minHeight: 640, display: "flex", alignItems: "center", overflow: "hidden" }}>
         {/* Background image */}
         <img
           src={HERO_BG} alt="LuxeHotel"
           style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center" }}
         />
         {/* Overlay */}
-        <div style={{ position: "absolute", inset: 0, background: "linear-gradient(135deg, rgba(15,23,42,0.85) 0%, rgba(30,58,95,0.75) 100%)" }} />
+        <div style={{ position: "absolute", inset: 0, background: "linear-gradient(135deg, rgba(15,23,42,0.76) 0%, rgba(30,58,95,0.66) 100%)" }} />
 
         {/* Floating badge */}
-        <div style={{ position: "absolute", top: 32, right: 40, background: "rgba(255,255,255,0.12)", backdropFilter: "blur(12px)", border: "1px solid rgba(255,255,255,0.2)", borderRadius: 14, padding: "10px 18px", display: "flex", alignItems: "center", gap: 8 }}>
+        <div style={{ position: "absolute", top: 32, right: 40, background: "rgba(255,255,255,0.14)", backdropFilter: "blur(12px)", border: "1px solid rgba(255,255,255,0.25)", borderRadius: 14, padding: "10px 18px", display: "flex", alignItems: "center", gap: 8 }}>
           <StarFilled style={{ color: "#f59e0b" }} />
           <span style={{ color: "#fff", fontSize: 13, fontWeight: 600 }}>5-star hotel — Ho Chi Minh City</span>
         </div>
 
         <div style={{ position: "relative", zIndex: 1, maxWidth: 1200, margin: "0 auto", padding: "80px 24px", width: "100%" }}>
-          <div style={{ maxWidth: 640 }}>
-            <div style={{ display: "inline-flex", alignItems: "center", gap: 6, background: "rgba(245,158,11,0.2)", border: "1px solid rgba(245,158,11,0.4)", borderRadius: 20, padding: "5px 14px", marginBottom: 20 }}>
+          <div style={{ maxWidth: 680, background: "rgba(15,23,42,0.28)", border: "1px solid rgba(255,255,255,0.18)", borderRadius: 24, padding: "26px 28px", backdropFilter: "blur(10px)", boxShadow: "0 16px 44px rgba(15,23,42,0.32)" }}>
+            <div style={{ display: "inline-flex", alignItems: "center", gap: 6, background: "rgba(245,158,11,0.2)", border: "1px solid rgba(245,158,11,0.45)", borderRadius: 20, padding: "5px 14px", marginBottom: 20 }}>
               <span style={{ color: "#fbbf24", fontSize: 12, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase" }}>Welcome to LuxeHotel</span>
             </div>
-            <h1 style={{ color: "#fff", fontSize: 52, fontWeight: 900, lineHeight: 1.15, margin: "0 0 20px", letterSpacing: -1 }}>
+            <h1 style={{ color: "#fff", fontSize: 56, fontWeight: 900, lineHeight: 1.1, margin: "0 0 20px", letterSpacing: -1.2 }}>
               A stay<br />
               <span style={{ color: "#f59e0b" }}>worthy of five stars</span>
             </h1>
-            <p style={{ color: "rgba(255,255,255,0.65)", fontSize: 17, lineHeight: 1.7, margin: "0 0 36px" }}>
+            <p style={{ color: "rgba(255,255,255,0.84)", fontSize: 17, lineHeight: 1.7, margin: "0 0 36px", maxWidth: 580 }}>
               Elegant spaces, thoughtful service, and a prime downtown location. Every moment at LuxeHotel is one to remember.
             </p>
             <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
@@ -107,11 +107,11 @@ export default function GuestHome() {
             </div>
 
             {/* Stats */}
-            <div style={{ display: "flex", gap: 40, marginTop: 52, paddingTop: 32, borderTop: "1px solid rgba(255,255,255,0.12)" }}>
+            <div style={{ display: "flex", gap: 34, marginTop: 42, paddingTop: 24, borderTop: "1px solid rgba(255,255,255,0.15)" }}>
               {[{ value: "120+", label: "Luxury rooms" }, { value: "2,400+", label: "Happy guests / year" }, { value: "4.9★", label: "Average rating" }].map((s) => (
                 <div key={s.label}>
                   <p style={{ color: "#f59e0b", fontWeight: 900, fontSize: 26, margin: 0, lineHeight: 1 }}>{s.value}</p>
-                  <p style={{ color: "rgba(255,255,255,0.45)", fontSize: 12, margin: "4px 0 0" }}>{s.label}</p>
+                  <p style={{ color: "rgba(255,255,255,0.72)", fontSize: 12, margin: "4px 0 0" }}>{s.label}</p>
                 </div>
               ))}
             </div>
@@ -120,7 +120,7 @@ export default function GuestHome() {
       </section>
 
       {/* ── SERVICES STRIP ── */}
-      <section style={{ background: "#fff", boxShadow: "0 4px 24px rgba(0,0,0,0.06)" }}>
+      <section style={{ background: "#fff", boxShadow: "0 8px 28px rgba(15,23,42,0.08)" }}>
         <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 24px" }}>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 0 }}>
             {services.map((s, i) => (
@@ -128,12 +128,12 @@ export default function GuestHome() {
                 display: "flex", alignItems: "center", gap: 14, padding: "24px 28px",
                 borderRight: i < services.length - 1 ? "1px solid #f1f5f9" : "none",
               }}>
-                <div style={{ width: 48, height: 48, borderRadius: 14, background: s.bg, display: "flex", alignItems: "center", justifyContent: "center", color: s.color, fontSize: 20, flexShrink: 0 }}>
+                <div style={{ width: 50, height: 50, borderRadius: 14, background: s.bg, display: "flex", alignItems: "center", justifyContent: "center", color: s.color, fontSize: 20, flexShrink: 0, border: "1px solid rgba(15,23,42,0.05)" }}>
                   {s.icon}
                 </div>
                 <div>
-                  <p style={{ fontWeight: 700, color: "#1e293b", fontSize: 14, margin: 0 }}>{s.label}</p>
-                  <p style={{ color: "#94a3b8", fontSize: 12, margin: "2px 0 0" }}>{s.desc}</p>
+                  <p style={{ fontWeight: 800, color: "#1e293b", fontSize: 14, margin: 0 }}>{s.label}</p>
+                  <p style={{ color: "#64748b", fontSize: 12, margin: "2px 0 0" }}>{s.desc}</p>
                 </div>
               </div>
             ))}

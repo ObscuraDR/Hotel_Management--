@@ -80,29 +80,33 @@ export default function GuestBookings() {
   const counts = statuses.slice(1).reduce((acc, s) => { acc[s] = bookings.filter((b) => b.status === s).length; return acc; }, {});
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-8">
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-800">My Bookings</h1>
-        <p className="text-gray-400 text-sm">Total {bookings.length} bookings</p>
+    <div className="max-w-5xl mx-auto px-4 py-8">
+      <div
+        className="mb-6 rounded-2xl p-6 md:p-7 border border-indigo-100"
+        style={{ background: "linear-gradient(135deg, #eef2ff 0%, #f8fafc 60%, #ffffff 100%)" }}
+      >
+        <h1 className="text-3xl font-extrabold text-slate-800 mb-1">My Bookings</h1>
+        <p className="text-slate-500 text-sm">Track reservations, status, and payment summary in one place.</p>
+        <p className="text-slate-400 text-xs mt-2">Total {bookings.length} bookings</p>
       </div>
 
       {/* Summary */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
         {statuses.slice(1).map((s) => (
           <div key={s} onClick={() => setFilter(filter === s ? "All" : s)}
-            className="p-3 rounded-xl cursor-pointer border-2 transition-all text-center"
-            style={{ background: statusConfig[s].bg, borderColor: filter === s ? "#6366f1" : "transparent" }}>
-            <p className="text-xl font-bold text-gray-800">{counts[s]}</p>
-            <p className="text-xs text-gray-500">{s}</p>
+            className="p-4 rounded-2xl cursor-pointer border transition-all text-center shadow-sm hover:shadow-md"
+            style={{ background: statusConfig[s].bg, borderColor: filter === s ? "#818cf8" : "#e5e7eb" }}>
+            <p className="text-2xl font-extrabold text-slate-800">{counts[s]}</p>
+            <p className="text-xs text-slate-500 font-medium">{s}</p>
           </div>
         ))}
       </div>
 
       {/* Filter tabs */}
-      <div className="flex gap-2 flex-wrap mb-5">
+      <div className="flex gap-2 flex-wrap mb-5 rounded-xl bg-white p-2 border border-slate-200 shadow-sm">
         {statuses.map((s) => (
           <Button key={s} size="small" type={filter === s ? "primary" : "default"} onClick={() => setFilter(s)}
-            style={filter === s ? { background: "#6366f1", borderColor: "#6366f1" } : {}}>
+            style={filter === s ? { background: "#6366f1", borderColor: "#6366f1", borderRadius: 999 } : { borderRadius: 999 }}>
             {s}
           </Button>
         ))}
@@ -123,7 +127,7 @@ export default function GuestBookings() {
             const nights = dayjs(b.checkout).diff(dayjs(b.checkin), "day");
             return (
               <Card key={b.id} bordered={false}
-                style={{ borderRadius: 16, boxShadow: "0 2px 8px rgba(0,0,0,0.06)", border: `1px solid ${b.status === "Upcoming" ? "#c7d2fe" : "#f3f4f6"}` }}>
+                style={{ borderRadius: 18, boxShadow: "0 8px 26px rgba(15,23,42,0.08)", border: `1px solid ${b.status === "Upcoming" ? "#c7d2fe" : "#eef2f7"}` }}>
                 <div className="flex items-start gap-4">
                   <div className="w-16 h-16 rounded-xl flex items-center justify-center text-3xl flex-shrink-0"
                     style={{ background: cfg.bg }}>
@@ -133,10 +137,10 @@ export default function GuestBookings() {
                   <div className="flex-1 min-w-0">
                     <div className="flex items-start justify-between gap-2 flex-wrap">
                       <div>
-                        <p className="font-bold text-gray-800">{b.room}</p>
-                        <p className="text-xs text-gray-400 font-mono">{b.id}</p>
+                        <p className="font-bold text-slate-800 text-base">{b.room}</p>
+                        <p className="text-xs text-slate-400 font-mono">{b.id}</p>
                       </div>
-                      <Tag icon={cfg.icon} color={cfg.color}>{b.status}</Tag>
+                      <Tag icon={cfg.icon} color={cfg.color} style={{ borderRadius: 999, paddingInline: 10 }}>{b.status}</Tag>
                     </div>
 
                     <div className="flex gap-4 mt-2 text-sm text-gray-500 flex-wrap">
@@ -153,8 +157,8 @@ export default function GuestBookings() {
                     )}
 
                     <div className="flex items-center justify-between mt-3 flex-wrap gap-2">
-                      <span className="font-bold text-green-600 text-lg">{b.total.toLocaleString("vi-VN")}₫</span>
-                      <div className="flex gap-2">
+                      <span className="font-extrabold text-emerald-600 text-2xl">{b.total.toLocaleString("vi-VN")}₫</span>
+                      <div className="flex gap-2 flex-wrap justify-end">
                         <Button size="small" onClick={() => setDetail(b)} style={{ borderRadius: 8 }}>Details</Button>
                         {b.status === "Upcoming" && (() => {
                           const hoursLeft = dayjs(b.checkin).diff(dayjs(), "hour");

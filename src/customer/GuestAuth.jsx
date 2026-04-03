@@ -3,6 +3,7 @@ import { Form, Input, Button, message } from "antd";
 import { UserOutlined, LockOutlined, PhoneOutlined, MailOutlined } from "@ant-design/icons";
 import { useNavigate, Link, useLocation } from "react-router-dom";
 import { loginGuest, registerGuest, getGuestDemoAccountsForUi } from "../utils/guestStore";
+import Footer from "../components/Footer";
 
 export default function GuestAuth() {
   const demoAccounts = getGuestDemoAccountsForUi();
@@ -45,6 +46,7 @@ export default function GuestAuth() {
   };
 
   return (
+    <>
     <div className="min-h-screen flex" style={{ background: "linear-gradient(135deg, #f0f2f5 0%, #fef3c7 100%)" }}>
       {/* Left Panel */}
       <div
@@ -225,5 +227,7 @@ export default function GuestAuth() {
         </div>
       </div>
     </div>
+    <Footer />
+    </>
   );
 }

@@ -3,6 +3,7 @@ import { Form, Input, Button, Checkbox, message, Typography } from "antd";
 import { UserOutlined, LockOutlined, EyeTwoTone, EyeInvisibleOutlined } from "@ant-design/icons";
 import { useNavigate, Link } from "react-router-dom";
 import { api } from "../utils/api";
+import Footer from "../components/Footer";
 
 /** Matches `accounts` in luxehotel_seed.sql (demo passwords, plaintext). */
 const DEMO_ACCOUNTS = [
@@ -33,6 +34,7 @@ export default function Login() {
   };
 
   return (
+    <>
     <div className="h-screen flex overflow-hidden" style={{ background: "linear-gradient(135deg, #f0f2f5 0%, #e8eaf6 100%)" }}>
       {/* Left Panel */}
       <div
@@ -217,5 +219,7 @@ export default function Login() {
         </div>
       </div>
     </div>
+    <Footer />
+    </>
   );
 }

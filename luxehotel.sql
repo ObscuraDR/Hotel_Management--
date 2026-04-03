@@ -95,8 +95,10 @@ CREATE TABLE bookings (
     checkout    DATE         NOT NULL,
     nights      TINYINT      NOT NULL,
     amount      DECIMAL(14,0) NOT NULL,
-    status      ENUM('Booked','Checked In','Checked Out','Cancelled') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Booked',
-    source      ENUM('Direct','Booking.com','Agoda','Website') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Direct',
+    status      ENUM('Booked','Checked In','Checked Out','Cancelled') 
+        CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Booked',
+    source      ENUM('Direct','Booking.com','Agoda','Website') 
+        CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Direct',
     notes       TEXT,
     created_by  INT COMMENT 'accounts.id',
     created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

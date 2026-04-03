@@ -1,45 +1,57 @@
 import { Link } from "react-router-dom";
-import { CheckCircleFilled } from "@ant-design/icons";
+import {
+  RightOutlined,
+  HomeOutlined,
+  CalendarOutlined,
+  TeamOutlined,
+  FileTextOutlined,
+  BarChartOutlined,
+} from "@ant-design/icons";
 import { LANDING_FEATURES } from "./homeContent";
-import { FeatureIcon } from "./featureIcons";
 import LandingCta from "./LandingCta";
 
 export default function LandingFeaturesIndex() {
   return (
     <>
-      <section className="max-w-[1200px] mx-auto px-4 sm:px-6 py-12 sm:py-16">
-        <div className="text-center mb-12">
-          <p style={{ color: "#6366f1", fontWeight: 700, fontSize: 12, letterSpacing: 2, textTransform: "uppercase", margin: "0 0 10px" }}>Features</p>
-          <h1 className="text-3xl sm:text-4xl font-black text-slate-800 m-0 mb-3 tracking-tight">Everything you need to run the hotel</h1>
-          <p className="text-slate-400 text-base m-0 max-w-lg mx-auto">
-            Pick a group below for its detail page — each topic has its own URL.
-          </p>
-        </div>
+      <section className="relative overflow-hidden py-16 sm:py-20 px-4 sm:px-6 bg-white min-h-[50vh]">
+        <img
+          src="/images/hotel_exterior_main_1774269095638.png"
+          alt="Hotel management system interface on multiple devices"
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-br from-white/95 via-white/95 to-slate-50/90"></div>
+        <div className="relative z-[1] max-w-[1200px] mx-auto w-full">
+          <div className="text-center mb-16">
+            <p className="text-indigo-500 font-bold text-xs tracking-[0.2em] uppercase m-0 mb-2">Features</p>
+            <h1 className="text-3xl sm:text-4xl font-black text-slate-800 m-0 mb-6">
+              Everything your team can manage
+            </h1>
+            <p className="text-slate-500 text-lg max-w-3xl mx-auto">
+              Clear modules for rooms, bookings, guests, staff, invoicing, and analytics.
+            </p>
+          </div>
 
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(min(100%, 320px), 1fr))", gap: 24 }}>
-          {LANDING_FEATURES.map((f) => (
-            <Link key={f.slug} to={`/home/features/${f.slug}`} className="no-underline text-inherit">
-              <div
-                style={{ background: "#fff", borderRadius: 20, padding: 28, boxShadow: "0 4px 20px rgba(0,0,0,0.06)", border: "1px solid #f1f5f9", transition: "transform 0.2s, box-shadow 0.2s", height: "100%" }}
-                className="hover:-translate-y-1 hover:shadow-lg"
-              >
-                <div style={{ width: 52, height: 52, borderRadius: 16, background: f.bg, display: "flex", alignItems: "center", justifyContent: "center", color: f.color, fontSize: 22, marginBottom: 18 }}>
-                  <FeatureIcon iconKey={f.iconKey} style={{ fontSize: 22, color: f.color }} />
-                </div>
-                <h2 style={{ fontSize: 18, fontWeight: 700, color: "#1e293b", margin: "0 0 8px" }}>{f.title}</h2>
-                <p style={{ color: "#94a3b8", fontSize: 14, lineHeight: 1.65, margin: "0 0 18px" }}>{f.desc}</p>
-                <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-                  {f.items.map((item) => (
-                    <div key={item} style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                      <CheckCircleFilled style={{ color: f.color, fontSize: 14 }} />
-                      <span style={{ fontSize: 13, color: "#64748b" }}>{item}</span>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+            {LANDING_FEATURES.map((f) => (
+              <Link key={f.slug} to={`/home/features/${f.slug}`} className="no-underline group">
+                <div className="h-full bg-white rounded-2xl border-2 border-slate-200 p-8 hover:border-amber-200 hover:shadow-2xl transition-all duration-300">
+                  <div className="flex items-center justify-between mb-6">
+                    <div className="w-16 h-16 rounded-2xl flex items-center justify-center text-3xl" style={{ background: `${f.bg}20`, color: f.color }}>
+                      {f.iconKey === "home" && <HomeOutlined />}
+                      {f.iconKey === "user" && <TeamOutlined />}
+                      {f.iconKey === "calendar" && <CalendarOutlined />}
+                      {f.iconKey === "file" && <FileTextOutlined />}
+                      {f.iconKey === "team" && <TeamOutlined />}
+                      {f.iconKey === "chart" && <BarChartOutlined />}
                     </div>
-                  ))}
+                    <RightOutlined className="text-amber-400 opacity-0 group-hover:opacity-100 transition-all duration-300 text-xl" />
+                  </div>
+                  <h3 className="text-xl font-bold text-slate-800 m-0 mb-4">{f.title}</h3>
+                  <p className="text-slate-600 text-base leading-relaxed m-0">{f.desc}</p>
                 </div>
-                <p className="text-indigo-600 text-sm font-semibold mt-4 m-0">View details →</p>
-              </div>
-            </Link>
-          ))}
+              </Link>
+            ))}
+          </div>
         </div>
       </section>
       <LandingCta />

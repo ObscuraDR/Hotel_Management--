@@ -1,11 +1,27 @@
+Options -MultiViews
 <IfModule mod_rewrite.c>
   RewriteEngine On
   RewriteBase /
 
-  # Không rewrite file/thư mục thật và API
-  RewriteCond %{REQUEST_FILENAME} !-f
-  RewriteCond %{REQUEST_FILENAME} !-d
-  RewriteCond %{REQUEST_URI} !^/api/
+  # Cho phep file va thu muc that
+  RewriteCond %{REQUEST_FILENAME} -f [OR]
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteRule ^ - [L]
 
-  RewriteRule ^ index.html [L]
+  # Khong rewrite API
+  RewriteCond %{REQUEST_URI} ^/api/ [NC]
+  RewriteRule ^ - [L]
+
+  # Tat ca route khac -> index.html (SPA)
+  RewriteRule ^ /index.html [L]
+</IfModule>
+
+# Tat cache cho HTML de tranh trang trang
+<FilesMatch "\.html$">
+  Header set Cache-Control "no-cache, no-store, must-revalidate"
+</FilesMatch>
+
+# MIME type cho JS module
+<IfModule mod_mime.c>
+  AddType application/javascript .js .mjs
 </IfModule>

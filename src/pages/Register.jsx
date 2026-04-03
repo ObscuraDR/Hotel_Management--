@@ -7,6 +7,7 @@ import {
 } from "@ant-design/icons";
 import { useNavigate, Link } from "react-router-dom";
 import { api } from "../utils/api";
+import Footer from "../components/Footer";
 
 const { Option } = Select;
 
@@ -57,6 +58,7 @@ export default function Register() {
   };
 
   return (
+    <>
     <div className="h-screen flex overflow-hidden" style={{ background: "linear-gradient(135deg, #f0f2f5 0%, #e8eaf6 100%)" }}>
       {/* Left Panel */}
       <div
@@ -334,5 +336,7 @@ export default function Register() {
         </div>
       </div>
     </div>
+    <Footer />
+    </>
   );
 }
