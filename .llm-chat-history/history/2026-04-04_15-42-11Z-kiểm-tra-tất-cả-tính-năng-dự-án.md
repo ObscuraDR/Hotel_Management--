@@ -4,7 +4,7 @@
 # Kiểm tra tất cả tính năng dự án
 
 **Created**: 2026-04-04 15:42:11Z  
-**Messages**: 226 (User: 4, Assistant: 222)  
+**Messages**: 228 (User: 5, Assistant: 223)  
 **Session ID**: `b780d27c-5a52-49b6-aa0d-7a454b5a1ec4`
 
 ---
@@ -5387,5 +5387,21 @@ npm run test:e2e:ui
 **Giới hạn:** Đây là **smoke test** (mở trang, không lỗi crash, luồng auth/redirect cơ bản). Chưa bấm từng nút CRUD trong form; phần đó đã được xử lý qua chỉnh API/UI trước đó. Log Vite có cảnh báo Ant Design (deprecated) và vài chỗ thiếu `key` trong bảng — **không làm fail test** nhưng nên dọn dần.
 
 Nếu bạn muốn, có thể mở rộng thêm test **điền form đặt phòng / thanh toán / đăng ký khách** theo từng kịch bản cụ thể.
+
+---
+
+## 💬 User #227
+
+_2026-04-04 17:32:59Z_
+
+để chụp được 2 hình ảnh này như nào bạn có thể giúp mình không Evidence Postman API Testing (Authentication & Authorization):
+Evidence TC-02 (Staff Management Authorization Access):
+Evidence TC-05 (Invoice and Transaction Handling):
+
+---
+
+## 🤖 Assistant #228 (Agent)
+
+_2026-04-04 17:33:04Z_
 
 ---
