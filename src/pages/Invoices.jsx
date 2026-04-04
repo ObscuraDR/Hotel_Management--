@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
-import { Table, Button, Modal, Card, Row, Col, Avatar, Space, Divider, Popconfirm, Spin, message } from "antd";
-import { EyeOutlined, PrinterOutlined, CheckCircleOutlined, ClockCircleOutlined, FileTextOutlined } from "@ant-design/icons";
+import { Table, Button, Modal, Card, Row, Col, Avatar, Space, Divider, Popconfirm, Spin, message, Select, Form } from "antd";
+import { EyeOutlined, PrinterOutlined, CheckCircleOutlined, ClockCircleOutlined, FileTextOutlined, DollarOutlined } from "@ant-design/icons";
 import { api } from "../utils/api";
+
+const { Option } = Select;
 
 const methodConfig = {
   "Cash":          { color: "#10b981", bg: "#ecfdf5" },
@@ -16,6 +18,10 @@ export default function Invoices() {
   const [invoices, setInvoices] = useState([]);
   const [loading, setLoading] = useState(true);
   const [detailInvoice, setDetailInvoice] = useState(null);
+  const [payOpen, setPayOpen] = useState(false);
+  const [payTarget, setPayTarget] = useState(null);
+  const [paying, setPaying] = useState(false);
+  const [payForm] = Form.useForm();
 
   const fetchInvoices = async () => {
     try {
@@ -30,6 +36,30 @@ export default function Invoices() {
   };
 
   useEffect(() => { fetchInvoices(); }, []);
+
+  const openPay = (inv) => {
+    setPayTarget(inv);
+    payForm.setFieldsValue({ method: "Cash" });
+    setPayOpen(true);
+  };
+
+  const handlePay = async (values) => {
+    if (!payTarget) return;
+    try {
+      setPaying(true);
+      await api.payInvoice(payTarget.id, { method: values.method });
+      message.success("Payment recorded!");
+      setPayOpen(false);
+      setPayTarget(null);
+      payForm.resetFields();
+      fetchInvoices();
+      if (detailInvoice?.id === payTarget.id) setDetailInvoice(null);
+    } catch (e) {
+      message.error(e?.message || "Payment failed!");
+    } finally {
+      setPaying(false);
+    }
+  };
 
   const handlePrint = (inv) => {
     const w = window.open("", "_blank");
@@ -102,6 +132,11 @@ export default function Invoices() {
       render: (_, r) => (
         <Space>
           <Button size="small" icon={<EyeOutlined />} onClick={() => setDetailInvoice(r)} style={{ borderRadius: 8 }} />
+          {r.status === "Pending" && (
+            <Button size="small" type="primary" icon={<DollarOutlined />} onClick={() => openPay(r)} style={{ background: "#10b981", borderRadius: 8 }}>
+              Pay
+            </Button>
+          )}
           <Popconfirm title="Print invoice?" description={`Print invoice ${r.id} for ${r.guest_name}?`} onConfirm={() => handlePrint(r)} okText="Print" cancelText="Cancel">
             <Button size="small" icon={<PrinterOutlined />} style={{ borderRadius: 8 }} />
           </Popconfirm>
@@ -158,11 +193,16 @@ export default function Invoices() {
         title={<span style={{ fontWeight: 700 }}>Invoice {detailInvoice?.id}</span>}
         open={!!detailInvoice} onCancel={() => setDetailInvoice(null)}
         footer={[
-          <Popconfirm title="Print invoice?" description={`Print invoice ${detailInvoice?.id}?`} onConfirm={() => handlePrint(detailInvoice)} okText="Print" cancelText="Cancel">
+          detailInvoice?.status === "Pending" && (
+            <Button key="pay" type="primary" icon={<DollarOutlined />} onClick={() => { const inv = detailInvoice; setDetailInvoice(null); openPay(inv); }} style={{ background: "#10b981", borderRadius: 8 }}>
+              Record payment
+            </Button>
+          ),
+          <Popconfirm key="printc" title="Print invoice?" description={`Print invoice ${detailInvoice?.id}?`} onConfirm={() => handlePrint(detailInvoice)} okText="Print" cancelText="Cancel">
             <Button key="print" icon={<PrinterOutlined />} style={{ borderRadius: 8 }}>Print Invoice</Button>
           </Popconfirm>,
           <Button key="close" type="primary" onClick={() => setDetailInvoice(null)} style={{ background: "#6366f1", borderRadius: 8 }}>Close</Button>,
-        ]}
+        ].filter(Boolean)}
         width={480}
       >
         {detailInvoice && (
@@ -212,6 +252,29 @@ export default function Invoices() {
             </div>
           </div>
         )}
+      </Modal>
+
+      <Modal
+        title={`Record payment — Invoice #${payTarget?.id}`}
+        open={payOpen}
+        onCancel={() => { setPayOpen(false); setPayTarget(null); payForm.resetFields(); }}
+        onOk={() => payForm.submit()}
+        okText="Confirm payment"
+        cancelText="Cancel"
+        okButtonProps={{ style: { background: "#10b981" }, loading: paying }}
+      >
+        <p style={{ color: "#64748b", marginBottom: 16 }}>
+          Total: <strong style={{ color: "#10b981" }}>{payTarget ? Number(payTarget.total).toLocaleString("vi-VN") : "—"}₫</strong>
+        </p>
+        <Form form={payForm} layout="vertical" onFinish={handlePay}>
+          <Form.Item name="method" label="Payment method" rules={[{ required: true }]}>
+            <Select style={{ borderRadius: 8 }}>
+              <Option value="Cash">Cash</Option>
+              <Option value="Bank Card">Bank Card</Option>
+              <Option value="Bank Transfer">Bank Transfer</Option>
+            </Select>
+          </Form.Item>
+        </Form>
       </Modal>
     </div>
     </Spin>

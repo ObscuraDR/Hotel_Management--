@@ -236,12 +236,13 @@ export const SearchButton = ({
   };
 
   return (
-    <div className={`search-button-container ${isExpanded ? 'expanded' : ''} ${className}`}>
+    <div className={`search-button-container ${isExpanded ? 'expanded' : ''} ${className}`} {...props}>
       <Button
         type="text"
-        icon={<SearchOutlined />}
-        onClick={() => setIsExpanded(!isExpanded)}
+        icon={loading ? <LoadingOutlined /> : <SearchOutlined />}
+        onClick={() => !loading && setIsExpanded(!isExpanded)}
         className="search-trigger"
+        disabled={loading}
       />
       
       {isExpanded && (

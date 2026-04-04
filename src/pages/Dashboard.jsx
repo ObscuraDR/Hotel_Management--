@@ -59,6 +59,7 @@ const columns = [
 ];
 
 export default function Dashboard() {
+  const navigate = useNavigate();
   const [dashData, setDashData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);

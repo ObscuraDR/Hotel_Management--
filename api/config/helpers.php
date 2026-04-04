@@ -1,6 +1,6 @@
 <?php
 $origin = $_SERVER['HTTP_ORIGIN'] ?? '';
-$allowed = ['http://localhost:5173', 'http://localhost:4173'];
+$allowed = ['http://localhost:5173', 'http://localhost:5174', 'http://localhost:4173'];
 // Add your production domain here, e.g.: 'https://yourdomain.com'
 if (in_array($origin, $allowed) || str_starts_with($origin, 'https://')) {
     header("Access-Control-Allow-Origin: $origin");

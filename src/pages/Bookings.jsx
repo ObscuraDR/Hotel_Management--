@@ -34,10 +34,10 @@ const faqs = [
 const { Option } = Select;
 
 const statusConfig = {
-  "Checked-in": { color: "#10b981", bg: "#ecfdf5", dot: "#10b981" },
-  "Reserved":   { color: "#6366f1", bg: "#eef2ff", dot: "#6366f1" },
-  "Check-out":  { color: "#94a3b8", bg: "#f1f5f9", dot: "#94a3b8" },
-  "Cancelled":  { color: "#ef4444", bg: "#fef2f2", dot: "#ef4444" },
+  "Checked In":  { color: "#10b981", bg: "#ecfdf5", dot: "#10b981" },
+  "Booked":      { color: "#6366f1", bg: "#eef2ff", dot: "#6366f1" },
+  "Checked Out": { color: "#94a3b8", bg: "#f1f5f9", dot: "#94a3b8" },
+  "Cancelled":   { color: "#ef4444", bg: "#fef2f2", dot: "#ef4444" },
 };
 
 const sourceConfig = {
@@ -98,10 +98,18 @@ export default function Bookings() {
 
   const handleCheckin = async (id) => {
     try {
-      await api.updateBookingStatus(id, "Checked-in");
+      await api.updateBookingStatus(id, "Checked In");
       message.success("Check-in successful!");
       fetchBookings();
-    } catch { message.error("Operation failed!"); }
+    } catch (err) { message.error(err?.message || "Operation failed!"); }
+  };
+
+  const handleCheckout = async (id) => {
+    try {
+      await api.updateBookingStatus(id, "Checked Out");
+      message.success("Check-out recorded!");
+      fetchBookings();
+    } catch (err) { message.error(err?.message || "Operation failed!"); }
   };
 
   const handleCancel = async (id) => {
@@ -109,14 +117,14 @@ export default function Bookings() {
       await api.cancelBooking(id);
       message.success("Booking cancelled!");
       fetchBookings();
-    } catch { message.error("Operation failed!"); }
+    } catch (err) { message.error(err?.message || "Operation failed!"); }
   };
 
   const openEdit = (r) => {
     setEditBooking(r);
     form.setFieldsValue({
-      customer_id: r.customer_id,
-      room_id: r.room_id,
+      customer_id: Number(r.customer_id),
+      room_id: Number(r.room_id),
       checkin: r.checkin,
       checkout: r.checkout,
       source: r.source,
@@ -126,12 +134,12 @@ export default function Bookings() {
   };
   const openAdd = () => { setEditBooking(null); form.resetFields(); setModalOpen(true); };
 
-  const statuses = ["All", "Reserved", "Checked-in", "Check-out", "Cancelled"];
+  const statuses = ["All", "Booked", "Checked In", "Checked Out", "Cancelled"];
   const filtered = filterStatus === "All" ? bookings : bookings.filter((b) => b.status === filterStatus);
   const summary = {
     total: bookings.length,
-    active: bookings.filter((b) => b.status === "Checked-in").length,
-    upcoming: bookings.filter((b) => b.status === "Reserved").length,
+    active: bookings.filter((b) => b.status === "Checked In").length,
+    upcoming: bookings.filter((b) => b.status === "Booked").length,
     revenue: bookings.filter((b) => b.status !== "Cancelled").reduce((s, b) => s + Number(b.amount || 0), 0),
   };
 
@@ -186,12 +194,17 @@ export default function Bookings() {
           <Popconfirm title="Edit booking?" description="Edit this booking?" onConfirm={() => openEdit(r)} okText="Edit" cancelText="Cancel">
             <Button size="small" icon={<EditOutlined />} style={{ borderRadius: 8 }} />
           </Popconfirm>
-          {r.status === "Reserved" && (
+          {r.status === "Booked" && (
             <Popconfirm title="Confirm check-in?" description={`Check-in guest ${r.guest_name}?`} onConfirm={() => handleCheckin(r.id)} okText="Check-in" cancelText="Cancel" okButtonProps={{ style: { background: "#10b981" } }}>
               <Button size="small" icon={<CheckOutlined />} type="primary" style={{ background: "#10b981", borderRadius: 8 }} />
             </Popconfirm>
           )}
-          {r.status === "Reserved" && (
+          {r.status === "Checked In" && (
+            <Popconfirm title="Confirm check-out?" description={`Mark ${r.guest_name} as checked out?`} onConfirm={() => handleCheckout(r.id)} okText="Check-out" cancelText="Cancel" okButtonProps={{ style: { background: "#6366f1" } }}>
+              <Button size="small" type="primary" style={{ background: "#6366f1", borderRadius: 8 }}>Out</Button>
+            </Popconfirm>
+          )}
+          {r.status === "Booked" && (
             <Popconfirm title="Cancel booking?" description="This action cannot be undone!" onConfirm={() => handleCancel(r.id)} okText="Cancel Booking" cancelText="No" okButtonProps={{ danger: true }}>
               <Button size="small" icon={<CloseOutlined />} danger style={{ borderRadius: 8 }} />
             </Popconfirm>
@@ -339,25 +352,43 @@ export default function Bookings() {
         <Form form={form} layout="vertical" onFinish={async (v) => {
           try {
             setSaving(true);
+            // Safe date parsing: "YYYY-MM-DD" → split to avoid timezone offset issues
+            const parseDate = (str) => {
+              if (!str) return null;
+              const [y, m, d] = String(str).split('-').map(Number);
+              return new Date(y, m - 1, d);
+            };
             if (editBooking) {
-              const room = rooms.find((r) => r.id === v.room_id) || { price: editBooking.amount / editBooking.nights };
-              const checkin = new Date(v.checkin);
-              const checkout = new Date(v.checkout);
+              const room = rooms.find((r) => Number(r.id) === Number(v.room_id));
+              const price = room ? Number(room.price) : (editBooking.amount / editBooking.nights);
+              const checkin = parseDate(v.checkin);
+              const checkout = parseDate(v.checkout);
+              if (!checkin || !checkout || checkout <= checkin) {
+                message.warning("Check-out must be after Check-in!");
+                setSaving(false);
+                return;
+              }
               const nights = Math.max(1, Math.round((checkout - checkin) / 86400000));
-              await api.updateBooking(editBooking.id, { ...v, nights, amount: nights * Number(room.price), status: editBooking.status });
+              await api.updateBooking(editBooking.id, { ...v, nights, amount: nights * price, status: editBooking.status });
               message.success("Booking updated successfully!");
             } else {
-              const room = rooms.find((r) => r.id === v.room_id);
-              const checkin = new Date(v.checkin);
-              const checkout = new Date(v.checkout);
+              const room = rooms.find((r) => Number(r.id) === Number(v.room_id));
+              if (!room) { message.error("Selected room not found!"); setSaving(false); return; }
+              const checkin = parseDate(v.checkin);
+              const checkout = parseDate(v.checkout);
+              if (!checkin || !checkout || checkout <= checkin) {
+                message.warning("Check-out must be after Check-in!");
+                setSaving(false);
+                return;
+              }
               const nights = Math.max(1, Math.round((checkout - checkin) / 86400000));
-              await api.addBooking({ ...v, nights, amount: nights * Number(room.price) });
+              await api.addBooking({ ...v, nights, amount: nights * Number(room.price), status: "Booked" });
               message.success("Booking created successfully!");
             }
             setModalOpen(false); setEditBooking(null); form.resetFields();
             fetchBookings();
-          } catch {
-            message.error("Operation failed!");
+          } catch (err) {
+            message.error(err?.message || "Operation failed!");
           } finally {
             setSaving(false);
           }

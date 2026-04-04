@@ -1,8 +1,7 @@
-import { Outlet, useNavigate, useLocation } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 import { Button } from "antd";
 import { useState, useEffect } from "react";
 import { UpOutlined } from "@ant-design/icons";
-import { useLandingSession } from "./useLandingSession";
 import StickyHeader from "../components/StickyHeader";
 import { Suspense, lazy } from "react";
 
@@ -10,9 +9,7 @@ import { Suspense, lazy } from "react";
 const Footer = lazy(() => import("../components/Footer"));
 
 export default function LandingLayout() {
-  const navigate = useNavigate();
   const { pathname } = useLocation();
-  const { user, guest, isLoggedIn, handleGoToDashboard, handleLogout } = useLandingSession();
   const [showBackTop, setShowBackTop] = useState(false);
 
   useEffect(() => {

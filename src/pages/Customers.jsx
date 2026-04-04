@@ -42,7 +42,14 @@ export default function Customers() {
   const openAdd = () => { setEditCustomer(null); form.resetFields(); setModalOpen(true); };
   const openEdit = (r) => {
     setEditCustomer(r);
-    form.setFieldsValue({ name: r.name, phone: r.phone, email: r.email, nationality: r.nationality, id_number: r.id_number });
+    form.setFieldsValue({
+      name: r.name,
+      phone: r.phone,
+      email: r.email,
+      nationality: r.nationality,
+      id_number: r.id_number,
+      dob: r.dob || undefined,
+    });
     setModalOpen(true);
   };
 
@@ -190,6 +197,7 @@ export default function Customers() {
             </Col>
             <Col span={12}><Form.Item name="id_number" label="ID/Passport"><Input style={{ borderRadius: 8 }} /></Form.Item></Col>
           </Row>
+          <Form.Item name="dob" label="Date of birth"><Input type="date" style={{ borderRadius: 8 }} /></Form.Item>
         </Form>
       </Modal>
 

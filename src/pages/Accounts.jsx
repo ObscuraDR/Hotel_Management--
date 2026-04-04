@@ -89,9 +89,18 @@ export default function Accounts() {
   };
 
   const handleChangePwd = async (values) => {
+    if (!pwdTarget) return;
     try {
       setSaving(true);
-      await api.updateAccount(pwdTarget.id, { ...pwdTarget, password: values.newPassword });
+      await api.updateAccount(pwdTarget.id, {
+        name: pwdTarget.name,
+        phone: pwdTarget.phone ?? "",
+        role: pwdTarget.role,
+        department: pwdTarget.department ?? "",
+        shift: pwdTarget.shift ?? "",
+        bio: pwdTarget.bio ?? "",
+        password: values.newPassword,
+      });
       message.success("Password changed successfully!");
       setPwdModal(false);
       pwdForm.resetFields();

@@ -31,6 +31,14 @@ if ($method === 'PUT' && $id) {
 }
 
 if ($method === 'DELETE' && $id) {
-    $db->prepare('DELETE FROM rooms WHERE id=?')->execute([$id]);
-    json(['ok' => true]);
+    try {
+        $db->prepare('DELETE FROM rooms WHERE id=?')->execute([$id]);
+        json(['ok' => true]);
+    } catch (PDOException $e) {
+        $sqlState = $e->errorInfo[0] ?? '';
+        if ($sqlState === '23000') {
+            json(['error' => 'Cannot delete this room: it still has bookings or linked records.'], 409);
+        }
+        json(['error' => 'Could not delete room.'], 500);
+    }
 }

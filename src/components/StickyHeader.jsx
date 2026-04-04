@@ -10,9 +10,8 @@ import {
 import { LANDING_NAV } from "../landing/homeContent";
 import { useLandingSession } from "../landing/useLandingSession";
 
-export default function StickyHeader() {
+function StickyHeaderInner({ activeTo }) {
   const navigate = useNavigate();
-  const location = useLocation();
   const { user } = useLandingSession();
 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -20,18 +19,6 @@ export default function StickyHeader() {
   const [query, setQuery] = useState("");
 
   const dropdownRef = useRef(null);
-
-  const activeTo = useMemo(() => {
-    const p = location.pathname.replace(/\/+$/, "");
-    if (p.startsWith("/home/features")) return "/home/features";
-    return p;
-  }, [location.pathname]);
-
-  useEffect(() => {
-    setIsMobileMenuOpen(false);
-    setIsSearchOpen(false);
-    setQuery("");
-  }, [activeTo]);
 
   useEffect(() => {
     const onKeyDown = (e) => {
@@ -237,4 +224,15 @@ export default function StickyHeader() {
       )}
     </>
   );
+}
+
+export default function StickyHeader() {
+  const location = useLocation();
+  const activeTo = useMemo(() => {
+    const p = location.pathname.replace(/\/+$/, "");
+    if (p.startsWith("/home/features")) return "/home/features";
+    return p;
+  }, [location.pathname]);
+
+  return <StickyHeaderInner key={activeTo} activeTo={activeTo} />;
 }

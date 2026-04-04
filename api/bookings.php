@@ -30,7 +30,7 @@ if ($method === 'POST') {
         VALUES (?,?,?,?,?,?,?,?,?,?)');
     $code = 'BK-' . date('Y') . '-' . str_pad($db->query('SELECT COUNT(*)+1 FROM bookings')->fetchColumn(), 3, '0', STR_PAD_LEFT);
     $stmt->execute([$code, $d['customer_id'], $d['room_id'], $d['checkin'], $d['checkout'],
-                    $d['nights'], $d['amount'], $d['status'] ?? 'Reserved', $d['source'], $d['notes'] ?? null]);
+                    $d['nights'], $d['amount'], $d['status'] ?? 'Booked', $d['source'], $d['notes'] ?? null]);
     json(['id' => $db->lastInsertId(), 'booking_code' => $code], 201);
 }
 

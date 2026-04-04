@@ -39,7 +39,16 @@ if ($method === 'POST') {
 
 if ($method === 'PUT' && $id) {
     $d = body();
-    $db->prepare('UPDATE customers SET name=?, phone=?, email=?, nationality=?, tier=? WHERE id=?')
-       ->execute([$d['name'], $d['phone'], $d['email'], $d['nationality'], $d['tier'], $id]);
+    $db->prepare('UPDATE customers SET name=?, phone=?, email=?, nationality=?, id_number=?, dob=?, tier=? WHERE id=?')
+       ->execute([
+            $d['name'],
+            $d['phone'],
+            $d['email'] ?? null,
+            $d['nationality'] ?? 'Vietnam',
+            $d['id_number'] ?? null,
+            !empty($d['dob']) ? $d['dob'] : null,
+            $d['tier'],
+            $id,
+        ]);
     json(['ok' => true]);
 }

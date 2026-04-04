@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Card, Row, Col, Tag, Button, Modal, Form, Input, Select, InputNumber, Popconfirm, Spin, message } from "antd";
-import { PlusOutlined, EditOutlined, EyeOutlined, HomeOutlined } from "@ant-design/icons";
+import { PlusOutlined, EditOutlined, EyeOutlined, HomeOutlined, DeleteOutlined } from "@ant-design/icons";
 import { api } from "../utils/api";
 
 const { Option } = Select;
@@ -41,6 +41,16 @@ export default function Rooms() {
 
   const openAdd = () => { setEditRoom(null); form.resetFields(); setModalOpen(true); };
   const openEdit = (room) => { setEditRoom(room); form.setFieldsValue({ ...room, price: Number(room.price) }); setModalOpen(true); };
+
+  const handleDeleteRoom = async (room) => {
+    try {
+      await api.deleteRoom(room.id);
+      message.success("Room deleted!");
+      fetchRooms();
+    } catch (e) {
+      message.error(e?.message || "Delete failed!");
+    }
+  };
 
   const filters = ["All", "Available", "Occupied", "Cleaning", "Maintenance"];
   const filtered = filter === "All" ? rooms : rooms.filter((r) => r.status === filter);
@@ -145,12 +155,15 @@ export default function Rooms() {
                     {(room.amenities || []).slice(0, 3).map((a) => (
                       <span key={a} style={{ fontSize: 10, background: "#f8fafc", border: "1px solid #e2e8f0", padding: "2px 8px", borderRadius: 10, color: "#64748b" }}>{a}</span>
                     ))}
-                    {room.amenities.length > 3 && <span style={{ fontSize: 10, color: "#94a3b8" }}>+{(room.amenities || []).length - 3}</span>}
+                    {(room.amenities || []).length > 3 && <span style={{ fontSize: 10, color: "#94a3b8" }}>+{(room.amenities || []).length - 3}</span>}
                   </div>
-                  <div style={{ display: "flex", gap: 8 }}>
+                  <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
                     <Button size="small" icon={<EyeOutlined />} onClick={() => setDetailRoom(room)} style={{ flex: 1, borderRadius: 8, fontSize: 12 }}>Details</Button>
                     <Popconfirm title="Edit room?" description={`Edit room #${room.number}?`} onConfirm={() => openEdit(room)} okText="Edit" cancelText="Cancel">
                       <Button size="small" icon={<EditOutlined />} style={{ flex: 1, borderRadius: 8, fontSize: 12 }}>Edit</Button>
+                    </Popconfirm>
+                    <Popconfirm title="Delete room?" description="Only allowed if the room has no bookings." onConfirm={() => handleDeleteRoom(room)} okText="Delete" cancelText="Cancel" okButtonProps={{ danger: true }}>
+                      <Button size="small" icon={<DeleteOutlined />} danger style={{ borderRadius: 8, fontSize: 12 }} />
                     </Popconfirm>
                   </div>
                 </div>
@@ -165,11 +178,17 @@ export default function Rooms() {
         <Form form={form} layout="vertical" onFinish={async (v) => {
           try {
             setSaving(true);
+            const payload = {
+              ...v,
+              floor: Number(v.floor),
+              capacity: Number(v.capacity),
+              price: Number(v.price),
+            };
             if (editRoom) {
-              await api.updateRoom(editRoom.id, { ...v, status: editRoom.status });
+              await api.updateRoom(editRoom.id, { ...payload, status: editRoom.status });
               message.success("Room updated successfully!");
             } else {
-              await api.addRoom(v);
+              await api.addRoom({ ...payload, status: v.status ?? "Available" });
               message.success("Room added successfully!");
             }
             setModalOpen(false); setEditRoom(null); form.resetFields();

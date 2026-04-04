@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import { Table, Button, Modal, Form, Input, Select, Card, Row, Col, Avatar, Space, Progress, Popconfirm, Spin, message } from "antd";
-import { PlusOutlined, EyeOutlined, EditOutlined, TeamOutlined } from "@ant-design/icons";
+import { Table, Button, Modal, Form, Input, Select, Card, Row, Col, Avatar, Space, Progress, Popconfirm, Spin, message, InputNumber } from "antd";
+import { PlusOutlined, EyeOutlined, EditOutlined, TeamOutlined, DeleteOutlined } from "@ant-design/icons";
 import { api } from "../utils/api";
 
 const { Option } = Select;
@@ -51,8 +51,18 @@ export default function Staff() {
   const openAdd = () => { setEditStaff(null); form.resetFields(); setModalOpen(true); };
   const openEdit = (r) => {
     setEditStaff(r);
-    form.setFieldsValue({ name: r.name, phone: r.phone, role: r.role, department: r.department, shift: r.shift, salary: r.salary });
+    form.setFieldsValue({ name: r.name, phone: r.phone, role: r.role, department: r.department, shift: r.shift, salary: Number(r.salary) });
     setModalOpen(true);
+  };
+
+  const handleDeleteStaff = async (id) => {
+    try {
+      await api.deleteStaff(id);
+      message.success("Staff member removed!");
+      fetchStaff();
+    } catch (e) {
+      message.error(e?.message || "Delete failed!");
+    }
   };
 
   const departments = [...new Set(staff.map((s) => s.department))];
@@ -111,6 +121,9 @@ export default function Staff() {
           <Popconfirm title="Edit staff?" description={`Edit info for ${r.name}?`} onConfirm={() => openEdit(r)} okText="Edit" cancelText="Cancel">
             <Button size="small" icon={<EditOutlined />} style={{ borderRadius: 8 }} />
           </Popconfirm>
+          <Popconfirm title="Delete staff?" description={`Remove ${r.name} from the list?`} onConfirm={() => handleDeleteStaff(r.id)} okText="Delete" cancelText="Cancel" okButtonProps={{ danger: true }}>
+            <Button size="small" icon={<DeleteOutlined />} danger style={{ borderRadius: 8 }} />
+          </Popconfirm>
         </Space>
       ),
     },
@@ -162,11 +175,12 @@ export default function Staff() {
         <Form form={form} layout="vertical" onFinish={async (v) => {
           try {
             setSaving(true);
+            const payload = { ...v, salary: Number(v.salary) };
             if (editStaff) {
-              await api.updateStaff(editStaff.id, { ...v, status: editStaff.status, performance: editStaff.performance });
+              await api.updateStaff(editStaff.id, { ...payload, status: editStaff.status, performance: editStaff.performance });
               message.success("Staff updated successfully!");
             } else {
-              await api.addStaff(v);
+              await api.addStaff(payload);
               message.success("Staff added successfully!");
             }
             setModalOpen(false); setEditStaff(null); form.resetFields();
@@ -216,7 +230,16 @@ export default function Staff() {
                 </Select>
               </Form.Item>
             </Col>
-            <Col span={12}><Form.Item name="salary" label="Salary (₫)"><Input style={{ borderRadius: 8 }} /></Form.Item></Col>
+            <Col span={12}>
+              <Form.Item name="salary" label="Salary (₫)" rules={[{ required: true }]}>
+                <InputNumber
+                  min={0}
+                  style={{ width: "100%", borderRadius: 8 }}
+                  formatter={(x) => (x === undefined || x === "" ? "" : `${x}`.replace(/\B(?=(\d{3})+(?!\d))/g, ","))}
+                  parser={(x) => (x ? x.replace(/\D/g, "") : "")}
+                />
+              </Form.Item>
+            </Col>
           </Row>
         </Form>
       </Modal>

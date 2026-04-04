@@ -21,19 +21,19 @@ const amenityIcons = {
   'Work Desk': <TeamOutlined />
 };
 
+function availabilityFromRoomId(roomId) {
+  let h = 0;
+  const s = String(roomId ?? "");
+  for (let i = 0; i < s.length; i++) h = (h << 5) - h + s.charCodeAt(i);
+  const u = (Math.abs(h) % 1000) / 1000;
+  if (u > 0.8) return { status: "limited", color: "orange", text: "Only 2 left!" };
+  if (u > 0.3) return { status: "available", color: "green", text: "Available" };
+  return { status: "few", color: "yellow", text: "Few rooms left" };
+}
+
 export default function InteractiveRoomCard({ room, onCompare, onWishlist, isComparing = false, isInWishlist = false }) {
   const [isHovered, setIsHovered] = useState(false);
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [show360View, setShow360View] = useState(false);
-
-  const handleImageHover = () => {
-    if (room.images && room.images.length > 1) {
-      const interval = setInterval(() => {
-        setCurrentImageIndex((prev) => (prev + 1) % room.images.length);
-      }, 2000);
-      return () => clearInterval(interval);
-    }
-  };
 
   const formatPrice = (price) => {
     return new Intl.NumberFormat('vi-VN', {
@@ -42,15 +42,7 @@ export default function InteractiveRoomCard({ room, onCompare, onWishlist, isCom
     }).format(price);
   };
 
-  const getAvailabilityStatus = () => {
-    // Simulate real-time availability check
-    const random = Math.random();
-    if (random > 0.8) return { status: 'limited', color: 'orange', text: 'Only 2 left!' };
-    if (random > 0.3) return { status: 'available', color: 'green', text: 'Available' };
-    return { status: 'few', color: 'yellow', text: 'Few rooms left' };
-  };
-
-  const availability = getAvailabilityStatus();
+  const availability = availabilityFromRoomId(room.id);
 
   return (
     <Card
