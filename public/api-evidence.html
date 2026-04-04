@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>LuxeHotel — API Evidence Tester</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', sans-serif; background: #0f172a; color: #e2e8f0; min-height: 100vh; }
+
+  header {
+    background: linear-gradient(135deg, #1e3a5f, #0f172a);
+    padding: 24px 40px;
+    border-bottom: 1px solid #1e40af44;
+    display: flex; align-items: center; gap: 16px;
+  }
+  header .logo { font-size: 28px; }
+  header h1 { font-size: 22px; font-weight: 700; color: #fff; }
+  header p { font-size: 13px; color: #94a3b8; margin-top: 2px; }
+
+  .container { max-width: 1100px; margin: 0 auto; padding: 32px 24px; }
+
+  .section-title {
+    font-size: 13px; font-weight: 700; color: #6366f1;
+    text-transform: uppercase; letter-spacing: 2px;
+    margin: 32px 0 16px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .section-title::after { content: ''; flex: 1; height: 1px; background: #1e293b; }
+
+  .test-card {
+    background: #1e293b;
+    border-radius: 14px;
+    border: 1px solid #334155;
+    margin-bottom: 16px;
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+  .test-card.success { border-color: #10b98155; }
+  .test-card.error   { border-color: #ef444455; }
+
+  .card-header {
+    display: flex; align-items: center; gap: 12px;
+    padding: 14px 20px;
+    background: #0f172a55;
+    cursor: pointer;
+  }
+  .method-badge {
+    font-size: 11px; font-weight: 800; padding: 4px 10px; border-radius: 6px;
+    min-width: 60px; text-align: center;
+  }
+  .method-badge.POST   { background: #16a34a22; color: #4ade80; border: 1px solid #16a34a44; }
+  .method-badge.GET    { background: #2563eb22; color: #60a5fa; border: 1px solid #2563eb44; }
+  .method-badge.PUT    { background: #d97706 22; color: #fbbf24; border: 1px solid #d9770644; }
+  .method-badge.DELETE { background: #dc262622; color: #f87171; border: 1px solid #dc262644; }
+
+  .url-text { font-size: 13px; color: #94a3b8; font-family: monospace; flex: 1; }
+  .test-name { font-size: 13px; font-weight: 600; color: #e2e8f0; }
+
+  .status-dot {
+    width: 10px; height: 10px; border-radius: 50%; background: #334155; flex-shrink: 0;
+  }
+  .status-dot.ok  { background: #10b981; box-shadow: 0 0 8px #10b981; }
+  .status-dot.err { background: #ef4444; box-shadow: 0 0 8px #ef4444; }
+
+  .card-body { padding: 0 20px 20px; display: none; }
+  .card-body.open { display: block; }
+
+  .req-block, .res-block {
+    margin-top: 14px;
+    background: #0f172a;
+    border-radius: 8px;
+    border: 1px solid #1e293b;
+    overflow: hidden;
+  }
+  .block-label {
+    font-size: 10px; font-weight: 700; color: #64748b;
+    text-transform: uppercase; letter-spacing: 1px;
+    padding: 8px 14px;
+    border-bottom: 1px solid #1e293b;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .status-code {
+    font-size: 12px; font-weight: 700; padding: 3px 10px; border-radius: 20px;
+  }
+  .status-code.s200 { background: #10b98122; color: #10b981; }
+  .status-code.s401 { background: #ef444422; color: #ef4444; }
+  .status-code.s404 { background: #f5950022; color: #f59000; }
+
+  pre {
+    padding: 14px;
+    font-size: 12px;
+    color: #a5f3fc;
+    white-space: pre-wrap;
+    word-break: break-all;
+    max-height: 280px;
+    overflow-y: auto;
+    font-family: 'Cascadia Code', 'Consolas', monospace;
+    line-height: 1.6;
+  }
+
+  .run-btn {
+    background: linear-gradient(135deg, #6366f1, #4f46e5);
+    color: #fff; border: none; border-radius: 8px;
+    padding: 8px 20px; font-size: 13px; font-weight: 600;
+    cursor: pointer; transition: opacity 0.2s; margin-top: 12px;
+  }
+  .run-btn:hover { opacity: 0.85; }
+  .run-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  .run-all-btn {
+    display: block; width: 100%;
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    color: #fff; border: none; border-radius: 12px;
+    padding: 14px; font-size: 15px; font-weight: 700;
+    cursor: pointer; margin-bottom: 32px;
+    transition: opacity 0.2s; letter-spacing: 0.5px;
+  }
+  .run-all-btn:hover { opacity: 0.9; }
+
+  .badge-num {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 22px; height: 22px; border-radius: 50%;
+    background: #6366f1; color: #fff;
+    font-size: 11px; font-weight: 800; flex-shrink: 0;
+  }
+
+  .spinner {
+    display: inline-block; width: 14px; height: 14px;
+    border: 2px solid #ffffff44; border-top-color: #fff;
+    border-radius: 50%; animation: spin 0.7s linear infinite; margin-right: 6px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .summary-bar {
+    display: flex; gap: 20px; flex-wrap: wrap;
+    background: #1e293b; border-radius: 12px;
+    padding: 16px 24px; margin-bottom: 24px;
+    border: 1px solid #334155;
+  }
+  .summary-item { display: flex; flex-direction: column; }
+  .summary-item .val { font-size: 24px; font-weight: 800; color: #fff; }
+  .summary-item .lbl { font-size: 11px; color: #64748b; text-transform: uppercase; letter-spacing: 1px; margin-top: 2px; }
+  .summary-item.green .val { color: #10b981; }
+  .summary-item.red .val { color: #ef4444; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">🏨</div>
+  <div>
+    <h1>LuxeHotel — API Evidence Tester</h1>
+    <p>BTEC Unit 7 · Authentication, Authorization & Transaction Testing</p>
+  </div>
+</header>
+
+<div class="container">
+
+  <div class="summary-bar">
+    <div class="summary-item"><span class="val" id="total-count">0</span><span class="lbl">Total Tests</span></div>
+    <div class="summary-item green"><span class="val" id="pass-count">0</span><span class="lbl">Passed</span></div>
+    <div class="summary-item red"><span class="val" id="fail-count">0</span><span class="lbl">Failed</span></div>
+    <div class="summary-item" style="margin-left:auto; justify-content:center;">
+      <span style="font-size:12px; color:#94a3b8;">API Base: <code style="color:#60a5fa">http://localhost:8000</code></span>
+    </div>
+  </div>
+
+  <button class="run-all-btn" onclick="runAll()">▶ Run All Tests</button>
+
+  <!-- SECTION 1 -->
+  <div class="section-title"><span class="badge-num">A</span> Authentication & Authorization (Postman Evidence)</div>
+
+  <div class="test-card" id="card-auth-ok">
+    <div class="card-header" onclick="toggleCard('auth-ok')">
+      <span class="method-badge POST">POST</span>
+      <span class="url-text">http://localhost:8000/login.php</span>
+      <span class="test-name">TC-AUTH-01 · Login Success</span>
+      <span class="status-dot" id="dot-auth-ok"></span>
+    </div>
+    <div class="card-body" id="body-auth-ok">
+      <div class="req-block">
+        <div class="block-label">Request Body</div>
+        <pre>{"email": "admin@luxehotel.com", "password": "admin123"}</pre>
+      </div>
+      <div class="req-block" id="res-auth-ok">
+        <div class="block-label">Response <span id="status-auth-ok"></span></div>
+        <pre id="pre-auth-ok">— Not run yet —</pre>
+      </div>
+      <button class="run-btn" onclick="runTest('auth-ok')">▶ Run</button>
+    </div>
+  </div>
+
+  <div class="test-card" id="card-auth-fail">
+    <div class="card-header" onclick="toggleCard('auth-fail')">
+      <span class="method-badge POST">POST</span>
+      <span class="url-text">http://localhost:8000/login.php</span>
+      <span class="test-name">TC-AUTH-02 · Login Failed (401)</span>
+      <span class="status-dot" id="dot-auth-fail"></span>
+    </div>
+    <div class="card-body" id="body-auth-fail">
+      <div class="req-block">
+        <div class="block-label">Request Body</div>
+        <pre>{"email": "admin@luxehotel.com", "password": "wrongpassword"}</pre>
+      </div>
+      <div class="req-block">
+        <div class="block-label">Response <span id="status-auth-fail"></span></div>
+        <pre id="pre-auth-fail">— Not run yet —</pre>
+      </div>
+      <button class="run-btn" onclick="runTest('auth-fail')">▶ Run</button>
+    </div>
+  </div>
+
+  <!-- SECTION 2 -->
+  <div class="section-title"><span class="badge-num">B</span> TC-02 · Staff Management Authorization Access</div>
+
+  <div class="test-card" id="card-staff-get">
+    <div class="card-header" onclick="toggleCard('staff-get')">
+      <span class="method-badge GET">GET</span>
+      <span class="url-text">http://localhost:8000/staff.php</span>
+      <span class="test-name">TC-02-01 · Get All Staff (Authorized)</span>
+      <span class="status-dot" id="dot-staff-get"></span>
+    </div>
+    <div class="card-body" id="body-staff-get">
+      <div class="req-block">
+        <div class="block-label">Request</div>
+        <pre>GET /staff.php — No body required</pre>
+      </div>
+      <div class="req-block">
+        <div class="block-label">Response <span id="status-staff-get"></span></div>
+        <pre id="pre-staff-get">— Not run yet —</pre>
+      </div>
+      <button class="run-btn" onclick="runTest('staff-get')">▶ Run</button>
+    </div>
+  </div>
+
+  <div class="test-card" id="card-staff-del">
+    <div class="card-header" onclick="toggleCard('staff-del')">
+      <span class="method-badge DELETE">DELETE</span>
+      <span class="url-text">http://localhost:8000/staff.php?id=9999</span>
+      <span class="test-name">TC-02-02 · Delete Non-existent Staff (Boundary Test)</span>
+      <span class="status-dot" id="dot-staff-del"></span>
+    </div>
+    <div class="card-body" id="body-staff-del">
+      <div class="req-block">
+        <div class="block-label">Request</div>
+        <pre>DELETE /staff.php?id=9999 — ID does not exist</pre>
+      </div>
+      <div class="req-block">
+        <div class="block-label">Response <span id="status-staff-del"></span></div>
+        <pre id="pre-staff-del">— Not run yet —</pre>
+      </div>
+      <button class="run-btn" onclick="runTest('staff-del')">▶ Run</button>
+    </div>
+  </div>
+
+  <!-- SECTION 3 -->
+  <div class="section-title"><span class="badge-num">C</span> TC-05 · Invoice and Transaction Handling</div>
+
+  <div class="test-card" id="card-inv-get">
+    <div class="card-header" onclick="toggleCard('inv-get')">
+      <span class="method-badge GET">GET</span>
+      <span class="url-text">http://localhost:8000/invoices.php</span>
+      <span class="test-name">TC-05-01 · Get All Invoices</span>
+      <span class="status-dot" id="dot-inv-get"></span>
+    </div>
+    <div class="card-body" id="body-inv-get">
+      <div class="req-block">
+        <div class="block-label">Request</div>
+        <pre>GET /invoices.php — Returns full invoice list with guest & room info</pre>
+      </div>
+      <div class="req-block">
+        <div class="block-label">Response <span id="status-inv-get"></span></div>
+        <pre id="pre-inv-get">— Not run yet —</pre>
+      </div>
+      <button class="run-btn" onclick="runTest('inv-get')">▶ Run</button>
+    </div>
+  </div>
+
+  <div class="test-card" id="card-inv-pay">
+    <div class="card-header" onclick="toggleCard('inv-pay')">
+      <span class="method-badge PUT">PUT</span>
+      <span class="url-text">http://localhost:8000/invoices.php?id=1</span>
+      <span class="test-name">TC-05-02 · Mark Invoice as Paid (Cash)</span>
+      <span class="status-dot" id="dot-inv-pay"></span>
+    </div>
+    <div class="card-body" id="body-inv-pay">
+      <div class="req-block">
+        <div class="block-label">Request Body</div>
+        <pre>{"method": "Cash"}</pre>
+      </div>
+      <div class="req-block">
+        <div class="block-label">Response <span id="status-inv-pay"></span></div>
+        <pre id="pre-inv-pay">— Not run yet —</pre>
+      </div>
+      <button class="run-btn" onclick="runTest('inv-pay')">▶ Run</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const BASE = 'http://localhost:8000';
+
+const tests = {
+  'auth-ok':   { method:'POST', url:'/login.php',        body:{ email:'admin@luxehotel.com', password:'admin123' },    expectOk: true },
+  'auth-fail': { method:'POST', url:'/login.php',        body:{ email:'admin@luxehotel.com', password:'wrongpassword'},expectOk: false },
+  'staff-get': { method:'GET',  url:'/staff.php',        body:null,                                                    expectOk: true },
+  'staff-del': { method:'DELETE',url:'/staff.php?id=9999',body:null,                                                   expectOk: true },
+  'inv-get':   { method:'GET',  url:'/invoices.php',     body:null,                                                    expectOk: true },
+  'inv-pay':   { method:'PUT',  url:'/invoices.php?id=1',body:{ method:'Cash' },                                      expectOk: true },
+};
+
+let passCount = 0, failCount = 0;
+
+function toggleCard(id) {
+  const b = document.getElementById('body-' + id);
+  b.classList.toggle('open');
+}
+
+async function runTest(id) {
+  const t = tests[id];
+  const pre = document.getElementById('pre-' + id);
+  const dot = document.getElementById('dot-' + id);
+  const statusEl = document.getElementById('status-' + id);
+  const card = document.getElementById('card-' + id);
+  const btn = card.querySelector('.run-btn');
+
+  // Open card
+  document.getElementById('body-' + id).classList.add('open');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>Running...';
+  pre.textContent = 'Loading...';
+  pre.style.color = '#94a3b8';
+  dot.className = 'status-dot';
+  card.className = 'test-card';
+
+  try {
+    const opts = {
+      method: t.method,
+      headers: { 'Content-Type': 'application/json' },
+    };
+    if (t.body) opts.body = JSON.stringify(t.body);
+
+    const res = await fetch(BASE + t.url, opts);
+    const text = await res.text();
+    let data;
+    try { data = JSON.parse(text); } catch { data = text; }
+
+    const isOk = res.ok;
+    const statusCode = res.status;
+
+    // Display
+    pre.style.color = isOk ? '#a5f3fc' : '#fca5a5';
+    pre.textContent = typeof data === 'string' ? data : JSON.stringify(data, null, 2);
+
+    const scEl = document.createElement('span');
+    scEl.className = 'status-code ' + (statusCode === 200 || statusCode === 201 ? 's200' : statusCode === 401 ? 's401' : 's404');
+    scEl.textContent = statusCode + ' ' + (isOk ? 'OK' : 'Error');
+    if (statusEl) { statusEl.innerHTML = ''; statusEl.appendChild(scEl); }
+
+    dot.className = 'status-dot ' + (isOk === t.expectOk ? 'ok' : 'err');
+    card.className = 'test-card ' + (isOk === t.expectOk ? 'success' : 'error');
+
+    if (isOk === t.expectOk) passCount++; else failCount++;
+  } catch (e) {
+    pre.style.color = '#fca5a5';
+    pre.textContent = '❌ Network Error: ' + e.message + '\n\nMake sure PHP server is running:\nphp -S localhost:8000 -t api';
+    dot.className = 'status-dot err';
+    card.className = 'test-card error';
+    failCount++;
+  }
+
+  updateCounts();
+  const total = Object.keys(tests);
+  const done = total.filter(k => document.getElementById('dot-'+k).classList.contains('ok') || document.getElementById('dot-'+k).classList.contains('err'));
+  document.getElementById('total-count').textContent = done.length;
+
+  btn.disabled = false;
+  btn.innerHTML = '↺ Re-run';
+}
+
+function updateCounts() {
+  document.getElementById('pass-count').textContent = passCount;
+  document.getElementById('fail-count').textContent = failCount;
+}
+
+async function runAll() {
+  passCount = 0; failCount = 0;
+  updateCounts();
+  for (const id of Object.keys(tests)) {
+    await runTest(id);
+    await new Promise(r => setTimeout(r, 400));
+  }
+}
+</script>
+</body>
+</html>
